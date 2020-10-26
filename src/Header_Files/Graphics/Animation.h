@@ -9,7 +9,7 @@ public:
 
 	}
 
-	void init(const Vector2f &fdim, const Vector2f &tdim, const string &filename);
+	void init(const Vector2f& fdim, const Vector2f& tdim, const string& filename, const int numFrames);
 
 	void draw(sf::RenderTarget& target, sf::RenderStates states, const GameTransform* trans);
 	void advanceFrame();

@@ -32,7 +32,9 @@ void StateManager::setState(const string &key) {
 		current->enter();
 	}
 	else {
+#ifdef debug_mode
 		cerr << "State " << key << " does not exist!\n";
+#endif
 	}
 }
 

@@ -67,9 +67,9 @@ void Level::tick(InputHandle* input) {
 
 void Level::draw(Renderer* renderer) {
 
-	engine->draw(*renderer->getWindowData()->get(), renderer->getWindowData()->states);
+	engine->draw(*(renderer->window), renderer->states);
 
 	for (auto &a : actors) {
-		a->draw(*renderer->getWindowData()->get(), renderer->getWindowData()->states);
+		a->draw(*(renderer->window), renderer->states);
 	}
 }

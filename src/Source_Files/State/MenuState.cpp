@@ -50,7 +50,7 @@ void MenuState::tick(InputHandle* input) {
 		select();
 	}
 
-	Vector2f mousecoords = (Vector2f)Mouse::getPosition(*input->getWindowData()->get());
+	Vector2f mousecoords = (Vector2f)Mouse::getPosition(*input->getWindow());
 	for (unsigned int i = 0; i < options.size(); i++) {
 		if (options.at(i).hitbox.contains(mousecoords)) {
 			options.at(currentSelection).unhovered();
@@ -85,8 +85,8 @@ void MenuState::select() {
 
 void MenuState::draw(Renderer* renderer) {
 
-	auto wind = renderer->getWindowData()->get();
-	auto& states = renderer->getWindowData()->states;
+	RenderWindow* wind = renderer->window.get();
+	auto& states = renderer->states;
 
 	wind->draw(title, states);
 

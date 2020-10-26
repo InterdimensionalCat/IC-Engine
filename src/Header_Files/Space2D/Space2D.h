@@ -24,9 +24,6 @@ namespace Space2D {
     class Rect2;
 
     template<typename T, typename SpaceType>
-    class Scalar;
-
-    template<typename T, typename SpaceType>
     class AffineMatrix;
 
     template<typename T, typename SpaceType>
@@ -106,9 +103,9 @@ namespace Space2D {
 
 
     //actual class definitions are here
-//each space given here has a defaultTransform() member
-//this is not necessasary but its helpful for reverting 
-//transformations that have acted on this space
+    //each space given here has a defaultTransform() member
+    //this is not necessasary but its helpful for reverting 
+    //transformations that have acted on this space
     struct GameUnits final : Space<GameUnits, double> {
         static inline SpaceIDs id = SpaceIDs::GameUnits;
 

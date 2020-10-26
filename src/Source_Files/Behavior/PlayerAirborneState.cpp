@@ -15,7 +15,7 @@ void PlayerAirborneState::init() {
 	transform = parent->getActor()->getBehavior<GameTransform>();
 	compIn = parent->getActor()->getBehavior<Composite>();
 
-	anim.init(Vector2f(500, 500), Vector2f(128, 128), "airbornesheet");
+	anim.init(Vector2f(500, 500), Vector2f(128, 128), "airbornesheet", 30);
 }
 
 void PlayerAirborneState::enter() {

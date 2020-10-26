@@ -2,21 +2,6 @@
 
 
 
-WindowData::WindowData(RenderWindow* wind) :
-	window(wind),
-	states(RenderStates::Default) {
-	if (instance->vsync) {
-		window->setVerticalSyncEnabled(true);
-		cout << "V-Sync Enabled\n";
-	}
-	else {
-		window->setFramerateLimit((unsigned int)instance->targetFPS);
-		cout << "fps is " << instance->targetFPS << "\n";
-	}
-
-	window->setKeyRepeatEnabled(false);
-}
-
 Game::Game() {
 	//initialize settings?
 }
@@ -24,13 +9,16 @@ Game::Game() {
 
 Game* instance = new Game();
 
+//updates the game logic (and handles basically everything that is not drawing)
 void Game::tick(const float dt) {
 	Game::dt = dt;
 	manager->tick(input.get());
 }
 
+//renders the game to the screen
 void Game::draw(const float interpol) {
 	renderer->interpol = interpol;
+	renderer->states = RenderStates::Default;
 	manager->draw(renderer.get());
 }
 
@@ -42,10 +30,24 @@ void Game::game() {
 	timer = make_unique<Clock>();
 	double accumulator = 0;
 
-	RenderWindow* wind = new RenderWindow(sf::VideoMode(WIDTH, HEIGHT), TITLE);
+	renderer->window = std::make_unique<RenderWindow>(sf::VideoMode(WIDTH, HEIGHT), TITLE);
 
-	subwindows.emplace("MAIN", make_unique<WindowData>(wind));
-	MainWindow = subwindows.at("MAIN").get();
+	if (instance->vsync) {
+		//V-sync doesnt really play nice with animations and I find that SFML can be
+		//somewhat stuttery and I cant tell if V-sync makes it better or worse
+		renderer->window->setVerticalSyncEnabled(true);
+#ifdef debug_mode
+		cout << "V-Sync Enabled\n";
+#endif
+	}
+	else {
+		renderer->window->setFramerateLimit((unsigned int)instance->targetFPS);
+#ifdef debug_mode
+		cout << "V-Sync disabled; fps is " << instance->targetFPS << "\n";
+#endif
+	}
+
+	renderer->window->setKeyRepeatEnabled(false);
 
 	input = make_unique<InputHandle>(this);
 	manager = make_unique<StateManager>(this);
@@ -59,16 +61,14 @@ void Game::game() {
 		timer->restart();
 
 		//clear window of previous frame
-		for (auto& wind : subwindows) {
-			wind.second->get()->clear(Color(140, 140, 140, 255));
-		}
+		renderer->window->clear(Color(140, 140, 140, 255));
 
 
 		if (timeType == TimeStepType::Variable) {
 			//variable timestep
 
 			//recieve input
-			input->updateInput();
+			input->updateInput((float)accumulator);
 
 			tick((float)accumulator);
 			accumulator = 0;
@@ -78,7 +78,7 @@ void Game::game() {
 			while (accumulator >= targetDT) {
 
 				//recieve input
-				input->updateInput();
+				input->updateInput(targetDT);
 
 				tick(targetDT);
 				accumulator -= targetDT;
@@ -92,7 +92,6 @@ void Game::game() {
 
 		if (fpstimer.getElapsedTime().asSeconds() >= 1) {
 			if (debug) {
-				//cout << "fps: " << currentfps << "\n";
 				cout << "fps: " << currentfps << "\n";
 			}
 
@@ -103,20 +102,16 @@ void Game::game() {
 
 
 		//display
-		for (auto &wind : subwindows) {
-			wind.second->get()->display();
-		}
+		renderer->window->display();
 	}
 }
 
 void Game::stop() {
-#ifdef _DEBUG
+#ifdef debug_mode
 	cout << "Game Closing\n";
 #endif
 	running = false;
-	for (auto &wind : subwindows) {
-		wind.second->get()->close();
-	}
+	renderer->window->close();
 }
 
 int main(int argc, char *argv[])

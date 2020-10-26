@@ -57,7 +57,6 @@ namespace Space2D {
             const T& a20 = 0, const T& a21 = 0, const T& a22 = 1
         ) noexcept : matrix{a00, a10, a20, a01, a11, a21, a02, a12, a22} {}
 
-
         //all transformations are applied on points
         Point transformPoint(const Point& p) const noexcept {
             return Point(
@@ -235,8 +234,8 @@ namespace Space2D {
 
         AffineMatrix& scale(const Percent& scale_x, const Percent& scale_y) noexcept {
 
-            auto sx = scale_x.get() / 100;
-            auto sy = scale_x.get() / 100;
+            auto sx = scale_x.get();
+            auto sy = scale_x.get();
 
             T x = static_cast<T>(sx);
             T y = static_cast<T>(sy);
@@ -247,10 +246,32 @@ namespace Space2D {
             ));
         }
 
+        AffineMatrix& scale(const T& x_factor, const T& y_factor) noexcept {
+
+            T x = static_cast<T>(x_factor);
+            T y = static_cast<T>(y_factor);
+
+            return ((*this) *= AffineMatrix(
+                x, 0, 0,
+                0, y, 0
+            ));
+        }
+
         AffineMatrix& scale(const Percent& scale_x, const Percent& scale_y, const Point& center) noexcept {
 
-            T x = static_cast<T>(scale_x.get() / 100);
-            T y = static_cast<T>(scale_y.get() / 100);
+            T x = static_cast<T>(scale_x.get());
+            T y = static_cast<T>(scale_y.get());
+
+            return((*this) *= AffineMatrix(
+                x, 0, center.x * (1 - x),
+                0, y, center.y * (1 - y)
+            ));
+        }
+
+        AffineMatrix& scale(const T& scale_x, const T& scale_y, const Point& center) noexcept {
+
+            T x = static_cast<T>(scale_x);
+            T y = static_cast<T>(scale_y);
 
             return((*this) *= AffineMatrix(
                 x, 0, center.x * (1 - x),

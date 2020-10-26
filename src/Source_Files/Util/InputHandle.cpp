@@ -4,13 +4,20 @@
 #include "GameEngine2020.h"
 #include "InputHandle.h"
 
-void InputHandle::updateInput() {
+void InputHandle::updateInput(const float dt) {
 
 	//clear pressed keys from the previous update
 	pressedKeys.clear();
 	pressedButtons.clear();
 
-	auto MainWindow = instance->MainWindow->get();
+	auto MainWindow = getWindow();
+
+	active = MainWindow->hasFocus();
+
+	//update each listener before polling
+	for (auto& l : listeners) {
+		l->updateListener(dt);
+	}
 
 	//poll an event
 
@@ -19,38 +26,17 @@ void InputHandle::updateInput() {
 	Event event;
 	while (MainWindow->pollEvent(event))
 	{
+
+		//events that should be polled regardless of window active state:
 		if (event.type == Event::Closed) {
 			instance->stop();
 		}
 
-		if (event.type == Event::KeyPressed) {
-			pressedKeys[(int)event.key.code] = event.key.code;
+		if (active) {
+			//events that should only be polled when the window is active:
 
-			if (event.key.code == Keyboard::I) {
-				cout << "In game debug mode toggled\n";
-				instance->debug = !instance->debug;
-			}
-
-			if (event.key.code == Keyboard::Escape) {
-				instance->stop();
-			}
-
-		}
-
-		if (event.type == Event::MouseButtonPressed) {
-			pressedButtons[(int)event.mouseButton.button] = event.mouseButton.button;
-		}
-	}
-
-	//window events for subwindow
-
-	for (auto & par : instance->subwindows) {
-		auto wind = par.second->get();
-
-		while (wind->pollEvent(event)) {
-
-			if (event.type == Event::Closed) {
-				wind->close();
+			for (auto& l : listeners) {
+				l->handleEvent(event, *MainWindow);
 			}
 
 			if (event.type == Event::KeyPressed) {
@@ -62,7 +48,7 @@ void InputHandle::updateInput() {
 				}
 
 				if (event.key.code == Keyboard::Escape) {
-					wind->close();
+					instance->stop();
 				}
 
 			}
@@ -70,6 +56,7 @@ void InputHandle::updateInput() {
 			if (event.type == Event::MouseButtonPressed) {
 				pressedButtons[(int)event.mouseButton.button] = event.mouseButton.button;
 			}
+
 		}
 	}
 }
@@ -90,16 +77,6 @@ bool InputHandle::isPressed(Mouse::Button key) const {
 	return pressedButtons.find((int)key) != pressedButtons.end();
 }
 
-WindowData* InputHandle::getWindowData() {
-	return instance->MainWindow;
-}
-
-WindowData* InputHandle::getWindowData(const std::string &subwindowname) {
-	if (instance->subwindows.find(subwindowname) != instance->subwindows.end()) {
-		return instance->subwindows.at(subwindowname).get();
-	}
-	else {
-		cout << "Window not found!\n";
-		return instance->MainWindow;
-	}
+RenderWindow* InputHandle::getWindow() {
+	return instance->renderer->window.get();
 }

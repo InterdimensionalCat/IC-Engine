@@ -4,12 +4,13 @@
 
 
 
-//currently texture must be of the form n*a x b where n is the number of animation frames
-void Animation::init(const Vector2f &fdim, const Vector2f &tdim, const string &filename) {
+//params: fdim = dimension of 1 frame on the texture, tdim = dimension 1 frame to output
+void Animation::init(const Vector2f &fdim, const Vector2f &tdim, const string &filename, const int numFrames) {
 
 	frameDim = fdim;
-	targetDim = tdim;
-	name = filename;
+	targetDim = tdim; 
+	name = filename; 
+	Animation::numFrames = numFrames;
 
 	fs::path filepath(fs::current_path());
 	filepath /= "resources";
@@ -34,7 +35,11 @@ void Animation::init(const Vector2f &fdim, const Vector2f &tdim, const string &f
 
 	framerate = 30;
 	frameNum = 0;
-	numFrames = tex.getSize().x / (int)frameDim.x + tex.getSize().y / (int)frameDim.y;
+	//numFrames = tex.getSize().x / (int)frameDim.x + tex.getSize().y / (int)frameDim.y;
+#ifdef _DEBUG
+	auto test = tex.getSize().x / (int)frameDim.x * tex.getSize().y / (int)frameDim.y;
+	assert(numFrames <= test);
+#endif
 	framesPerRow = tex.getSize().x / (int)frameDim.x;
 	activeFrames = instance->targetFPS / framerate;
 	framesTillNext = activeFrames;

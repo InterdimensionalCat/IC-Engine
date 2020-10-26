@@ -92,12 +92,6 @@ namespace Space2D {
 			return *this;
 		}
 
-		Vec& operator*=(const Scalar<T, SpaceType>& factor) noexcept {
-			x *= factor.value;
-			y *= factor.value;
-			return *this;
-		}
-
 		Vec operator*(const T& factor) const noexcept {
 			return Vec(x * factor, y * factor);
 		}

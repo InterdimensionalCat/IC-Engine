@@ -7,15 +7,6 @@ class Renderer;
 
 enum class TimeStepType {Fixed, Variable};
 
-struct WindowData {
-	WindowData(RenderWindow* wind);
-	unique_ptr <RenderWindow> window;
-	RenderStates states;
-	RenderWindow* get() {
-		return window.get();
-	}
-};
-
 class Game {
 public:
 
@@ -28,7 +19,7 @@ public:
 
 
 	//Game Loop Objects
-	unique_ptr<Clock> timer;
+	unique_ptr <Clock> timer;
 	unique_ptr <InputHandle> input;
 	unique_ptr <StateManager> manager;
 	unique_ptr <Renderer> renderer;
@@ -52,8 +43,6 @@ public:
 	Clock fpstimer;
 
 	//windows
-	WindowData* MainWindow;
-	map<string, unique_ptr<WindowData>> subwindows;
 };
 
 extern Game* instance;

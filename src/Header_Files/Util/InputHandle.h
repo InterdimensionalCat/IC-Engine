@@ -1,6 +1,7 @@
 #pragma once
 #include <unordered_map>
 #include <map>
+#include "EventListener.h"
 
 class Game;
 
@@ -26,15 +27,24 @@ public:
 	bool isPressed(Mouse::Button key) const;
 
 	//read in all input given on this frame
-	void updateInput();
+	void updateInput(const float dt);
 
-	WindowData* getWindowData();
-	WindowData* getWindowData(const std::string &subwindowname);
+	//add and remove input event listeners
+	void addListener(shared_ptr<EventListener> new_listener);
+	void removeListener(shared_ptr<EventListener> to_remove);
+
+	RenderWindow* getWindow();
 
 	//map containing all the keys
 	unordered_map<int, Keyboard::Key> pressedKeys;
 	unordered_map<int, Mouse::Button> pressedButtons;
 
+	std::vector<std::shared_ptr<EventListener>> listeners;
+
 	Game* instance;
+
+	//if window is "inactive" for whatever reason, do not
+	//register inputs/poll certain events
+	bool active = true;
 
 };

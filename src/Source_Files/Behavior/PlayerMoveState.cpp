@@ -17,7 +17,7 @@ void PlayerMoveState::init() {
 	transform = parent->getActor()->getBehavior<GameTransform>();
 	compIn = parent->getActor()->getBehavior<Composite>();
 
-	anim.init(Vector2f(500, 500), Vector2f(128, 128), "walkSsheet");
+	anim.init(Vector2f(500, 500), Vector2f(128, 128), "walkSsheet", 23);
 }
 
 void PlayerMoveState::enter() {

@@ -16,7 +16,7 @@ void PlayerJumpState::init() {
 	transform = parent->getActor()->getBehavior<GameTransform>();
 	compIn = parent->getActor()->getBehavior<Composite>();
 
-	anim.init(Vector2f(500, 500), Vector2f(128, 128), "jumpsheet");
+	anim.init(Vector2f(500, 500), Vector2f(128, 128), "jumpsheet", 23);
 }
 
 
