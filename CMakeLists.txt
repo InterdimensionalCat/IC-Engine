@@ -6,105 +6,164 @@ cmake_minimum_required (VERSION 3.8)
 
 set(PROJECT_NAME "GameEngine2020")
 
+project(${PROJECT_NAME})
+
 set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
-
-project(${PROJECT_NAME})
 
 ## If you want to link SFML statically
 #set(SFML_STATIC_LIBRARIES TRUE)
 
 ## In most cases better set in the CMake cache
-set(SFML_DIR "${CMAKE_CURRENT_LIST_DR}/SFML/lib/cmake/SFML")
 
-#file(GLOB ALL_REQUIRED_DLL "${CMAKE_CURRENT_LIST_DR}/SFML/bin/*.dll")
-#file(COPY ${ALL_REQUIRED_DLL} DESTINATION ${CMAKE_CURRENT_BINARY_DIR})
 
-set(SOURCE_FILES 
-ActionState.h 
-ActionStateMap.cpp 
-ActionStateMap.h
-Actor.cpp
-Actor.h
-Animation.cpp
-Animation.h
-Behavior.cpp
-Behavoir.h
-Button.cpp
-Button.h
-Camera.cpp
-Camera.h
-CollisionEvent.cpp
-CollisionEvent.h
-ColPair.cpp
-ColPair.h
-Composite.cpp
-Composite.h
-Driver.cpp
-Driver.h
-GameEngine2020.cpp
-GameEngine2020.h
-GameTransform.cpp
-GameTransform.h
-include.cpp
-include.h
-InputHandle.cpp
-InputHandle.h
-Level.cpp
-Level.h
-MapEditorState.cpp
-MapEditorState.h
-MenuState.cpp
-MenuState.h
-OneWayBody.cpp
-OneWayBody.h
-PhysicsBody.cpp
-PhysicsBody.h
-PhysicsEngine.cpp
-PhysicsEngine.h
-PhysMath.cpp
-PhysMath.h
-Player.cpp
-Player.h
-PlayerAirborneState.cpp
-PlayerAirborneState.h
-PlayerIdleState.cpp
-PlayerIdleState.h
-PlayerJumpState.cpp
-PlayerJumpState.h
-PlayerMoveState.cpp
-PlayerMoveState.h
-PlayerRunState.cpp
-PlayerRunState.h
-PolygonBody.cpp
-PolygonBody.h
-Renderer.cpp
-Renderer.h
-RigidBody.cpp
-RigidBody.h
-State.cpp
-State.h
-StateManager.cpp
-StateManager.h
-StaticBody.cpp
-StaticBody.h
-SweepAndPrune.cpp
-SweepAndPrune.h
-TestActor.h
-Tile.cpp
-Tile.h
-TileButton.cpp
-TileButton.h
-TileDriver.cpp
-TileDriver.h
-TileEditor.cpp
-TileEditor.h
-TileMap.cpp
-TileMap.h
-TileSet.cpp
-TileSet.h
+#if(CMAKE_SYSTEM_NAME EQUAL Windows)
+
+#   else
+#    set(SFML_DIR "${PROJECT_SOURCE_DIR}/libraries/Linux/SFML/lib/cmake/SFML")
+#    set(SFML_LIB_DIR "${PROJECT_SOURCE_DIR}/libraries/Linux/SFML/lib")
+#endif()
+
+#set(SFML_DIR "${PROJECT_SOURCE_DIR}/libraries/SFML/lib/cmake/SFML")
+
+set(RESOURCE_DIR "${PROJECT_SOURCE_DIR}/resources")
+
+#file(GLOB COMBINED_RESOURCE_FILES
+#${RESOURCE_DIR}/animations/*
+#${RESOURCE_DIR}/backgrounds/*
+#${RESOURCE_DIR}/fonts/*
+#${RESOURCE_DIR}/maps/*
+#)
+
+FILE(COPY ${RESOURCE_DIR} DESTINATION "${CMAKE_BINARY_DIR}")
+
+set(SRC_DIR "${PROJECT_SOURCE_DIR}/src")
+
+set(SOURCE_H "${PROJECT_SOURCE_DIR}/src/Header_Files")
+set(SOURCE_C "${PROJECT_SOURCE_DIR}/src/Source_Files")
+
+set(Actor_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Actor")
+set(Actor_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Actor")
+
+set(Behavior_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Behavior")
+set(Behavior_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Behavior")
+
+set(Graphics_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Graphics")
+set(Graphics_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Graphics")
+
+set(GUI_H "${PROJECT_SOURCE_DIR}/src/Header_Files/GUI")
+set(GUI_C "${PROJECT_SOURCE_DIR}/src/Source_Files/GUI")
+
+set(Level_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Level")
+set(Level_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Level")
+
+set(Physics_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Physics")
+set(Physics_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Physics")
+
+set(State_H "${PROJECT_SOURCE_DIR}/src/Header_Files/State")
+set(State_C "${PROJECT_SOURCE_DIR}/src/Source_Files/State")
+
+set(Util_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Util")
+set(Util_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Util")
+
+set(S2D_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Space2D")
+set(S2D_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Space2D")
+
+include_directories(${SRC_DIR} ${Actor_H} ${Actor_C} ${Behavior_H} ${Behavior_C} ${Graphics_H} ${Graphics_C} ${GUI_H} ${GUI_C} ${Level_H} ${Level_C} ${Physics_H} ${Physics_C} ${State_H} ${State_C} ${Util_H} ${Util_C} ${S2D_H} ${S2D_C})
+
+file(GLOB SRC
+"${Actor_H}/*.h"
+"${Actor_C}/*.cpp"
+"${Behavior_H}/*.h"
+"${Behavior_C}/*.cpp"
+"${Graphics_H}/*.h"
+"${Graphics_C}/*.cpp"
+"${GUI_H}/*.h"
+"${GUI_C}/*.cpp"
+"${Level_H}/*.h"
+"${Level_C}/*.cpp"
+"${Physics_H}/*.h"
+"${Physics_C}/*.cpp"
+"${State_H}/*.h"
+"${State_C}/*.cpp"
+"${Util_H}/*.h"
+"${Util_C}/*.cpp"
+"${S2D_H}/*.h"
+"${S2D_C}/*.cpp"
+"${PROJECT_SOURCE_DIR}/src/Source_Files/GameEngine2020.cpp"
+"${PROJECT_SOURCE_DIR}/src/Header_Files/GameEngine2020.h"
+"${PROJECT_SOURCE_DIR}/src/Source_Files/include.cpp"
+"${PROJECT_SOURCE_DIR}/src/Header_Files/include.h"
 )
 
-find_package(SFML 2.5 COMPONENTS graphics audio main network system window REQUIRED)
-add_executable(${PROJECT_NAME} GameEngine2020.cpp GameEngine2020.h)
-target_link_libraries(${PROJECT_NAME} sfml-graphics-d sfml-audio-d sfml-system-d sfml-window-d)
+if(WIN32)
+
+#windows-specific stuff
+set(SFML_DIR "${PROJECT_SOURCE_DIR}/libraries/Windows/SFML/lib/cmake/SFML")
+set(SFML_LIB_DIR "${PROJECT_SOURCE_DIR}/libraries/Windows/SFML/lib")
+set(SFML_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/libraries/Windows/SFML/include")
+
+file(GLOB COMBINED_DLL_FILES "${PROJECT_SOURCE_DIR}/libraries/Windows/SFML/bin/*.dll")
+
+#set(DLL_DIR )
+
+FILE(COPY ${COMBINED_DLL_FILES} DESTINATION "${CMAKE_BINARY_DIR}")
+   else()
+
+   #linux-specific stuff
+   MESSAGE("Searching X11")
+FIND_PACKAGE(X11 REQUIRED)
+IF(X11_FOUND)
+    MESSAGE(" X11 include path: " ${X11_INCLUDE_DIR})
+    MESSAGE(" X11 library path: " ${X11_LIBRARIES})
+ENDIF(X11_FOUND)
+
+
+    set(SFML_DIR "${PROJECT_SOURCE_DIR}/libraries/Linux/SFML/lib/cmake/SFML")
+    set(SFML_LIB_DIR "${PROJECT_SOURCE_DIR}/libraries/Linux/SFML/lib")
+    set(SFML_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/libraries/Linux/SFML/include")
+    set(CMAKE_CXX_COMPILER /usr/bin/g++-10)
+endif()
+
+if(CMAKE_BUILD_TYPE MATCHES Debug)
+    message(STATUS "building on debug mode; debug_mode defined")
+    add_compile_definitions(debug_mode)
+endif()
+
+
+find_package(SFML 2.5 COMPONENTS graphics audio window network system REQUIRED)
+add_executable(${PROJECT_NAME} ${SRC})
+
+target_link_libraries(${PROJECT_NAME} sfml-window sfml-graphics sfml-audio sfml-system sfml-network)
+
+#target_link_libraries(${PROJECT_NAME} 
+#${SFML_LIB_DIR}/sfml-graphics-s-d
+#${SFML_LIB_DIR}/sfml-window-s-d
+#${SFML_LIB_DIR}/sfml-system-s-d
+#${SFML_LIB_DIR}/opengl32
+#${SFML_LIB_DIR}/freetype
+#${SFML_LIB_DIR}/winmm
+#${SFML_LIB_DIR}/gdi32
+#${SFML_LIB_DIR}/sfml-audio-s-d
+#${SFML_LIB_DIR}/openal32
+#${SFML_LIB_DIR}/flac
+#${SFML_LIB_DIR}/vorbisenc
+#${SFML_LIB_DIR}/vorbisfile
+#${SFML_LIB_DIR}/vorbis
+#${SFML_LIB_DIR}/ogg
+#${SFML_LIB_DIR}/sfml-network-s-d
+#${SFML_LIB_DIR}/ws2_32
+#)
+
+#target_link_libraries(${PROJECT_NAME} ${SFML_LIBRARIES} ${SFML_DEPENDENCIES})
+
+include_directories(${SFML_INCLUDE_DIR})
+target_include_directories(${PROJECT_NAME} PUBLIC ${SFML_INCLUDE_DIR})
+target_include_directories(${PROJECT_NAME} PUBLIC ${SOURCE_H})
+
+#add_subdirectory(${SRC_DIR})
+
+#get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
+#foreach(dir ${dirs})
+#  message(STATUS "dir='${dir}'")
+#endforeach()
