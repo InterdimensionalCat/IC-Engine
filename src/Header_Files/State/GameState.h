@@ -1,3 +1,8 @@
+//GameState.h
+/*
+  State that controls the "main game state" whatever that might be.
+  For this game the main job of the gamestate will mostly be level management/transition
+*/
 #pragma once
 #include <unordered_map>
 #include "State.h"

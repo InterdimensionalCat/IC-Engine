@@ -13,4 +13,6 @@ public:
 
 	//called every input update before any events are handled
 	virtual void updateListener(const float dt) = 0;
+
+	bool active = true;
 };

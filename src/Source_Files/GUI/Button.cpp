@@ -1,56 +1,101 @@
 #include "include.h"
 #include "Button.h"
 
-Button::Button() {}
+Button::Button(const s2d::ScreenUnits::Rectangle& bounds, const float bordersize, const Color& interior_color, const Color& border_color) : Widget(bounds, bordersize, interior_color, border_color) {
 
-Button::Button(const string &text, const string &font, const Vector2f &pos) {
+}
 
-	fs::path filepath(fs::current_path());
-	filepath /= "resources";
-	filepath /= "fonts";
-	filepath /= font;
-	filepath += ".ttf";
+void Button::handleEvent(const sf::Event& e, Window& window) {
+    switch (e.type) {
+    case Event::MouseButtonReleased:
+        onMouseRelease(e);
+        break;
+    case Event::MouseButtonPressed:
+        onMousePress(e);
+        break;
+    case Event::MouseMoved:
+        onMouseMove(e);
+        break;
+    case Event::KeyPressed:
+        onKeyPress(e);
+        break;
+    case Event::KeyReleased:
+        onKeyRelease(e);
+        break;
+    default:
+        break;
+    }
+}
+
+void Button::onKeyPress(const sf::Event& e) {
+    if (e.key.code == sf::Keyboard::Enter && this->state == ButtonState::Hovered) {
+        selected();
+        onSelectStart();
+    }
+}
+
+void Button::onKeyRelease(const sf::Event& e) {
+    if (e.key.code == sf::Keyboard::Enter && this->state == ButtonState::Hovered) {
+        unhovered();
+        onSelectEnd();
+    }
+}
+
+void Button::onMouseMove(const sf::Event& e) {
+    s2d::ScreenUnits::Point local_mouse_pos = s2d::ScreenUnits::Point((float)e.mouseMove.x, (float)e.mouseMove.y);
+    if (this->bounds.contains(local_mouse_pos)) {
+        if (state == ButtonState::Unhovered) {
+            hovered();
+        }
+    }
+    else {
+
+        if (state == ButtonState::Hovered) {
+            unhovered();
+        }
+    }
+
+    if (state == ButtonState::Selected) {
+        //move mouse wheel while selected?
+    }
+}
+
+void Button::onMousePress(const sf::Event& e) {
+    if (e.mouseButton.button != Mouse::Left) return;
+    s2d::ScreenUnits::Point local_mouse_pos = s2d::ScreenUnits::Point((float)e.mouseButton.x, (float)e.mouseButton.y);
+    if (this->bounds.contains(local_mouse_pos)) {
+        selected();
+        onSelectStart();
+    }
+}
+
+void Button::onMouseRelease(const sf::Event& e) {
+    if (e.mouseButton.button != Mouse::Left || state != ButtonState::Selected) return;
+    s2d::ScreenUnits::Point local_mouse_pos = s2d::ScreenUnits::Point((float)e.mouseButton.x, (float)e.mouseButton.y);
+
+    onSelectEnd();
+
+    if (this->bounds.contains(local_mouse_pos)) {
+        hovered();
+    }
+    else {
+        unhovered();
+    }
+}
 
 
-	if (!buttonFont.loadFromFile(filepath.generic_u8string())) {
-#ifdef _DEBUG
-		throw TextureLoadException(font, filepath.generic_u8string());
-#endif
-	}
-	option = Text(text, buttonFont);
-	option.setCharacterSize(100);
-	option.setFillColor(Color(50, 50, 50));
-	option.setOutlineColor(Color::Black);
-	option.setOutlineThickness(5);
-	option.setStyle(Text::Regular);
-	option.setPosition(pos);
-	hitbox = option.getGlobalBounds();
-	option.setPosition(pos);
-	option.setOrigin(Vector2f(hitbox.width, hitbox.height) / 2.0f);
-	hitbox = option.getGlobalBounds();
+void Button::unhovered() {
+    state = ButtonState::Unhovered;
 }
 
 void Button::hovered() {
-	//visual changes only
-	option.setScale(1.33, 1.33);
-	option.setFillColor(Color(20, 20, 20));
-	option.setStyle(Text::Bold);
-	hitbox = option.getGlobalBounds();
-}
-
-void Button::unhovered() {
-	//visual changes only
-	option.setScale(1, 1);
-	option.setFillColor(Color(50, 50, 50));
-	option.setStyle(Text::Regular);
-	hitbox = option.getGlobalBounds();
+    state = ButtonState::Hovered;
 }
 
 void Button::selected() {
-	//play a sound?
-
+    state = ButtonState::Selected;
 }
 
-void Button::draw(RenderTarget& target, RenderStates states) const {
-	target.draw(option, states);
+void Button::draw(Renderer* renderer) {
+    Widget::draw(renderer);
 }

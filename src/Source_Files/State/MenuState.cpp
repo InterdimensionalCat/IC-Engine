@@ -2,86 +2,81 @@
 #include "MenuState.h"
 #include "GameEngine2020.h"
 
+MenuState::MenuState(StateManager* p) : State(p) {
 
-MenuState::MenuState(StateManager* p) : State(p), title(Button(parent->instance->TITLE, "terminat", Vector2f(parent->instance->WIDTH / 2, 200))) {
-	title.option.setStyle(Text::Bold);
-	title.option.setFillColor(Color(5, 5, 5));
-	options.reserve(3);
+	auto center = s2d::ScreenUnits::Point(parent->instance->WIDTH / 2, 200);
+
+	fs::path filepath(fs::current_path());
+	filepath /= "resources";
+	filepath /= "fonts";
+	filepath /= "terminat";
+	filepath += ".ttf";
+
+	if (!titleFont.loadFromFile(filepath.generic_u8string())) {
+#ifdef _DEBUG
+		throw TextureLoadException("terminat", filepath.generic_u8string());
+#endif
+	}
+	title = Text(parent->instance->TITLE, titleFont);
+	title.setCharacterSize(120);
+	title.setFillColor(Color(50, 50, 50));
+	title.setOutlineColor(Color::Black);
+	title.setOutlineThickness(5);
+	title.setStyle(Text::Regular);
+	Vector2f& size = Vector2f(title.getGlobalBounds().width, title.getGlobalBounds().height);
+	Vector2f topLeft = center.toSFMLVec<float>() - size / 2.0f;
+	title.setPosition(topLeft);
+	//title.setPosition(center.toSFMLVec<float>());
+	//title.setOrigin(center.toSFMLVec<float>());
+
+	title.setStyle(Text::Bold);
+	title.setFillColor(Color(5, 5, 5));
 }
 
 void MenuState::init() {
-	currentSelection = 0;
-	options.emplace_back("Game", "terminat", Vector2f(parent->instance->WIDTH / 2, 400));
-	options.emplace_back("Map Editor", "terminat", Vector2f(parent->instance->WIDTH / 2, 600));
-	options.emplace_back("Exit", "terminat", Vector2f(parent->instance->WIDTH / 2, 800));
-	options.at(currentSelection).hovered();
+	buttons[0] = std::make_shared<MenuButton>(s2d::ScreenUnits::Point(parent->instance->WIDTH / 2, 400), "Game", "terminat", 100.0f, this);
+	buttons[1] = std::make_shared<MenuButton>(s2d::ScreenUnits::Point(parent->instance->WIDTH / 2, 600), "Map Editor", "terminat", 100.0f, this);
+	buttons[2] = std::make_shared<MenuButton>(s2d::ScreenUnits::Point(parent->instance->WIDTH / 2, 800), "Exit", "terminat", 100.0f, this);
+	for (auto& b : buttons) {
+		instance->input->addListener((std::shared_ptr<EventListener>)b);
+	}
+}
+
+void MenuState::enter() {
+	for (int i = 0; i < buttons.size(); i++) {
+		buttons[i]->active = true;
+	}
 }
 
 void MenuState::tick(InputHandle* input) {
-	if (--clickDelay <= 0) {
-		clickDelay = 0;
-		//move up
-		if (input->isPressed(Keyboard::W) ||
-			input->isPressed(Keyboard::Up)) {
-			clickDelay = 5;
-			options.at(currentSelection).unhovered();
-			currentSelection--;
-			if (currentSelection < 0) {
-				currentSelection = options.size() - 1;
-			}
-			options.at(currentSelection).hovered();
 
-		}
-
-		//move down
-		if (input->isPressed(Keyboard::S) ||
-			input->isPressed(Keyboard::Down)) {
-			clickDelay = 5;
-			options.at(currentSelection).unhovered();
-			currentSelection++;
-			if (currentSelection >= options.size()) {
-				currentSelection = 0;
-			}
-			options.at(currentSelection).hovered();
-		}
-	}
-
-	if (input->isPressed(Keyboard::Enter)) {
-		select();
-	}
-
-	Vector2f mousecoords = (Vector2f)Mouse::getPosition(*input->getWindow());
-	for (unsigned int i = 0; i < options.size(); i++) {
-		if (options.at(i).hitbox.contains(mousecoords)) {
-			options.at(currentSelection).unhovered();
-			currentSelection = i;
-			options.at(currentSelection).hovered();
-			if (input->isPressed(Mouse::Left)) {
-				select();
-			}
-		}
-	}
 }
 
-void MenuState::select() {
-	auto &b = options.at(currentSelection);
-	b.selected();
+void MenuState::select(std::string& pressedButtonName) {
+
 #ifdef _DEBUG
-	cout << (std::string)b.option.getString() << "!\n";
+	cout << pressedButtonName << "!\n";
 #endif
 
-	if (b.option.getString().toAnsiString() == "Game") {
+	if (pressedButtonName == "Game") {
 		parent->setState("GAME");
 	}
 
-	if (b.option.getString().toAnsiString() == "Map Editor") {
+	if (pressedButtonName == "Map Editor") {
 		parent->setState("MAPEDITOR");
 	}
 
-	if (b.option.getString().toAnsiString() == "Exit") {
+	if (pressedButtonName == "Exit") {
 		parent->instance->stop();
 	}
 }
+
+void MenuState::exit() {
+	for (int i = 0; i < buttons.size(); i++) {
+		//instance->input->removeListener(buttons[i]);
+		buttons[i]->active = false;
+	}
+};
 
 void MenuState::draw(Renderer* renderer) {
 
@@ -90,19 +85,7 @@ void MenuState::draw(Renderer* renderer) {
 
 	wind->draw(title, states);
 
-	for (auto &b : options) {
-		wind->draw(b, states);
-
-		//draw the hitbox in debug mode
-		if (parent->instance->debug) {
-			auto hitbox = b.hitbox;
-			RectangleShape hbox;
-			hbox.setPosition(Vector2f(hitbox.left, hitbox.top));
-			hbox.setSize(Vector2f(hitbox.width, hitbox.height));
-			hbox.setOutlineColor(Color::Red);
-			hbox.setFillColor(Color::Transparent);
-			hbox.setOutlineThickness(3);
-			wind->draw(hbox, states);
-		}
+	for (int i = 0; i < buttons.size(); i++) {
+		buttons[i]->draw(renderer);
 	}
 }

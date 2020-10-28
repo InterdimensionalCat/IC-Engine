@@ -25,7 +25,6 @@ void GameState::init() {
 
 void GameState::enter() {
 	currentLevel->loadFrom("");
-
 }
 
 void GameState::tick(InputHandle* input) {

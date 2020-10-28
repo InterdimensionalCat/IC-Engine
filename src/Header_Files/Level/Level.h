@@ -1,3 +1,8 @@
+//Level.h
+/*
+  levels are the building blocks of the game, kind of like scene from unity, 
+  contains a physics engine, camera, and the Actors needed to make the game function(eventually)
+*/
 #pragma once
 #include "PhysicsEngine.h"
 
