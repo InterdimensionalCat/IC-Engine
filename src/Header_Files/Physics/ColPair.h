@@ -1,5 +1,6 @@
 #pragma once
-#include "PolygonBody.h"
+#include <array>
+#include "Space2D.h"
 
 class PhysicsBody;
 class RigidBody;
@@ -26,17 +27,19 @@ struct PairKey {
 //data structure used for collisiosn
 //contains both rigid bodies involved in the collsion
 //as well as the MTV angle and magnitude
-struct ColPair :
-	public Drawable
+struct ColPair
 {
 public:
 	//construct a collisionPair with the two potentially
 	//colliding bodies
-	ColPair(PhysicsBody* A, PhysicsBody* B);
+	ColPair(PhysicsBody* A, const size_t& ANum, PhysicsBody* B, const size_t& BNum);
 
 	//the two objects in question
 	PhysicsBody* A;
 	PhysicsBody* B;
+
+	size_t ABodyNum;
+	size_t BBodyNum;
 
 	//test if two colPairs are duplicates;
 	bool operator==(const ColPair &other);
@@ -47,9 +50,9 @@ public:
 	//resolve collision
 	void solveCollision();
 
-	Vector2f normal;
+	s2d::GameUnits::Normal_Vec normal = s2d::GameUnits::Normal_Vec(1,0);
 	float seperation;
-	Edge contactEdge;
+	std::array<s2d::GameUnits::Point, 2> contactPoints;
 
 	//accumulated impulse and position updates
 	float accImp = 0.0f;
@@ -66,9 +69,6 @@ public:
 	bool valid;
 
 	void update(const ColPair& other);
-
-	//for debugging purposes
-	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 };
 
 bool RigidPairSAT(ColPair &pair);

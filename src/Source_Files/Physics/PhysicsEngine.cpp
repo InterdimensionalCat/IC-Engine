@@ -3,34 +3,22 @@
 #include "PhysicsBody.h"
 #include "SweepAndPrune.h"
 #include "ColPair.h"
-#include "RigidBody.h"
-#include "StaticBody.h"
 #include "PhysMath.h"
 #include "SweepAndPrune.h"
 #include "CollisionEvent.h"
-#include "Composite.h"
-
-PhysicsEngine* physicsengine = nullptr;
-
-void set(PhysicsEngine* engine) {
-	physicsengine = engine;
-}
+#include "PhysEventHandler.h"
+#include "GameTransform.h"
 
 
-PhysicsEngine::PhysicsEngine() : gravity(Vector2f(0.0f, -10.0f)), iterations(10) {}
+using Point = s2d::GameUnits::Point;
+using Vec = s2d::GameUnits::Vec;
+using Poly = s2d::GameUnits::Poly;
+using Normal_Vec = s2d::GameUnits::Normal_Vec;
 
 
-void PhysicsEngine::updateSweeper() {
-	for (RigidBody* b : bodies) {
-		sweeper.updateBody(b);
-	}
+PhysicsEngine::PhysicsEngine() : gravity(Vec(0.0f, 10.0f)), iterations(10) {}
 
-	for (StaticBody* b : statics) {
-		sweeper.updateBody(b);
-	}
-}
-
-void PhysicsEngine::updatePhysics(double deltaTime) {
+void PhysicsEngine::updatePhysics(const float deltaTime) {
 
 	float invDT = deltaTime > 0 ? 1.0f / (float)deltaTime : 0.0f;
 
@@ -60,136 +48,69 @@ void PhysicsEngine::sweepAndPrune() {
 	collisions.clear();
 	sweeper.sort();
 
+	for (PhysicsBody* body : bodies) {
+		if (body->collisioninfo) {
+			body->collisioninfo->events.clear();
+		}
+	}
+
 	auto &intervals = sweeper.bodies;
 
-	vector<pair<SweepInterval, PhysicsBody*>> activeIntervals;
+	vector<SweepEntry> activeIntervals;
 
 
-	for (int i = 0; i < intervals.size(); i++) {
+	for (size_t i = 0; i < intervals.size(); i++) {
 
-		auto &pair = intervals.at(i);
+		auto &entry = intervals[i];
 
 		activeIntervals.erase(std::remove_if(activeIntervals.begin(), activeIntervals.end(),
-			[&pair](const std::pair<SweepInterval, PhysicsBody*> &x) {return x.first.max < pair.first.min; }), activeIntervals.end());
+			[&entry](const SweepEntry &x) {return x.interval.max < entry.interval.min; }), activeIntervals.end());
 
-			for (auto &pair2 : activeIntervals) {
+			for (auto &entry2 : activeIntervals) {
 
-				auto b1 = pair.second;
-				auto b2 = pair2.second;
+				auto b1 = entry.body;
+				auto b2 = entry2.body;
 
-				if (b1->getParent() == b2->getParent() && b1->getParent() != nullptr) {
-					continue;
-				}
+				if (b1 == b2) continue;
 
-				PairKey key((PhysicsBody*)b1, (PhysicsBody*)b2);
-				ColPair pair(b1, b2);
+				PairKey key(b1, b2);
+				ColPair pair(b1, entry.polyInd, b2, entry2.polyInd);
 				if (pair.valid) {
-					pair.A->neighbors.push_back(pair.B);
-					pair.B->neighbors.push_back(pair.A);
+					pair.A->getNeighbors().push_back(pair.B);
+					pair.B->getNeighbors().push_back(pair.A);
 					collisions.emplace(key, pair);
 				}
 			}
 
-			activeIntervals.push_back(pair);
+			activeIntervals.push_back(entry);
 
 	}
 }
 
 void PhysicsEngine::moveBodies(float dt) {
 
-	for (Composite* comp : composites) {
-		comp->updated = false;
-	}
-
-	for (RigidBody* b : bodies) {
-		Composite* comp = b->getParent();
-		if (comp->updated) continue;
-		comp->updated = true;
-		comp->translate(dt * comp->getVelocity());
-		comp->setForce(Z_VEC);
-		if (comp->isActive()) {
-			comp->clearNeighbors();
-		}
-
-		if (comp->getVelocity() != Z_VEC) {
-			sweeper.updateBody(b);
+	for (auto b : bodies) {
+		b->translate(b->getVelocity() * dt);
+		b->setForce(Vec());
+		if (b->isAwake()) {
+			b->getNeighbors().clear();
 		}
 	}
 }
 
-void PhysicsEngine::integrateForce(float dt) {
-	for (Composite* comp : composites) {
-		comp->updated = false;
-	}
-
-
+void PhysicsEngine::integrateForce(const float dt) {
 	for (auto &b : bodies) {
-
-		Composite* comp = b->getParent();
-		if (comp->updated) continue;
-		comp->updated = true;
-
-		if (comp->getMass() == 0.0f) continue;
-		comp->addVelocity(dt * (gravity + comp->getInvMass() * comp->getForce()));
+		if (b->getMass() == 0) continue;
+		b->addVelocity((gravity +  b->getForce() * b->getInvMass()) * dt);
 	}
 }
 
-void PhysicsEngine::addBody(RigidBody* b) {
+void PhysicsEngine::addBody(PhysicsBody* b) {
 	bodies.push_back(b);
-	sweeper.updateBody(bodies.at(bodies.size() - 1));
-}
-
-void PhysicsEngine::addBody(StaticBody* b) {
-	statics.push_back(b);
-	sweeper.updateBody(statics.at(statics.size() - 1));
-}
-
-void PhysicsEngine::addComposite(Composite* comp) {
-	composites.push_back(comp);
-}
-
-void PhysicsEngine::generateComposite(Composite* ptr) {
-	ptr->generate();
-
-	for (RigidBody* body : bodies) {
-		sweeper.updateBody(body);
-	}
-
-	for (StaticBody* body : statics) {
-		sweeper.updateBody(body);
-	}
-}
-
-void PhysicsEngine::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-	if (instance->debug) {
-
-		//draw the sweep and prune intervals
-		auto intervals = sweeper.bodies;
-		for (auto &pair : intervals) {
-			VertexArray line(Lines, 2);
-			
-
-			line[0] = Vector2f(pair.first.min, 0);
-			line[1] = Vector2f(pair.first.min, instance->HEIGHT);
-
-			line[0].color = Color::Green;
-			line[1].color = Color::Green;
-
-			target.draw(line, states);
-
-			line[0] = Vector2f(pair.first.max, 0);
-			line[1] = Vector2f(pair.first.max, instance->HEIGHT);
-
-			line[0].color = Color::Blue;
-			line[1].color = Color::Blue;
-
-			target.draw(line, states);
-		}
-
-		//draw collisions
-		for (auto &p : collisions) {
-			target.draw(p.second, states);
-		}
+	auto size = bodies.size();
+	auto polySize = b->getBodies().size();
+	for (size_t i = 0; i < polySize; i++) {
+		sweeper.addBody(bodies[size - 1], i);
 	}
 }
 

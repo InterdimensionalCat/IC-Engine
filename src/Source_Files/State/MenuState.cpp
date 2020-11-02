@@ -4,7 +4,7 @@
 
 MenuState::MenuState(StateManager* p) : State(p) {
 
-	auto center = s2d::ScreenUnits::Point(parent->instance->WIDTH / 2, 200);
+	auto center = s2d::ScreenUnits::Point((float)parent->instance->WIDTH / 2, 200.0f);
 
 	fs::path filepath(fs::current_path());
 	filepath /= "resources";
@@ -23,7 +23,7 @@ MenuState::MenuState(StateManager* p) : State(p) {
 	title.setOutlineColor(Color::Black);
 	title.setOutlineThickness(5);
 	title.setStyle(Text::Regular);
-	Vector2f& size = Vector2f(title.getGlobalBounds().width, title.getGlobalBounds().height);
+	Vector2f size = Vector2f(title.getGlobalBounds().width, title.getGlobalBounds().height);
 	Vector2f topLeft = center.toSFMLVec<float>() - size / 2.0f;
 	title.setPosition(topLeft);
 	//title.setPosition(center.toSFMLVec<float>());
@@ -34,9 +34,9 @@ MenuState::MenuState(StateManager* p) : State(p) {
 }
 
 void MenuState::init() {
-	buttons[0] = std::make_shared<MenuButton>(s2d::ScreenUnits::Point(parent->instance->WIDTH / 2, 400), "Game", "terminat", 100.0f, this);
-	buttons[1] = std::make_shared<MenuButton>(s2d::ScreenUnits::Point(parent->instance->WIDTH / 2, 600), "Map Editor", "terminat", 100.0f, this);
-	buttons[2] = std::make_shared<MenuButton>(s2d::ScreenUnits::Point(parent->instance->WIDTH / 2, 800), "Exit", "terminat", 100.0f, this);
+	buttons[0] = std::make_shared<MenuButton>(s2d::ScreenUnits::Point((float)parent->instance->WIDTH / 2, 400.0f), "Game", "terminat", 100.0f, this);
+	buttons[1] = std::make_shared<MenuButton>(s2d::ScreenUnits::Point((float)parent->instance->WIDTH / 2, 600.0f), "Map Editor", "terminat", 100.0f, this);
+	buttons[2] = std::make_shared<MenuButton>(s2d::ScreenUnits::Point((float)parent->instance->WIDTH / 2, 800.0f), "Exit", "terminat", 100.0f, this);
 	for (auto& b : buttons) {
 		instance->input->addListener((std::shared_ptr<EventListener>)b);
 	}
@@ -52,7 +52,7 @@ void MenuState::tick(InputHandle* input) {
 
 }
 
-void MenuState::select(std::string& pressedButtonName) {
+void MenuState::select(std::string pressedButtonName) {
 
 #ifdef _DEBUG
 	cout << pressedButtonName << "!\n";

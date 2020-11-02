@@ -1,22 +1,25 @@
 #pragma once
 #include "Actor.h"
 
-class Composite;
 class ActionStateMap;
 class GameTransform;
+class PhysicsBody;
+class PhysEventHandler;
+class Animator;
 
 class Player : public Actor
 {
 public:
 
 	void start();
-	void tick(InputHandle* input);
 
 	string getTag() const { return "Player"; }
 
-	Composite* comp;
+	PhysicsBody* body;
 	ActionStateMap* states;
 	GameTransform* transform;
+	PhysEventHandler* collisioninfo;
+	Animator* animator;
 
 };
 

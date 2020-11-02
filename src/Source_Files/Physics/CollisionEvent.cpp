@@ -2,6 +2,9 @@
 #include "CollisionEvent.h"
 #include "PhysicsEngine.h"
 #include "PhysicsBody.h"
-#include "PolygonBody.h"
 
-CollisionEvent::CollisionEvent(PhysicsBody* A, PhysicsBody* B, const Vector2f normal, const float seperation, const Edge contactEdge) : A(A), B(B), normal(Vector2f(normal.x, normal.y)), seperation(seperation), contactEdge(contactEdge) {}
+CollisionEvent::CollisionEvent(PhysicsBody* A, const size_t ABodyNum, 
+	PhysicsBody* B, const size_t BBodyNum, const s2d::GameUnits::Normal_Vec& normal, 
+	const float seperation, 
+	const std::array<s2d::GameUnits::Point, 2>& contactPoints)
+: A(A), B(B), normal(normal), seperation(seperation), contactPoints(contactPoints) {}

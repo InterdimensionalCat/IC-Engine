@@ -12,7 +12,7 @@ class MenuButton :
 {
 public:
 
-    MenuButton(const s2d::ScreenUnits::Point& center, const string& text, const string& font, const float& fontSize, MenuState* parent);
+    MenuButton(const s2d::ScreenUnits::Point& center, const string& text, const string& font, const size_t& fontSize, MenuState* parent);
 
     //selection functions
     virtual void onSelectEnd();

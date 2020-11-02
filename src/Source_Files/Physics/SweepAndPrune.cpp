@@ -1,55 +1,87 @@
 #include "include.h"
 #include "SweepAndPrune.h"
-#include "RigidBody.h"
-#include "StaticBody.h"
+#include "PhysicsBody.h"
 
 
-void SweepAndPrune::updateBody(PhysicsBody* body) {
+void SweepAndPrune::updateBody(PhysicsBody* body, const size_t& polyInd) {
 	for (size_t i = 0; i < bodies.size(); i++) {
-		if (bodies.at(i).second == body) {
+		if (bodies[i].body == body && bodies[i].polyInd == polyInd) {
 			//update already existing body
-			auto &interval = bodies.at(i).first;
+			auto &interval = bodies[i].interval;
 			interval.min = numeric_limits<float>().infinity();
 			interval.max = -numeric_limits<float>().infinity();
-			for (auto &e : body->getBody().edges) {
-				auto xpt = e.start.x;
-				if (xpt > interval.max) {
-					interval.max = xpt;
+			auto poly = body->getBodies()[polyInd];
+			for (size_t i = 0; i < poly.size(); i++) {
+
+				auto& point = poly[i];
+
+				float testPt;
+				if (direction == SweeperDir::Horizontal) {
+					testPt = point.x;
+				}
+				else {
+					testPt = point.y;
 				}
 
-				if (xpt < interval.min) {
-					interval.min = xpt;
+				if (testPt > interval.max) {
+					interval.max = testPt;
+				}
+
+				if (testPt < interval.min) {
+					interval.min = testPt;
 				}
 			}
+
+#ifdef _DEBUG
+			if (interval.min == numeric_limits<float>().infinity()) {
+				throw BadInfinityException<float>(interval.min);
+			}
+
+			if (interval.max == -numeric_limits<float>().infinity()) {
+				throw BadInfinityException<float>(interval.max);
+			}
+#endif
+
 			return;
 		}
 	}
 	//else add a new body
+	addBody(body, polyInd);
+}
 
-	bodies.emplace_back(SweepInterval(), body);
-	auto &interval = bodies.at(bodies.size() - 1).first;
-	for (auto &e : body->getBody().edges) {
-		auto xpt = e.start.x;
-		if (xpt > interval.max) {
-			interval.max = xpt;
+void SweepAndPrune::addBody(PhysicsBody* body, const size_t& polyInd) {
+	bodies.emplace_back(SweepInterval(), body, polyInd);
+	auto& interval = bodies[bodies.size() - 1].interval;
+	auto poly = body->getBodies()[polyInd];
+	for (size_t i = 0; i < poly.size(); i++) {
+
+		auto& point = poly[i];
+
+		float testPt;
+		if (direction == SweeperDir::Horizontal) {
+			testPt = point.x;
+		}
+		else {
+			testPt = point.y;
 		}
 
-		if (xpt < interval.min) {
-			interval.min = xpt;
+		if (testPt > interval.max) {
+			interval.max = testPt;
+		}
+
+		if (testPt < interval.min) {
+			interval.min = testPt;
 		}
 	}
-
-	if (interval.min == numeric_limits<float>().infinity()) {
 #ifdef _DEBUG
+	if (interval.min == numeric_limits<float>().infinity()) {
 		throw BadInfinityException<float>(interval.min);
-#endif
 	}
 
 	if (interval.max == -numeric_limits<float>().infinity()) {
-#ifdef _DEBUG
 		throw BadInfinityException<float>(interval.max);
-#endif
 	}
+#endif
 }
 
 void SweepAndPrune::sort() {

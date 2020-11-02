@@ -9,30 +9,25 @@ public:
 	float getY() const { return pos.y; }
 	float getPrevX() const { return prevpos.x; }
 	float getPrevY() const { return prevpos.y; }
-	Vector2f getPos() const { return pos; }
-	Vector2f getPrevPos() const { return prevpos; }
-	void translate(const Vector2f trans);
-	void setPos(const Vector2f newpos);
+	s2d::GameUnits::Point getPos() const { return pos; }
+	s2d::GameUnits::Point getPrevPos() const { return prevpos; }
+	void translate(const s2d::GameUnits::Vec trans);
+	void setPos(const s2d::GameUnits::Point newpos);
 	void setPos(const float x, const float y);
 	void start();
 	void tick(InputHandle* input);
-	void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+	void draw(Renderer* renderer);
 
-	Vector2f forward() const;
-	Vector2f up() const;
-	Vector2f down() const;
-	Vector2f back() const;
-
-	bool updated();
-	void setupdated();
+	s2d::GameUnits::Vec forward() const;
+	s2d::GameUnits::Vec up() const;
+	s2d::GameUnits::Vec down() const;
+	s2d::GameUnits::Vec back() const;
 
 private:
-	Vector2f pos = Z_VEC;
-	Vector2f prevpos = Z_VEC;
+	s2d::GameUnits::Point pos;
+	s2d::GameUnits::Point prevpos;
 
-	Vector2f fwd = Vector2f(1, 0);
-	Vector2f upvec = Vector2f(0, 1);
-
-	bool upd = true;
+	s2d::GameUnits::Vec fwd = s2d::GameUnits::Vec(1, 0);
+	s2d::GameUnits::Vec upvec = s2d::GameUnits::Vec(0, 1);
 };
 

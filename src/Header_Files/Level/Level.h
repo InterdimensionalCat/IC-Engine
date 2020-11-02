@@ -26,8 +26,8 @@ public:
 
 	Camera* camera;
 	Player* player;
-	unique_ptr<PhysicsEngine> engine = make_unique<PhysicsEngine>();
-	vector<PhysicsBody*> bodies;
-	vector<shared_ptr<Actor>> actors;
+	std::unique_ptr<PhysicsEngine> engine = std::make_unique<PhysicsEngine>();
+	std::vector<PhysicsBody*> bodies;
+	std::vector<std::shared_ptr<Actor>> actors;
 };
 

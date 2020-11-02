@@ -27,6 +27,10 @@ namespace Space2D {
             return i == 0 ? x : y;
         }
 
+       NormalizedVec2 operator- () const noexcept {
+            return NormalizedVec2(-x, -y);
+        }
+
         bool operator==(const NormalizedVec2& other) const noexcept {
             return (std::abs(x - other.x) < 1e-6) && (std::abs(y - other.y) < 1e-6);
         }
@@ -104,8 +108,8 @@ namespace Space2D {
             return os;
         }
 
-        const T x;
-        const T y;
+        T x;
+        T y;
     };
 }
 

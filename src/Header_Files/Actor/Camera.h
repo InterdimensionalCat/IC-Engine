@@ -1,28 +1,28 @@
 #pragma once
 #include "Actor.h"
 
-class GameTransform;
-
 class Camera : public Actor
 {
 public:
 	string getTag() const { return "Camera"; }
 	virtual void start();
 	virtual void tick(InputHandle* input);
-	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+	virtual void draw(Renderer* renderer);
 
-	void move(Vector2f trans);
-	void setPos(Vector2f newpos);
-	void rotate(const float &rotation);
+	void move(s2d::GameUnits::Vec trans);
+	void setPos(s2d::GameUnits::Point newpos);
+	void rotate(const Radians &rotation);
 	void zoom(const float &scale);
 	void reset();
-	void reset(Vector2f pos);
+	void reset(s2d::GameUnits::Point pos);
+	void update();
 
 private:
-	GameTransform* transform;
+	s2d::PixelUnits::Point pos;
+	s2d::PixelUnits::Point prevpos;
 
-	float rotation;
-	float prevrotation;
+	Radians rotation;
+	Radians prevrotation;
 
 	float scale;
 	float prevscale;

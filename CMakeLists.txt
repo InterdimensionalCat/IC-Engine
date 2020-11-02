@@ -60,6 +60,9 @@ set(Level_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Level")
 set(Physics_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Physics")
 set(Physics_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Physics")
 
+set(Bodies_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Physics/Bodies")
+set(Bodies_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Physics/Bodies")
+
 set(State_H "${PROJECT_SOURCE_DIR}/src/Header_Files/State")
 set(State_C "${PROJECT_SOURCE_DIR}/src/Source_Files/State")
 
@@ -69,7 +72,15 @@ set(Util_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Util")
 set(S2D_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Space2D")
 set(S2D_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Space2D")
 
-include_directories(${SRC_DIR} ${Actor_H} ${Actor_C} ${Behavior_H} ${Behavior_C} ${Graphics_H} ${Graphics_C} ${GUI_H} ${GUI_C} ${Level_H} ${Level_C} ${Physics_H} ${Physics_C} ${State_H} ${State_C} ${Util_H} ${Util_C} ${S2D_H} ${S2D_C})
+set(AS_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Behavior/ActionState")
+set(AS_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Behavior/ActionState")
+
+include_directories(
+${SRC_DIR} ${Actor_H} ${Actor_C} ${Behavior_H} ${Behavior_C} ${Graphics_H} 
+${Graphics_C} ${GUI_H} ${GUI_C} ${Level_H} ${Level_C} ${Physics_H} ${Physics_C} 
+${State_H} ${State_C} ${Util_H} ${Util_C} ${S2D_H} ${S2D_C} ${Bodies_H} ${Bodies_C}
+${AS_H} ${AS_C}
+)
 
 file(GLOB SRC
 "${Actor_H}/*.h"
@@ -90,6 +101,10 @@ file(GLOB SRC
 "${Util_C}/*.cpp"
 "${S2D_H}/*.h"
 "${S2D_C}/*.cpp"
+"${Bodies_H}/*.h"
+"${Bodies_C}/*.cpp"
+"${AS_H}/*.h"
+"${AS_C}/*.cpp"
 "${PROJECT_SOURCE_DIR}/src/Source_Files/GameEngine2020.cpp"
 "${PROJECT_SOURCE_DIR}/src/Header_Files/GameEngine2020.h"
 "${PROJECT_SOURCE_DIR}/src/Source_Files/include.cpp"

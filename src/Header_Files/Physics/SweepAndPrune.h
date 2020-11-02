@@ -1,24 +1,38 @@
 #pragma once
+#include "PhysicsBody.h"
+#include <numeric>
 
-class PhysicsBody;
-class RigidBody;
-class StaticBody;
+enum class SweeperDir {
+	Horizontal = 0,
+	Vertical
+};
 
 //interval used for the sweep
 struct SweepInterval {
-	float min = numeric_limits<float>().infinity();
-	float max = -numeric_limits<float>().infinity();
+	float min = std::numeric_limits<float>().infinity();
+	float max = -std::numeric_limits<float>().infinity();
 
-	bool operator==(const SweepInterval &other) const {
+	bool operator==(const SweepInterval& other) const {
 		return max == other.max && min == other.min;
 	}
+};
+
+struct SweepEntry {
+	SweepEntry(SweepInterval interval,
+		PhysicsBody* body,
+		size_t polyInd) : interval(interval), body(body),
+		polyInd(polyInd) {}
+	SweepInterval interval;
+	PhysicsBody* body;
+	size_t polyInd;
 };
 
 //comparator used to sort the bodylist map
 class IntervalComp {
 public:
-	bool operator() (const pair<SweepInterval, PhysicsBody*> &lhs, const pair<SweepInterval, PhysicsBody*> &rhs) const {
-		return lhs.first.min < rhs.first.min;
+	bool operator() (const SweepEntry &lhs, 
+		const SweepEntry &rhs) const {
+		return lhs.interval.min < rhs.interval.min;
 	}
 };
 
@@ -28,12 +42,17 @@ class SweepAndPrune
 public:
 	//adds a new body to the sweep and prune check
 	//or updates the body if it already exists
-	void updateBody(PhysicsBody* body);
+	void updateBody(PhysicsBody* body, const size_t& polyInd);
+
+	//strictly adds a new body
+	void addBody(PhysicsBody* body, const size_t& polyInd);
 
 	//sort all the intervals
 	void sort();
 
-	vector<pair<SweepInterval, PhysicsBody*>> bodies;
+	//TODO: make a seperate data structure "Sweeper Entry" that contains this info
+	std::vector<SweepEntry> bodies;
+	SweeperDir direction = SweeperDir::Horizontal;
 
 
 };

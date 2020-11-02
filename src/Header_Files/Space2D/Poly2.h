@@ -65,9 +65,25 @@ namespace Space2D {
             cent = calc_centroid();
         }
 
+        explicit Poly2(const Rect& quad_dim) noexcept : points({Point(0,0), Point(1,0), Point(1,1), Point(0,1)}) {
+            auto len = points.size();
+            for (size_t i = 0; i < len; i++) {
+                auto& p = points[i];
+                p.x = SpaceType::lerp(quad_dim.min.x, quad_dim.max.x, p.x);
+                p.y = SpaceType::lerp(quad_dim.min.y, quad_dim.max.y, p.y);
+            }
+            cent = calc_centroid();
+        }
+
         const Point& operator[] (const size_t i) const {
             return points[i];
         }
+
+
+        //Point* begin() { return &points[0]; }
+        //const Point* begin() const { return nullptr }
+        //Point* end() { return &points[0]; }
+        //const Point* end() const { return nullptr; }
 
         const Point& centroid() const {
             return cent;
@@ -272,10 +288,12 @@ namespace Space2D {
 
             Poly2<other_T, other_SpaceType> second_transform(newpoints);
 
-            AffineMatrix<other_T, other_SpaceType> to = other_SpaceType::transform_ratio;
+            return second_transform;
+
+            //AffineMatrix<other_T, other_SpaceType> to = other_SpaceType::transform_ratio;
 
             //apply the reletive space transform of the new space
-            return to.transformPoly(second_transform);
+            //return to.transformPoly(second_transform);
         }
 
         friend std::ostream& operator << (std::ostream& os, const Poly2<T, SpaceType>& it) {
@@ -287,6 +305,21 @@ namespace Space2D {
             os << "}";
             return os;
         }
+
+#ifndef SFML_DISABLE
+        sf::ConvexShape getDrawableSFMLPolygon(const float bordersize = 0.0f, const sf::Color interior_color = sf::Color(0, 0, 0, 0), const sf::Color border_color = sf::Color(0, 0, 0, 0)) const {
+            sf::ConvexShape newshape;
+            newshape.setOutlineThickness(bordersize);
+            newshape.setOutlineColor(border_color);
+            newshape.setFillColor(interior_color);
+            newshape.setPointCount(points.size());
+            for (size_t i = 0; i < points.size(); i++) {
+                sf::Vector2f vec((float)points[i].x, (float)points[i].y);
+                newshape.setPoint(i, vec);
+            }
+            return newshape;
+        }
+#endif
 
     private:
 
@@ -329,8 +362,8 @@ namespace Space2D {
                 double A = (x0 * y1) - (x1 * y0);
                 signedArea += A;
 
-                cent.x += (x0 + x1) * A;
-                cent.y += (y0 + y1) * A;
+                cent.x += static_cast<T>((x0 + x1) * A);
+                cent.y += static_cast<T>((y0 + y1) * A);
             }
 
             double x0 = points[len - 1].x;
@@ -341,12 +374,12 @@ namespace Space2D {
             double A = (x0 * y1) - (x1 * y0);
             signedArea += A;
 
-            cent.x += (x0 + x1) * A;
-            cent.y += (y0 + y1) * A;
+            cent.x += static_cast<T>((x0 + x1) * A);
+            cent.y += static_cast<T>((y0 + y1) * A);
 
             signedArea *= 0.5;
-            cent.x /= (6 * signedArea);
-            cent.y /= (6 * signedArea);
+            cent.x /= static_cast<T>((6 * signedArea));
+            cent.y /= static_cast<T>((6 * signedArea));
 
             return cent;
         }

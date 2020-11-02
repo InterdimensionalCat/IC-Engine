@@ -1,37 +1,34 @@
 #include "include.h"
 #include "GameTransform.h"
 
-void GameTransform::translate(const Vector2f trans) { 
-	//prevpos = pos;
+using Point = s2d::GameUnits::Point;
+using Vec = s2d::GameUnits::Vec;
+
+void GameTransform::translate(const Vec trans) {
 	pos += trans; 
-	upd = false;
 }
 
-void GameTransform::setPos(const Vector2f newpos) { 
-	//prevpos = newpos;
+void GameTransform::setPos(const Point newpos) {
 	pos = newpos; 
-	upd = false;
 }
 
 void GameTransform::setPos(const float x, const float y) { 
-	pos = Vector2f(x, y); 
-	//prevpos = pos;
-	upd = false;
+	pos = Point(x, y);
 }
 
-Vector2f GameTransform::forward() const {
+Vec GameTransform::forward() const {
 	return fwd;
 }
 
-Vector2f GameTransform::up() const {
+Vec GameTransform::up() const {
 	return upvec;
 }
 
-Vector2f GameTransform::down() const {
+Vec GameTransform::down() const {
 	return -upvec;
 }
 
-Vector2f GameTransform::back() const {
+Vec GameTransform::back() const {
 	return -fwd;
 }
 
@@ -43,7 +40,10 @@ void GameTransform::tick(InputHandle* input) {
 	prevpos = pos;
 }
 
-void GameTransform::draw(sf::RenderTarget& target, sf::RenderStates states) const {
+void GameTransform::draw(Renderer* renderer) {
+
+	auto target = renderer->window.get();
+	auto states = renderer->states;
 
 	//draw the point if in debug mode
 	if (instance->debug) {
@@ -51,15 +51,7 @@ void GameTransform::draw(sf::RenderTarget& target, sf::RenderStates states) cons
 		shape.setRadius(3);
 		shape.setFillColor(Color::Cyan);
 		shape.setOutlineColor(Color::Cyan);
-		shape.setPosition(lerp(prevpos, pos, instance->renderer->interpol));
-		target.draw(shape, states);
+		shape.setPosition(lerp(((s2d::PixelUnits::Point)prevpos).toSFMLVec<float>() - Vector2f(1.5f, 1.5f), ((s2d::PixelUnits::Point)pos).toSFMLVec<float>() - Vector2f(1.5f, 1.5f), renderer->interpol));
+		target->draw(shape, states);
 	}
-}
-
-bool GameTransform::updated() {
-	return upd;
-}
-
-void GameTransform::setupdated() {
-	upd = true;
 }

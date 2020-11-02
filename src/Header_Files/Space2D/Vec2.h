@@ -38,6 +38,10 @@ namespace Space2D {
 			return i == 0 ? x : y;
 		}
 
+		Vec operator- () const noexcept {
+			return Vec(-x, -y);
+		}
+
 		bool operator==(const Vec& other) const noexcept {
 			return (std::abs(x - other.x) < 1e-6) && (std::abs(y - other.y) < 1e-6);
 		}

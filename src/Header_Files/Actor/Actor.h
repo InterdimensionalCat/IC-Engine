@@ -1,23 +1,25 @@
 #pragma once
 #include <vector>
+#include "Behavior.h"
+#include <memory>
+#include <string>
 
-class Behavior;
+class Level;
 
-class Actor :
-	public Drawable
+class Actor
 {
 public:
 	virtual ~Actor() {}
 	virtual void start();
 	virtual void tick(InputHandle* input);
-	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
-	virtual string getTag() const = 0;
+	virtual void draw(Renderer* renderer);
+	virtual std::string getTag() const = 0;
 	bool compareTag(const Actor* other) const;
 
 	template<class T>
 	T* getBehavior() {
 		for (auto &c : components) {
-			auto ret = dynamic_pointer_cast<T>(c);
+			auto ret = std::dynamic_pointer_cast<T>(c);
 			if (ret) {
 				return ret.get();
 			}
@@ -28,9 +30,9 @@ public:
 
 	template<class T>
 	T* addBehavior() {
-		shared_ptr<T> t = make_shared<T>();
+		std::shared_ptr<T> t = std::make_shared<T>();
 
-		auto comp = dynamic_pointer_cast<Behavior>(t);
+		auto comp = std::dynamic_pointer_cast<Behavior>(t);
 		if (comp) {
 			components.push_back(comp);
 			comp->parent = this;
@@ -41,6 +43,7 @@ public:
 		}
 	}
 
-	std::vector<shared_ptr<Behavior>> components;
+	std::vector<std::shared_ptr<Behavior>> components;
+	Level* owner;
 };
 

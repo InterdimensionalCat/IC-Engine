@@ -3,6 +3,7 @@
 
 #include "AngularType.h"
 #include <vector>
+#include <cmath>
 
 #ifndef SFML_DISABLE
 #include "SFML/Graphics.hpp"
@@ -208,8 +209,8 @@ namespace Space2D {
         AffineMatrix& rotate(const Radians& rad) noexcept {
             auto val = rad.get();
 
-            auto cosval = cos(val);
-            auto sinval = sin(val);
+            T cosval = static_cast<T>(cos(val));
+            T sinval = static_cast<T>(sin(val));
 
             return ((*this) *= AffineMatrix(
                 cosval, sinval, 0, 
@@ -454,7 +455,7 @@ namespace Space2D {
 
 #ifndef SFML_DISABLE
         sf::Transform toSFMLMatrix() const noexcept {
-            return Transform(
+            return sf::Transform(
                 static_cast<float>(matrix[0]), static_cast<float>(matrix[3]), static_cast<float>(matrix[6]),
                 static_cast<float>(matrix[1]), static_cast<float>(matrix[4]), static_cast<float>(matrix[7]),
                 static_cast<float>(matrix[2]), static_cast<float>(matrix[5]), static_cast<float>(matrix[8])

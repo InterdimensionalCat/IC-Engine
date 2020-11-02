@@ -1,6 +1,7 @@
 #pragma once
 #include <numeric>
 #include <cmath>
+#include "Space2D.h"
 
 class PolygonBody;
 
@@ -60,7 +61,7 @@ struct Projection {
 // ---|--- (B)
 //   (A')
 // this is projection projectAxis ONTO angleAxis
-Vector2f projectVec(const Vector2f &projectAxis, const Vector2f &angleAxis);
+s2d::GameUnits::Vec projectVec(const s2d::GameUnits::Vec& projectAxis, const s2d::GameUnits::Vec& angleAxis);
 
 //scalar projection of an entire shape onto an axis
 //returns a projection in the form (min, max)
@@ -70,7 +71,7 @@ Vector2f projectVec(const Vector2f &projectAxis, const Vector2f &angleAxis);
 //    / /
 //   /_/
 // --x---y---
-Projection projectShape(const PolygonBody shape, const Vector2f &angleAxis);
+Projection projectShape(const s2d::GameUnits::Poly shape, const s2d::GameUnits::Normal_Vec &angleAxis);
 
 //check if two projection vectors overlap
 //and return the size of the overlap

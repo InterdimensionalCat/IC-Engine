@@ -2,6 +2,7 @@
 #include <ratio>
 #include <iostream>
 #include <numeric>
+#include <cmath>
 
 /*
   Defines the 3 "angular types"; degrees, radians, and percent

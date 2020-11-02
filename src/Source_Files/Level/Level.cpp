@@ -4,7 +4,6 @@
 #include "Player.h"
 #include "Actor.h"
 #include "testActor.h"
-#include "StaticBody.h"
 #include "Camera.h"
 
 
@@ -29,6 +28,7 @@ void Level::addActor(Actor* a) {
 			player = pl;
 		}
 	}
+	a->owner = this;
 }
 
 void Level::removeActor(Actor* a) {
@@ -38,13 +38,7 @@ void Level::removeActor(Actor* a) {
 void Level::start() {
 	for (auto &a : actors) {
 		a->start();
-		Composite* comp = a->getBehavior<Composite>();
-		if (comp) {
-			comp->Register(engine.get());
-		}
 	}
-
-	engine->updateSweeper();
 }
 
 void Level::tick(InputHandle* input) {
@@ -61,15 +55,31 @@ void Level::tick(InputHandle* input) {
 
 	}
 	else {
-		camera->setPos(player->transform->getPos());
+		//camera->setPos(player->transform->getPos());
 	}
 }
 
 void Level::draw(Renderer* renderer) {
 
-	engine->draw(*(renderer->window), renderer->states);
+	for (int i = 0; i < 45; i++) {
+		sf::Vertex line[2];
+		line[0].position = Vector2f(i * 60.0f, 0.0f);
+		line[1].position = Vector2f(i * 60.0f, 45 * 60.0f);
+		line[0].color = sf::Color(255, 0, 0, 255);
+		line[1].color = sf::Color(0, 0, 255, 255);
+		renderer->window->draw(line, 2, Lines);
+	}
+
+	for (int i = 0; i < 45; i++) {
+		sf::Vertex line[2];
+		line[0].position = Vector2f(0.0f, i * 60.0f);
+		line[1].position = Vector2f(45 * 60.0f, i * 60.0f);
+		line[0].color = sf::Color(255, 0, 0, 255);
+		line[1].color = sf::Color(0, 0, 255, 255);
+		renderer->window->draw(line, 2, Lines);
+	}
 
 	for (auto &a : actors) {
-		a->draw(*(renderer->window), renderer->states);
+		a->draw(renderer);
 	}
 }

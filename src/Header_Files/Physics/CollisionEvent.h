@@ -1,19 +1,23 @@
 #pragma once
-#include "PolygonBody.h"
+#include <array>
 
 class PhysicsBody;
-class Edge;
+
 
 //object for communicating information about collisions that have occured
 class CollisionEvent
 {
 public:
-	CollisionEvent(PhysicsBody* A, PhysicsBody* B, const Vector2f normal, const float seperation, const Edge contactEdge);
+	CollisionEvent(PhysicsBody* A, const size_t ABodyNum,
+		PhysicsBody* B, const size_t BBodyNum, const s2d::GameUnits::Normal_Vec& normal,
+		const float seperation,
+		const std::array<s2d::GameUnits::Point, 2>& contactPoints);
+
 	PhysicsBody* A;
 	PhysicsBody* B;
 
-	Vector2f normal;
+	s2d::GameUnits::Normal_Vec normal;
 	float seperation;
-	Edge contactEdge;
+	std::array<s2d::GameUnits::Point, 2> contactPoints;
 };
 

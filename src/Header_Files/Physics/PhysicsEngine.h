@@ -1,3 +1,9 @@
+//PhysicsEngine.h
+/*
+  The physics engine.
+  Its really complicated and I am not going to be able to simplify it anytime soon
+  so for the moment this is a solo effort, feel free to ignore everything outside the ABI
+*/
 #pragma once
 #include <map>
 #include "ColPair.h"
@@ -5,16 +11,11 @@
 #include "collisionEvent.h"
 
 class PhysicsBody;
-class RigidBody;
-class StaticBody;
-class Composite;
-
-//physics engine is a singleton
 
 //physics units: meters, physics grid:
-//        y+
-//    x-      x+
 //        y-
+//    x-      x+
+//        y+
 class PhysicsEngine
 {
 public:
@@ -22,23 +23,12 @@ public:
 
 	PhysicsEngine();
 
-	//destructor
+	void updatePhysics(const float deltaTime);
 
+	void addBody(PhysicsBody* b);
 
-	void updatePhysics(double deltaTime);
-
-	void addBody(RigidBody* b);
-	void addBody(StaticBody* b);
-
-	void addComposite(Composite* comp);
-	void generateComposite(Composite* ptr);
-
-	void draw(sf::RenderTarget& target, sf::RenderStates states) const;
-
-
-	//updates the intervals of all rigid bodies for the purposes
-	//of the sweep and prune algorithm
-	void updateSweeper();
+	//sweep and prune container
+	SweepAndPrune sweeper;
 
 private:
 
@@ -48,31 +38,24 @@ private:
 	void sweepAndPrune();
 
 	//Move all objects according to the forces they have
-	void moveBodies(float dt);
+	void moveBodies(const float dt);
 
 	//integretes forces in each body
-	void integrateForce(float dt);
+	void integrateForce(const float dt);
 
 
-	vector<RigidBody*> bodies;
-	vector<StaticBody*> statics;
-
-
-	vector<Composite*> composites;
+	std::vector<PhysicsBody*> bodies;
 
 	//container storing all generated possible collisions on a particular
 	//physics update
-	map<PairKey, ColPair> collisions;
+	std::map<PairKey, ColPair> collisions;
 
 	//gravity vector
 	//gravity is typically 10 meters per second squared
-	Vector2f gravity;
+	s2d::GameUnits::Vec gravity;
 
 	//number of times the engine resolves collisions in a frame
 	int iterations;
-
-	//sweep and prune container
-	SweepAndPrune sweeper;
 
 };
 

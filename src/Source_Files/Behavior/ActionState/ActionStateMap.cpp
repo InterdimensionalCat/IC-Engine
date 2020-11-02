@@ -1,6 +1,11 @@
 #include "include.h"
 #include "ActionStateMap.h"
 #include "ActionState.h"
+#include "Actor.h"
+#include "GameTransform.h"
+#include "Animator.h"
+#include "PhysicsBody.h"
+#include "PhysEventHandler.h"
 
 
 
@@ -25,7 +30,10 @@ void ActionStateMap::setState(const string &key, InputHandle* input) {
 		current->run(input);
 	}
 	else {
+#ifdef _DEBUG
 		cerr << "Action State " << key << " does not exist!\n";
+		throw exception();
+#endif
 	}
 }
 
@@ -38,18 +46,24 @@ void ActionStateMap::setState(const string &key) {
 		current->enter();
 	}
 	else {
+#ifdef _DEBUG
 		cerr << "Action State " << key << " does not exist!\n";
+		throw exception();
+#endif
 	}
 }
 
 void ActionStateMap::start() {
-
+	animator = getActor()->getBehavior<Animator>();
+	transform = getActor()->getBehavior<GameTransform>();
+	body = getActor()->getBehavior<PhysicsBody>();
+	collisioninfo = getActor()->getBehavior<PhysEventHandler>();
 }
 
 void ActionStateMap::tick(InputHandle* input) {
 	current->run(input);
 }
 
-void ActionStateMap::draw(sf::RenderTarget& target, sf::RenderStates states) const {
-	target.draw(*current, states);
+void ActionStateMap::draw(Renderer* renderer) {
+	current->draw(renderer);
 }

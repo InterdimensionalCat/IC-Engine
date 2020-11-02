@@ -50,7 +50,7 @@ namespace Space2D {
 
 
         //this must be defined in Space2D.cpp for each space
-        static Matrix transform_ratio;
+        //static Matrix transform_ratio;
 
         //lerp functions for primatives that make sense for it
         using T = units;
@@ -106,29 +106,36 @@ namespace Space2D {
     //each space given here has a defaultTransform() member
     //this is not necessasary but its helpful for reverting 
     //transformations that have acted on this space
-    struct GameUnits final : Space<GameUnits, double> {
+    struct GameUnits final : Space<GameUnits, float> {
         static inline SpaceIDs id = SpaceIDs::GameUnits;
 
         static GameUnits::Matrix defaultTransform();
-        static double scale();
+        static float scale();
+        static GameUnits::Matrix transform_ratio;
     };
-    template <> const std::string SpaceTypeNameMap<GameUnits>::name = "GameUnits";
 
     struct PixelUnits final : Space<PixelUnits, float> {
         static inline SpaceIDs id = SpaceIDs::PixelUnits;
 
         static PixelUnits::Matrix defaultTransform();
         static float scale();
+        static PixelUnits::Matrix transform_ratio;
     };
-    template <> const std::string SpaceTypeNameMap<PixelUnits>::name = "PixelUnits";
 
     struct ScreenUnits final : Space<ScreenUnits, float> {
         static inline SpaceIDs id = SpaceIDs::ScreenUnits;
 
         static ScreenUnits::Matrix defaultTransform();
         static float scale();
+        static ScreenUnits::Matrix transform_ratio;
     };
+
+#ifndef _SPACES_DEFINED
+#define _SPACES_DEFINED
+    template <> const std::string SpaceTypeNameMap<GameUnits>::name = "GameUnits";
+    template <> const std::string SpaceTypeNameMap<PixelUnits>::name = "PixelUnits";
     template <> const std::string SpaceTypeNameMap<ScreenUnits>::name = "ScreenUnits";
+#endif
 }
 #include "AffineMatrix.h"
 #include "AngularType.h"
@@ -136,7 +143,10 @@ namespace Space2D {
 #include "NormalizedVec2.h"
 #include "Point2.h"
 #include "Point2.h"
-#include "Poly2.h"
 #include "Rect2.h"
 #include "Vec2.h"
+#include "Poly2.h"
+#ifndef SFML_DISABLE
+#include "SFML/Graphics.hpp"
+#endif
 

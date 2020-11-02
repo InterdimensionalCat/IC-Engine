@@ -172,18 +172,22 @@ namespace Space2D {
 #ifndef SFML_DISABLE
         template <typename SFMLType = T>
         sf::Rect<SFMLType> toSFMLRect() const noexcept {
-            return sf::Rect<SFMLType>(min.toSFMLVec<SFMLType>(), getSize().toSFMLVec<SFMLType>());
+            sf::Vector2<SFMLType> v1 = sf::Vector2<SFMLType>(static_cast<SFMLType>(min.x), static_cast<SFMLType>(min.y));
+            sf::Vector2<SFMLType> v2 = sf::Vector2<SFMLType>(static_cast<SFMLType>(getWidth()), static_cast<SFMLType>(getHeight()));
+            return sf::Rect<SFMLType>(v1, v2);
         }
         
         //border size strictly adds to the size, so the RectangleShape will only retain the same dimensions as the s2d::Rect if border is 0.0f
         //however, section that is the "interior color" will never get clipped due to a large border size
-        sf::RectangleShape makeDrawableSFMLRect(const float bordersize = 0.0f, const Color &interior_color = Color(0,0,0,0), const Color& border_color = Color(0, 0, 0, 0)) const {
-            RectangleShape newshape;
+        sf::RectangleShape makeDrawableSFMLRect(const float bordersize = 0.0f, const sf::Color interior_color = sf::Color(0,0,0,0), const sf::Color border_color = sf::Color(0, 0, 0, 0)) const {
+            sf::RectangleShape newshape;
             newshape.setOutlineThickness(bordersize);
             newshape.setOutlineColor(border_color);
             newshape.setFillColor(interior_color);
-            newshape.setPosition(min.toSFMLVec<float>());
-            newshape.setSize(getSize().toSFMLVec<float>());
+            sf::Vector2f v1 = sf::Vector2f(static_cast<float>(min.x), static_cast<float>(min.y));
+            sf::Vector2f v2 = sf::Vector2f(static_cast<float>(getWidth()), static_cast<float>(getHeight()));
+            newshape.setPosition(v1);
+            newshape.setSize(v2);
 
             return newshape;
         }

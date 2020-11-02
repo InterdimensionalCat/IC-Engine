@@ -1,40 +1,36 @@
 #pragma once
 
 class GameTransform;
+class Animator;
 
 class Animation
 {
 public:
-	Animation() {
+	Animation(const sf::Vector2i& frameDim, const s2d::PixelUnits::Dimension& targetDim, const std::string& filename, const int numFrames);
 
-	}
-
-	void init(const Vector2f& fdim, const Vector2f& tdim, const string& filename, const int numFrames);
-
-	void draw(sf::RenderTarget& target, sf::RenderStates states, const GameTransform* trans);
+	void draw(Renderer* renderer);
 	void advanceFrame();
-	string getName() { return name; };
-	void setFlipped(bool flip);
-	void reset() {
-		frameNum = 0;
-		framesTillNext = 0;
-		setFlipped(false);
-	}
+
+	string getName() const { return name; };
+	void setFlipped(const bool flip);
+	void reset();
 
 
-	Sprite frame;
+	sf::Sprite frame;
 
 	Texture tex;
 	int framerate;
 	int frameNum;
 	int numFrames;
 	int framesPerRow;
-	string name;
-	Vector2f frameDim;
-	Vector2f targetDim;
+	std::string name;
+	sf::Vector2i frameDim;
+	sf::Vector2f targetDim;
 
 	int framesTillNext;
 	int activeFrames;
 	bool flip = false;
+
+	Animator* parent;
 };
 

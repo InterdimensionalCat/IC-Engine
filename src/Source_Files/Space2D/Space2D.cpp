@@ -15,8 +15,8 @@ namespace Space2D {
     }
 
 
-    double GameUnits::scale() {
-        return 1.0;
+    float GameUnits::scale() {
+        return 1.0f;
     }
 
     float PixelUnits::scale() {

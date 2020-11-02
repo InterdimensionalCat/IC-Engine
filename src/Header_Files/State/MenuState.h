@@ -17,7 +17,7 @@ public:
 	virtual void exit();
 	virtual string getName() const { return "MENU"; };
 
-	void select(std::string &pressedButtonName);
+	void select(std::string pressedButtonName);
 private:
 	Text title;
 	std::array<std::shared_ptr<MenuButton>, 3> buttons;

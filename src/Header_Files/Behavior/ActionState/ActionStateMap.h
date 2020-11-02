@@ -3,6 +3,10 @@
 #include "Behavior.h"
 
 class ActionState;
+class Animator;
+class GameTransform;
+class PhysicsBody;
+class PhysEventHandler;
 
 class ActionStateMap : public Behavior
 {
@@ -14,11 +18,16 @@ public:
 	void setState(const string &key);
 
 	void tick(InputHandle* input);
-	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+	virtual void draw(Renderer* renderer);
 	void start();
 
+	Animator* animator;
+	GameTransform* transform;
+	PhysicsBody* body;
+	PhysEventHandler* collisioninfo;
+
 private:
-	unordered_map<string, shared_ptr<ActionState>> map;
+	std::unordered_map<std::string, shared_ptr<ActionState>> map;
 	ActionState* current = nullptr;
 };
 
