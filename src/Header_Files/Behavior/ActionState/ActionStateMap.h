@@ -12,22 +12,22 @@ class ActionStateMap : public Behavior
 {
 public:
 
-	void addState(ActionState* state);
+	void addState(std::shared_ptr<ActionState>& state);
 
-	void setState(const string &key, InputHandle* input);
+	void setState(const string &key, std::shared_ptr<InputHandle>& input);
 	void setState(const string &key);
 
-	void tick(InputHandle* input);
-	virtual void draw(Renderer* renderer);
+	void tick(std::shared_ptr<InputHandle>& input);
+	virtual void draw(std::shared_ptr<Renderer>& renderer);
 	void start();
 
-	Animator* animator;
-	GameTransform* transform;
-	PhysicsBody* body;
-	PhysEventHandler* collisioninfo;
+	std::shared_ptr<PhysicsBody> body;
+	std::shared_ptr<GameTransform> transform;
+	std::shared_ptr<PhysEventHandler> collisioninfo;
+	std::shared_ptr<Animator> animator;
 
 private:
 	std::unordered_map<std::string, shared_ptr<ActionState>> map;
-	ActionState* current = nullptr;
+	std::shared_ptr<ActionState> current = std::shared_ptr<ActionState>(nullptr);
 };
 

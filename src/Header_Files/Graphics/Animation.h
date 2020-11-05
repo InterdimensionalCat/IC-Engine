@@ -6,9 +6,9 @@ class Animator;
 class Animation
 {
 public:
-	Animation(const sf::Vector2i& frameDim, const s2d::PixelUnits::Dimension& targetDim, const std::string& filename, const int numFrames);
+	Animation(const sf::Vector2i& frameDim, const s2d::Dimension& targetDim, const std::string& filename, const int numFrames);
 
-	void draw(Renderer* renderer);
+	void draw(std::shared_ptr<Renderer>& renderer);
 	void advanceFrame();
 
 	string getName() const { return name; };
@@ -31,6 +31,6 @@ public:
 	int activeFrames;
 	bool flip = false;
 
-	Animator* parent;
+	std::shared_ptr<Animator> parent = std::shared_ptr<Animator>(nullptr);
 };
 

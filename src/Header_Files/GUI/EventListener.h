@@ -9,7 +9,7 @@ class EventListener {
 public:
 
 	//called when an event occurs and handles the event
-	virtual void handleEvent(const sf::Event& e, Window& window) = 0;
+	virtual void handleEvent(const sf::Event& e, sf::Window& window) = 0;
 
 	//called every input update before any events are handled
 	virtual void updateListener(const float dt) = 0;

@@ -1,14 +1,14 @@
 #pragma once
 #include <unordered_map>
 #include <map>
-#include "EventListener.h"
 
 class Game;
+class EventListener;
 
 class InputHandle
 {
 public:
-	InputHandle(Game* in) : instance(in) {}
+	InputHandle(std::shared_ptr<Game> in) : instance(in) {}
 	~InputHandle() {}
 
 	//TODO: create methods to check for these with a particular window
@@ -30,10 +30,10 @@ public:
 	void updateInput(const float dt);
 
 	//add and remove input event listeners
-	void addListener(shared_ptr<EventListener> new_listener);
-	void removeListener(shared_ptr<EventListener> to_remove);
+	void addListener(shared_ptr<EventListener>& new_listener);
+	void removeListener(shared_ptr<EventListener>& to_remove);
 
-	RenderWindow* getWindow();
+	std::shared_ptr<RenderWindow> getWindow();
 
 	//map containing all the keys
 	unordered_map<int, Keyboard::Key> pressedKeys;
@@ -41,7 +41,7 @@ public:
 
 	std::vector<std::shared_ptr<EventListener>> listeners;
 
-	Game* instance;
+	std::shared_ptr<Game> instance;
 
 	//if window is "inactive" for whatever reason, do not
 	//register inputs/poll certain events

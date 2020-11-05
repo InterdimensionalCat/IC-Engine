@@ -1,115 +1,66 @@
 #pragma once
-#include "Space2D.h"
-
-#ifndef SFML_DISABLE
 #include "SFML/Graphics.hpp"
-#endif
 
 namespace Space2D {
-    template <typename T, typename SpaceType>
+
+    class Dimension2;
+    class Vec2;
+    class Point2;
+    class Poly2;
+    class NormalizedVec2;
+    class Rect2;
+
     class NormalizedVec2 final
     {
 
     public:
 
-        using Matrix = AffineMatrix<T, SpaceType>;
-        using Vec = Vec2<T, SpaceType>;
-
-        explicit NormalizedVec2(const T& x, const T& y) : x(x / std::sqrt(x * x + y * y)), y(y / std::sqrt(x * x + y * y)) {}
+        explicit NormalizedVec2(const float& x, const float& y);
 
         //constructor from radian angle value
-        explicit NormalizedVec2(const Radians radians) noexcept : x(static_cast<T>(cos(radians.get()))), y(static_cast<T>(sin(radians.get()))) {}
-
-        //explicit NormalizedVec2(const Degrees degrees) noexcept : NormalizedVec2((Radians)degrees) {}
+        explicit NormalizedVec2(const Radians radians) noexcept;
 
 
-        const T& operator[] (const unsigned int i) const {
-            return i == 0 ? x : y;
-        }
+        const float& operator[] (const unsigned int i) const;
 
-       NormalizedVec2 operator- () const noexcept {
-            return NormalizedVec2(-x, -y);
-        }
+        NormalizedVec2 operator-() const noexcept;
 
-        bool operator==(const NormalizedVec2& other) const noexcept {
-            return (std::abs(x - other.x) < 1e-6) && (std::abs(y - other.y) < 1e-6);
-        }
+        bool operator==(const NormalizedVec2& other) const noexcept;
 
-        bool operator!= (const NormalizedVec2& other) const noexcept {
-            return !(operator==(other));
-        }
+        bool operator!= (const NormalizedVec2& other) const noexcept;
 
-        Vec operator-(const NormalizedVec2& rhs) const noexcept {
-            return Vec(x - rhs.x, y - rhs.y);
-        }
+        Vec operator-(const NormalizedVec2& rhs) const noexcept;
 
-        Vec operator-(const Vec& rhs) const noexcept {
-            return Vec(x - rhs.x, y - rhs.y);
-        }
+        Vec operator-(const Vec2& rhs) const noexcept;
 
-        Vec operator+(const Vec& rhs) const noexcept {
-            return Vec(x + rhs.x, y + rhs.y);
-        }
+        Vec operator+(const Vec2& rhs) const noexcept;
 
-        Vec operator+(const NormalizedVec2& rhs) const noexcept {
-            return Vec(x + rhs.x, y + rhs.y);
-        }
+        Vec operator+(const NormalizedVec2& rhs) const noexcept;
 
-        Vec operator*(const T& factor) const noexcept {
-            return Vec(x * factor, y * factor);
-        }
+        Vec operator*(const float& factor) const noexcept;
 
-        T Dot(const Vec& other) const noexcept {
-            return x * other.x + y * other.y;
-        }
+        float Dot(const Vec2& other) const noexcept;
 
-        T Dot(const NormalizedVec2& other) const noexcept {
-            return x * other.x + y * other.y;
-        }
+        float Dot(const NormalizedVec2& other) const noexcept;
 
-        Radians angleOf() const noexcept {
-            return Radians(acos(static_cast<double>(x)));
-        }
+        Radians angleOf() const noexcept;
 
-        bool perp(const Vec& other) const noexcept {
-            return std::abs(Dot(other)) < 1e-6;
-        }
+        bool perp(const Vec2& other) const noexcept;
 
-        bool perp(const NormalizedVec2& other) const noexcept {
-            return std::abs(Dot(other)) < 1e-6;
-        }
+        bool perp(const NormalizedVec2& other) const noexcept;
 
-        template <typename other_T, typename other_SpaceType>
-        operator NormalizedVec2<other_T, other_SpaceType>() const noexcept {
-            Matrix from = SpaceType::transform_ratio.getInverse();
-
-            //step 1: apply inverse of the reletive space transform the object is in
-            NormalizedVec2 first_transform = from.transformNormalVec(*this);
-
-            //step 2: copy contents into new type container
-            NormalizedVec2<other_T, other_SpaceType> second_transform(static_cast<other_T>(first_transform.x), static_cast<other_T>(first_transform.y));
-
-            AffineMatrix<other_T, other_SpaceType> to = other_SpaceType::transform_ratio;
-
-            //apply the reletive space transform of the new space
-            return to.transformNormalVec(second_transform);
-        }
-
-#ifndef SFML_DISABLE
         template <typename SFMLType = T>
         sf::Vector2<SFMLType> toSFMLVec() const noexcept {
             return sf::Vector2<SFMLType>(static_cast<SFMLType>(this->x), static_cast<SFMLType>(this->y));
         }
-#endif
 
         friend std::ostream& operator << (std::ostream& os, const NormalizedVec2& it) {
-            const auto space = SpaceTypeNameMap<SpaceType>::name;
-            os << space << "::Normal (" << it.x << ", " << it.y << ")";
+            os << "Normal (" << it.x << ", " << it.y << ")";
             return os;
         }
 
-        T x;
-        T y;
+        float x;
+        float y;
     };
 }
 

@@ -8,12 +8,12 @@ class MenuState :
 	public State
 {
 public:
-	MenuState(StateManager* p);
+	MenuState(std::shared_ptr<StateManager> p);
 	virtual ~MenuState() {}
 	virtual void init();
 	virtual void enter();
-	virtual void tick(InputHandle* input);
-	virtual void draw(Renderer* renderer);
+	virtual void tick(std::shared_ptr<InputHandle>& input);
+	virtual void draw(std::shared_ptr<Renderer>& renderer);
 	virtual void exit();
 	virtual string getName() const { return "MENU"; };
 

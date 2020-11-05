@@ -56,10 +56,6 @@ namespace fs = std::filesystem;
 
 #endif
 
-#ifndef Z_VEC
-#define Z_VEC Vector2f(0,0)
-#endif
-
 
 #include "Space2D.h"
 #include "SFMLHelpers.h"
@@ -87,13 +83,10 @@ struct MapIOException : public exception {
 
 };
 
-template <class T>
 struct BadInfinityException : public exception {
-	BadInfinityException(T offender) : offender(offender) {}
+	BadInfinityException() {}
 	const char * what() const throw () {
 		return "Value cannot be infinity!";
 	}
-
-	T offender;
 };
 #endif

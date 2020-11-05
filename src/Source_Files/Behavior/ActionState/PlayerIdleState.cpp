@@ -8,7 +8,7 @@
 #include "Animator.h"
 #include "Animation.h"
 
-using Vec = s2d::GameUnits::Vec;
+using namespace s2d;
 
 PlayerIdleState::PlayerIdleState() {
 	name = "PlayerIdle";
@@ -18,7 +18,6 @@ void PlayerIdleState::init() {
 	//anim.init(Vector2f(500, 500), Vector2f(128, 128), "idlesheet", 15);
 }
 
-
 void PlayerIdleState::enter() {
 	//set the player as grounded here
 	//playerptr->animptr = &anim;
@@ -27,14 +26,16 @@ void PlayerIdleState::enter() {
 	parent->animator->setAnimation(name);
 }
 
-void PlayerIdleState::run(InputHandle* input) {
+void PlayerIdleState::run(std::shared_ptr<InputHandle>& input) {
 	//check if going left, right, jumping
 	if (input->isDown(Keyboard::A) || input->isDown(Keyboard::D)) {
 		parent->setState("PlayerMove", input);
+		return;
 	}
 
 	if (input->isPressed(Keyboard::Space)) {
 		parent->setState("PlayerJump", input);
+		return;
 	}
 
 	bool grounded = false;
@@ -52,6 +53,7 @@ void PlayerIdleState::run(InputHandle* input) {
 		framesAir++;
 		if (framesAir > maxFramesAir) {
 			parent->setState("PlayerAirborne", input);
+			return;
 		}
 	}
 	else {
@@ -61,7 +63,7 @@ void PlayerIdleState::run(InputHandle* input) {
 
 }
 
-void PlayerIdleState::draw(Renderer* renderer) {
+void PlayerIdleState::draw(std::shared_ptr<Renderer>& renderer) {
 
 }
 

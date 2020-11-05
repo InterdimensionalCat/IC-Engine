@@ -2,9 +2,9 @@
 #include "MenuState.h"
 #include "GameEngine2020.h"
 
-MenuState::MenuState(StateManager* p) : State(p) {
+MenuState::MenuState(std::shared_ptr<StateManager> p) : State(p) {
 
-	auto center = s2d::ScreenUnits::Point((float)parent->instance->WIDTH / 2, 200.0f);
+	auto center = s2d::Point((float)parent->instance->WIDTH / 2, 200.0f);
 
 	fs::path filepath(fs::current_path());
 	filepath /= "resources";
@@ -34,11 +34,11 @@ MenuState::MenuState(StateManager* p) : State(p) {
 }
 
 void MenuState::init() {
-	buttons[0] = std::make_shared<MenuButton>(s2d::ScreenUnits::Point((float)parent->instance->WIDTH / 2, 400.0f), "Game", "terminat", 100.0f, this);
-	buttons[1] = std::make_shared<MenuButton>(s2d::ScreenUnits::Point((float)parent->instance->WIDTH / 2, 600.0f), "Map Editor", "terminat", 100.0f, this);
-	buttons[2] = std::make_shared<MenuButton>(s2d::ScreenUnits::Point((float)parent->instance->WIDTH / 2, 800.0f), "Exit", "terminat", 100.0f, this);
+	buttons[0] = std::make_shared<MenuButton>(s2d::Point((float)parent->instance->WIDTH / 2, 400.0f), "Game", "terminat", 100.0f, std::shared_ptr<MenuState>(this));
+	buttons[1] = std::make_shared<MenuButton>(s2d::Point((float)parent->instance->WIDTH / 2, 600.0f), "Map Editor", "terminat", 100.0f, std::shared_ptr<MenuState>(this));
+	buttons[2] = std::make_shared<MenuButton>(s2d::Point((float)parent->instance->WIDTH / 2, 800.0f), "Exit", "terminat", 100.0f, std::shared_ptr<MenuState>(this));
 	for (auto& b : buttons) {
-		instance->input->addListener((std::shared_ptr<EventListener>)b);
+		instance->input->addListener(static_pointer_cast<EventListener, MenuButton>(b));
 	}
 }
 
@@ -48,7 +48,7 @@ void MenuState::enter() {
 	}
 }
 
-void MenuState::tick(InputHandle* input) {
+void MenuState::tick(std::shared_ptr<InputHandle>& input) {
 
 }
 
@@ -78,7 +78,7 @@ void MenuState::exit() {
 	}
 };
 
-void MenuState::draw(Renderer* renderer) {
+void MenuState::draw(std::shared_ptr<Renderer>& renderer) {
 
 	RenderWindow* wind = renderer->window.get();
 	auto& states = renderer->states;

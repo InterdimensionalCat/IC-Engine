@@ -4,7 +4,7 @@
 #include "InputHandle.h"
 
 
-State::State(StateManager* p) : parent(p) {
+State::State(std::shared_ptr<StateManager> p) : parent(p) {
 
 }
 

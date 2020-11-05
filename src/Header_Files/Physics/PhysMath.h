@@ -61,7 +61,7 @@ struct Projection {
 // ---|--- (B)
 //   (A')
 // this is projection projectAxis ONTO angleAxis
-s2d::GameUnits::Vec projectVec(const s2d::GameUnits::Vec& projectAxis, const s2d::GameUnits::Vec& angleAxis);
+s2d::Vec projectVec(const s2d::Vec& projectAxis, const s2d::Vec& angleAxis);
 
 //scalar projection of an entire shape onto an axis
 //returns a projection in the form (min, max)
@@ -71,7 +71,7 @@ s2d::GameUnits::Vec projectVec(const s2d::GameUnits::Vec& projectAxis, const s2d
 //    / /
 //   /_/
 // --x---y---
-Projection projectShape(const s2d::GameUnits::Poly shape, const s2d::GameUnits::Normal_Vec &angleAxis);
+Projection projectShape(const s2d::Poly shape, const s2d::NormalVec &angleAxis);
 
 //check if two projection vectors overlap
 //and return the size of the overlap

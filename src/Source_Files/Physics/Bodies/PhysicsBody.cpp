@@ -7,12 +7,11 @@
 #include "Level.h"
 #include "PhysEventHandler.h"
 
-using Point = s2d::GameUnits::Point;
-using Vec = s2d::GameUnits::Vec;
-using Poly = s2d::GameUnits::Poly;
+using namespace s2d;
 
 void PhysicsBody::translate(const Vec& trans) {
 	if (type == CollisionType::Static) return;
+
 	if (!isAwake() && trans.Mag()) {
 		velocity = Vec();
 		return;
@@ -38,7 +37,7 @@ void PhysicsBody::translate(const Vec& trans) {
 
 	SweepAndPrune& parent = Behavior::getActor()->owner->engine->sweeper;
 	for (size_t i = 0; i < bodies.size(); i++) {
-		parent.updateBody(this, i);
+		parent.updateBody(std::shared_ptr<PhysicsBody>(this), i);
 	}
 }
 
@@ -89,7 +88,7 @@ const std::vector<Poly>& PhysicsBody::getBodies() const {
 	return bodies;
 }
 
-void PhysicsBody::addPoly(const s2d::GameUnits::Poly &toAdd, const bool activeSet) {
+void PhysicsBody::addPoly(const Poly &toAdd, const bool activeSet) {
 	bodies.push_back(toAdd);
 	vector<bool> newActive(toAdd.size(), activeSet);
 	activeEdges.push_back(newActive);
@@ -99,7 +98,7 @@ Poly PhysicsBody::getBody(const size_t bodyNum) {
 	return bodies[bodyNum];
 }
 
-std::vector<PhysicsBody*>& PhysicsBody::getNeighbors() {
+std::vector<std::shared_ptr<PhysicsBody>>& PhysicsBody::getNeighbors() {
 	return neighbors;
 }
 
@@ -110,7 +109,7 @@ void PhysicsBody::setVelocity(const Vec& velocity) {
 	}
 	PhysicsBody::velocity = velocity;
 }
-void PhysicsBody::addVelocity(const s2d::GameUnits::Vec& velocity) {
+void PhysicsBody::addVelocity(const Vec& velocity) {
 	if (type == CollisionType::Static) {
 		PhysicsBody::velocity = Vec();
 		return;
@@ -179,7 +178,7 @@ Point PhysicsBody::getMinBound() const {
 #ifdef _DEBUG
 	if (minBound.x == numeric_limits<float>::infinity() ||
 		minBound.y == numeric_limits<float>::infinity()) {
-		throw BadInfinityException<float>(minBound.y);
+		throw BadInfinityException();
 	}
 #endif
 	return minBound;
@@ -195,7 +194,7 @@ Point PhysicsBody::getMaxBound() const {
 #ifdef _DEBUG
 	if (maxBound.x == -numeric_limits<float>::infinity() ||
 		maxBound.y == -numeric_limits<float>::infinity()) {
-		throw BadInfinityException<float>(maxBound.y);
+		throw BadInfinityException();
 	}
 #endif
 	return maxBound;
@@ -203,23 +202,23 @@ Point PhysicsBody::getMaxBound() const {
 
 void PhysicsBody::start() {
 	transform = Behavior::getActor()->getBehavior<GameTransform>();
-	engine = Behavior::getActor()->owner->engine.get();
+	engine = Behavior::getActor()->owner->engine;
 	collisioninfo = Behavior::getActor()->getBehavior<PhysEventHandler>();
-	engine->addBody(this);
+	engine->addBody(std::shared_ptr<PhysicsBody>(this));
 }
 
-PhysEventHandler* PhysicsBody::getInfo() {
+std::shared_ptr<PhysEventHandler> PhysicsBody::getInfo() {
 	return collisioninfo;
 }
 
-void PhysicsBody::tick(InputHandle* input) {
+void PhysicsBody::tick(std::shared_ptr<InputHandle>& input) {
 
 }
 
-void PhysicsBody::draw(Renderer* renderer) {
+void PhysicsBody::draw(std::shared_ptr<Renderer>& renderer) {
 	if (instance->debug) {
 		for (auto& b : bodies) {
-			renderer->window->draw(((s2d::PixelUnits::Poly)b).getDrawableSFMLPolygon(1.0f, sf::Color(0,0,0,0), sf::Color(0, 0, 0, 255)), renderer->states);
+			renderer->window->draw(b.getDrawableSFMLPolygon(1.0f, sf::Color(0,0,0,0), sf::Color(0, 0, 0, 255)), renderer->states);
 		}
 	}
 }

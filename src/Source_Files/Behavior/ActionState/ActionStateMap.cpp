@@ -9,23 +9,23 @@
 
 
 
-void ActionStateMap::addState(ActionState* state) {
+void ActionStateMap::addState(std::shared_ptr<ActionState>& state) {
 
-	map.emplace(state->getName(), shared_ptr<ActionState>(state));
-	state->parent = this;
+	map.emplace(state->getName(), state);
+	state->parent = std::shared_ptr<ActionStateMap>(this);
 	state->init();
-	if (current == nullptr) {
-		current = map.at(state->getName()).get();
+	if (current.get() == nullptr) {
+		current = map.at(state->getName());
 		current->enter();
 	}
 }
 
-void ActionStateMap::setState(const string &key, InputHandle* input) {
+void ActionStateMap::setState(const string &key, shared_ptr<InputHandle>& input) {
 	if (map.find(key) != map.end()) {
-		if (current != nullptr) {
+		if (current.get() != nullptr) {
 			current->exit();
 		}
-		current = map.at(key).get();
+		current = map.at(key);
 		current->enter();
 		current->run(input);
 	}
@@ -39,10 +39,10 @@ void ActionStateMap::setState(const string &key, InputHandle* input) {
 
 void ActionStateMap::setState(const string &key) {
 	if (map.find(key) != map.end()) {
-		if (current != nullptr) {
+		if (current.get() != nullptr) {
 			current->exit();
 		}
-		current = map.at(key).get();
+		current = map.at(key);
 		current->enter();
 	}
 	else {
@@ -60,10 +60,10 @@ void ActionStateMap::start() {
 	collisioninfo = getActor()->getBehavior<PhysEventHandler>();
 }
 
-void ActionStateMap::tick(InputHandle* input) {
+void ActionStateMap::tick(std::shared_ptr<InputHandle>& input) {
 	current->run(input);
 }
 
-void ActionStateMap::draw(Renderer* renderer) {
+void ActionStateMap::draw(std::shared_ptr<Renderer>& renderer) {
 	current->draw(renderer);
 }

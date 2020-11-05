@@ -13,12 +13,12 @@ class GameState :
 	public State
 {
 public:
-	GameState(StateManager* p);
+	GameState(std::shared_ptr<StateManager> p);
 	virtual ~GameState();
 	virtual void init();
 	virtual void enter();
-	virtual void tick(InputHandle* input);
-	virtual void draw(Renderer* renderer);
+	virtual void tick(std::shared_ptr<InputHandle>& input);
+	virtual void draw(std::shared_ptr<Renderer>& renderer);
 	virtual void exit();
 	virtual string getName() const { return "GAME"; }
 
@@ -30,7 +30,7 @@ public:
 
 	}
 
-	unordered_map<string, Level*> levels;
+	unordered_map<string, std::shared_ptr<Level>> levels;
 	Level* currentLevel;
 };
 

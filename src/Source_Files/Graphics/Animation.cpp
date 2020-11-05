@@ -3,10 +3,10 @@
 #include "GameTransform.h"
 #include "Animator.h"
 
-
+using namespace s2d;
 
 //params: fdim = dimension of 1 frame on the texture, tdim = dimension 1 frame to output
-Animation::Animation(const sf::Vector2i& frameDim, const s2d::PixelUnits::Dimension& targetDim, const std::string& filename, const int numFrames) :
+Animation::Animation(const sf::Vector2i& frameDim, const Dimension& targetDim, const std::string& filename, const int numFrames) :
 frameDim(frameDim), targetDim(targetDim.toSFMLVec<float>()), name(filename), numFrames(numFrames) {
 
 	fs::path filepath(fs::current_path());
@@ -60,7 +60,7 @@ void Animation::reset() {
 }
 
 
-void Animation::draw(Renderer* renderer) {
+void Animation::draw(std::shared_ptr<Renderer>& renderer) {
 
 	auto states = renderer->states;
 	auto target = renderer->window.get();
@@ -71,11 +71,11 @@ void Animation::draw(Renderer* renderer) {
 	}
 
 	//interpolate frame
-	frame.setOrigin(lerp(((s2d::PixelUnits::Point)parent->transform->getPrevPos()).toSFMLVec<float>() - targetDim / 2.0f, 
-		((s2d::PixelUnits::Point)parent->transform->getPos()).toSFMLVec<float>() - targetDim / 2.0f, renderer->interpol));
+	frame.setOrigin(lerp(parent->transform->getPrevPos().toSFMLVec<float>() - targetDim / 2.0f, 
+		parent->transform->getPos().toSFMLVec<float>() - targetDim / 2.0f, renderer->interpol));
 
-	frame.setPosition(lerp(((s2d::PixelUnits::Point)parent->transform->getPrevPos()).toSFMLVec<float>(),
-		((s2d::PixelUnits::Point)parent->transform->getPos()).toSFMLVec<float>(), renderer->interpol));
+	frame.setPosition(lerp(parent->transform->getPrevPos().toSFMLVec<float>(),
+		parent->transform->getPos().toSFMLVec<float>(), renderer->interpol));
 
 	target->draw(frame, states);
 

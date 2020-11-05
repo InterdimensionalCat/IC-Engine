@@ -5,6 +5,7 @@
 */
 #pragma once
 #include <unordered_map>
+#include <memory>
 
 class Game;
 class State;
@@ -12,20 +13,20 @@ class State;
 class StateManager
 {
 public:
-	StateManager(Game* in);
+	StateManager(std::shared_ptr<Game> in);
 
 	//StateManager is one of the few objects in the engine 
 	//that uses manual dynamic memory allocation
 	~StateManager();
 
-	void addState(State* state);
+	void addState(std::shared_ptr<State> state);
 	void setState(const string &key);
-	void tick(InputHandle* input);
-	void draw(Renderer* renderer);
+	void tick(std::shared_ptr<InputHandle>& input);
+	void draw(std::shared_ptr<Renderer>& renderer);
 
-	Game* instance;
+	std::shared_ptr<Game> instance;
 private:
-	unordered_map<string, State*> states;
-	State* current = nullptr;
+	unordered_map<string, std::shared_ptr<State>> states;
+	std::shared_ptr<State> current = nullptr;
 };
 

@@ -12,7 +12,7 @@
 
 class PhysicsBody;
 
-//physics units: meters, physics grid:
+//physics units: pixels, physics grid:
 //        y-
 //    x-      x+
 //        y+
@@ -25,7 +25,7 @@ public:
 
 	void updatePhysics(const float deltaTime);
 
-	void addBody(PhysicsBody* b);
+	void addBody(std::shared_ptr<PhysicsBody> b);
 
 	//sweep and prune container
 	SweepAndPrune sweeper;
@@ -44,7 +44,7 @@ private:
 	void integrateForce(const float dt);
 
 
-	std::vector<PhysicsBody*> bodies;
+	std::vector<std::shared_ptr<PhysicsBody>> bodies;
 
 	//container storing all generated possible collisions on a particular
 	//physics update
@@ -52,7 +52,7 @@ private:
 
 	//gravity vector
 	//gravity is typically 10 meters per second squared
-	s2d::GameUnits::Vec gravity;
+	s2d::Vec gravity;
 
 	//number of times the engine resolves collisions in a frame
 	int iterations;
@@ -61,15 +61,13 @@ private:
 
 //necessasary for the map to function
 inline bool operator<(const PairKey &lhs, const PairKey &rhs) {
-	if (lhs.bmin < rhs.bmin) {
+	if (lhs.bmin.get() < rhs.bmin.get()) {
 		return true;
 	}
 
-	if (lhs.bmin == rhs.bmin && lhs.bmax < rhs.bmax) {
+	if (lhs.bmin.get() == rhs.bmin.get() && lhs.bmax.get() < rhs.bmax.get()) {
 		return true;
 	}
 
 	return false;
 }
-
-void set(PhysicsEngine* engine);

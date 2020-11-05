@@ -9,7 +9,7 @@
 #include "Animator.h"
 #include "Animation.h"
 
-using Vec = s2d::GameUnits::Vec;
+using namespace s2d;
 
 PlayerMoveState::PlayerMoveState() {
 	name = "PlayerMove";
@@ -28,8 +28,7 @@ void PlayerMoveState::enter() {
 	parent->animator->setAnimation(name);
 }
 
-
-void PlayerMoveState::run(InputHandle* input) {
+void PlayerMoveState::run(std::shared_ptr<InputHandle>& input) {
 	//move if going left, right, can jump from this state
 	if (input->isDown(Keyboard::D)) {
 		if (parent->body->getVelocity().x < 0) {
@@ -72,6 +71,7 @@ void PlayerMoveState::run(InputHandle* input) {
 
 			if (abs(parent->body->getVelocity().x) < 0.7 * 60) {
 				parent->setState("PlayerIdle", input);
+				return;
 			}
 		}
 	}
@@ -79,11 +79,13 @@ void PlayerMoveState::run(InputHandle* input) {
 
 	if (input->isPressed(Keyboard::Space)) {
 		parent->setState("PlayerJump", input);
+		return;
 	}
 
 	if (parent->animator->current->frameNum == parent->animator->current->numFrames - 1) {
 		if (abs(parent->body->getVelocity().x) > 5.0f * 60) {
 			parent->setState("PlayerRun", input);
+			return;
 		}
 	}
 
@@ -102,6 +104,7 @@ void PlayerMoveState::run(InputHandle* input) {
 		framesAir++;
 		if (framesAir > maxFramesAir) {
 			parent->setState("PlayerAirborne", input);
+			return;
 		}
 	}
 	else {
@@ -109,7 +112,7 @@ void PlayerMoveState::run(InputHandle* input) {
 	}
 }
 
-void PlayerMoveState::draw(Renderer* renderer) {
+void PlayerMoveState::draw(std::shared_ptr<Renderer>& renderer) {
 
 }
 

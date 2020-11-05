@@ -7,30 +7,30 @@ Game::Game() {
 }
 
 
-Game* instance = new Game();
+std::shared_ptr<Game> instance = std::make_shared<Game>();
 
 //updates the game logic (and handles basically everything that is not drawing)
 void Game::tick(const float dt) {
 	Game::dt = dt;
-	manager->tick(input.get());
+	manager->tick(input);
 }
 
 //renders the game to the screen
 void Game::draw(const float interpol) {
 	renderer->interpol = interpol;
 	renderer->states = RenderStates::Default;
-	manager->draw(renderer.get());
+	manager->draw(renderer);
 }
 
 void Game::game() {
 	//create window, set height, width name, framerate set vsync if enabled
-	renderer = make_unique<Renderer>(this);
+	renderer = make_shared<Renderer>(instance);
 
 	//initialize clock and gameloop time accumulator
-	timer = make_unique<Clock>();
+	timer = make_shared<Clock>();
 	double accumulator = 0;
 
-	renderer->window = std::make_unique<RenderWindow>(sf::VideoMode(WIDTH, HEIGHT), TITLE);
+	renderer->window = std::make_shared<RenderWindow>(sf::VideoMode(WIDTH, HEIGHT), TITLE);
 
 	if (instance->vsync) {
 		//V-sync doesnt really play nice with animations and I find that SFML can be
@@ -49,8 +49,8 @@ void Game::game() {
 
 	renderer->window->setKeyRepeatEnabled(false);
 
-	input = make_unique<InputHandle>(this);
-	manager = make_unique<StateManager>(this);
+	input = make_shared<InputHandle>(instance);
+	manager = std::make_shared<StateManager>(instance);
 
 	//main game loop
 	while (running)
@@ -141,6 +141,6 @@ int main(int argc, char *argv[])
 #endif
 
 	instance->game();
-	delete instance;
+	//delete instance;
 	return 0;
 }

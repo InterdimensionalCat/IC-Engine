@@ -1,7 +1,9 @@
 #include "include.h"
 #include "Button.h"
 
-Button::Button(const s2d::ScreenUnits::Rectangle& bounds, const float bordersize, const Color& interior_color, const Color& border_color) : Widget(bounds, bordersize, interior_color, border_color) {
+using namespace s2d;
+
+Button::Button(const Rectangle& bounds, const float bordersize, const Color& interior_color, const Color& border_color) : Widget(bounds, bordersize, interior_color, border_color) {
 
 }
 
@@ -42,7 +44,7 @@ void Button::onKeyRelease(const sf::Event& e) {
 }
 
 void Button::onMouseMove(const sf::Event& e) {
-    s2d::ScreenUnits::Point local_mouse_pos = s2d::ScreenUnits::Point((float)e.mouseMove.x, (float)e.mouseMove.y);
+    Point local_mouse_pos = Point((float)e.mouseMove.x, (float)e.mouseMove.y);
     if (this->bounds.contains(local_mouse_pos)) {
         if (state == ButtonState::Unhovered) {
             hovered();
@@ -62,7 +64,7 @@ void Button::onMouseMove(const sf::Event& e) {
 
 void Button::onMousePress(const sf::Event& e) {
     if (e.mouseButton.button != Mouse::Left) return;
-    s2d::ScreenUnits::Point local_mouse_pos = s2d::ScreenUnits::Point((float)e.mouseButton.x, (float)e.mouseButton.y);
+    Point local_mouse_pos = Point((float)e.mouseButton.x, (float)e.mouseButton.y);
     if (this->bounds.contains(local_mouse_pos)) {
         selected();
         onSelectStart();
@@ -71,7 +73,7 @@ void Button::onMousePress(const sf::Event& e) {
 
 void Button::onMouseRelease(const sf::Event& e) {
     if (e.mouseButton.button != Mouse::Left || state != ButtonState::Selected) return;
-    s2d::ScreenUnits::Point local_mouse_pos = s2d::ScreenUnits::Point((float)e.mouseButton.x, (float)e.mouseButton.y);
+    Point local_mouse_pos = Point((float)e.mouseButton.x, (float)e.mouseButton.y);
 
     onSelectEnd();
 
@@ -96,6 +98,6 @@ void Button::selected() {
     state = ButtonState::Selected;
 }
 
-void Button::draw(Renderer* renderer) {
+void Button::draw(std::shared_ptr<Renderer>& renderer) {
     Widget::draw(renderer);
 }

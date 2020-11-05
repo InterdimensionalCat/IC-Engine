@@ -1,5 +1,6 @@
 #pragma once
 #include "Actor.h"
+#include <memory>
 
 class ActionStateMap;
 class GameTransform;
@@ -13,13 +14,13 @@ public:
 
 	void start();
 
-	string getTag() const { return "Player"; }
+	std::string getTag() const { return "Player"; }
 
-	PhysicsBody* body;
-	ActionStateMap* states;
-	GameTransform* transform;
-	PhysEventHandler* collisioninfo;
-	Animator* animator;
+	std::shared_ptr<PhysicsBody> body;
+	std::shared_ptr<ActionStateMap> states;
+	std::shared_ptr<GameTransform> transform;
+	std::shared_ptr<PhysEventHandler> collisioninfo;
+	std::shared_ptr<Animator> animator;
 
 };
 

@@ -1,6 +1,8 @@
 #pragma once
+#include "Space2D.h"
 #include <array>
 #include "Space2D.h"
+#include <memory>
 
 class PhysicsBody;
 class RigidBody;
@@ -9,8 +11,8 @@ class StaticBody;
 
 //key used to search the map of collisions
 struct PairKey {
-	PairKey(PhysicsBody* A, PhysicsBody* B) {
-		if (A < B) {
+	PairKey(std::shared_ptr<PhysicsBody>& A, std::shared_ptr<PhysicsBody>& B) {
+		if (A.get() < B.get()) {
 			bmin = A;
 			bmax = B;
 		}
@@ -20,8 +22,8 @@ struct PairKey {
 		}
 	}
 
-	PhysicsBody* bmin;
-	PhysicsBody* bmax;
+	std::shared_ptr<PhysicsBody> bmin;
+	std::shared_ptr<PhysicsBody> bmax;
 };
 
 //data structure used for collisiosn
@@ -32,11 +34,11 @@ struct ColPair
 public:
 	//construct a collisionPair with the two potentially
 	//colliding bodies
-	ColPair(PhysicsBody* A, const size_t& ANum, PhysicsBody* B, const size_t& BNum);
+	ColPair(std::shared_ptr<PhysicsBody> A, const size_t& ANum, std::shared_ptr<PhysicsBody> B, const size_t& BNum);
 
 	//the two objects in question
-	PhysicsBody* A;
-	PhysicsBody* B;
+	std::shared_ptr<PhysicsBody> A;
+	std::shared_ptr<PhysicsBody> B;
 
 	size_t ABodyNum;
 	size_t BBodyNum;
@@ -50,9 +52,9 @@ public:
 	//resolve collision
 	void solveCollision();
 
-	s2d::GameUnits::Normal_Vec normal = s2d::GameUnits::Normal_Vec(1,0);
+	s2d::NormalVec normal = s2d::NormalVec(1,0);
 	float seperation;
-	std::array<s2d::GameUnits::Point, 2> contactPoints;
+	std::array<s2d::Point, 2> contactPoints;
 
 	//accumulated impulse and position updates
 	float accImp = 0.0f;
@@ -60,10 +62,10 @@ public:
 	float accTan = 0.0f;
 
 	//precalculated variables
-	float normalMass;
-	float tangentMass;
-	float bias;
-	float friction;
+	float normalMass = 0.0f;
+	float tangentMass = 0.0f;
+	float bias = 0.0f;
+	float friction = 0.0f;
 
 	//true if a collision occured
 	bool valid;

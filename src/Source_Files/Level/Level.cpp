@@ -13,26 +13,22 @@ Level::Level() {
 
 
 void Level::loadFrom(const std::string &mapname) {
-	addActor(new Player());
-	addActor(new TestActor());
-	camera = new Camera();
-	addActor(camera);
+	//player = std::make_shared<Player>();
+	player = std::make_shared<Player>();
+	addActor(static_pointer_cast<Actor>(player));
+	//addActor(static_pointer_cast<Actor>(std::make_shared<TestActor>()));
+	camera = std::make_shared<Camera>();
+	addActor(static_pointer_cast<Actor>(camera));
 	start();
 }
 
-void Level::addActor(Actor* a) {
-	actors.push_back(shared_ptr<Actor>(a));
-	if (a->getTag() == "Player") {
-		auto pl = dynamic_cast<Player*>(a);
-		if (pl) {
-			player = pl;
-		}
-	}
-	a->owner = this;
+void Level::addActor(std::shared_ptr<Actor> a) {
+	actors.push_back(a);
+	a->owner = std::shared_ptr<Level>(this);
 }
 
-void Level::removeActor(Actor* a) {
-	actors.erase(std::remove_if(actors.begin(), actors.end(), [a](shared_ptr<Actor>& other) {return a == other.get(); }), actors.end());
+void Level::removeActor(std::shared_ptr<Actor> a) {
+	actors.erase(std::remove_if(actors.begin(), actors.end(), [a](shared_ptr<Actor>& other) {return a.get() == other.get(); }), actors.end());
 }
 
 void Level::start() {
@@ -41,7 +37,7 @@ void Level::start() {
 	}
 }
 
-void Level::tick(InputHandle* input) {
+void Level::tick(std::shared_ptr<InputHandle>& input) {
 
 	//player->tick(input);
 	engine->updatePhysics(instance->dt);
@@ -59,8 +55,10 @@ void Level::tick(InputHandle* input) {
 	}
 }
 
-void Level::draw(Renderer* renderer) {
+void Level::draw(std::shared_ptr<Renderer>& renderer) {
 
+
+	//temporary debug drawing code
 	for (int i = 0; i < 45; i++) {
 		sf::Vertex line[2];
 		line[0].position = Vector2f(i * 60.0f, 0.0f);

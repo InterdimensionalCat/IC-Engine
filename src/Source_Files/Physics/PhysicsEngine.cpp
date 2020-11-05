@@ -10,13 +10,10 @@
 #include "GameTransform.h"
 
 
-using Point = s2d::GameUnits::Point;
-using Vec = s2d::GameUnits::Vec;
-using Poly = s2d::GameUnits::Poly;
-using Normal_Vec = s2d::GameUnits::Normal_Vec;
+using namespace s2d;
 
 
-PhysicsEngine::PhysicsEngine() : gravity(Vec(0.0f, 10.0f)), iterations(10) {}
+PhysicsEngine::PhysicsEngine() : gravity(Vec(0.0f, 600.0f)), iterations(10) {}
 
 void PhysicsEngine::updatePhysics(const float deltaTime) {
 
@@ -48,8 +45,8 @@ void PhysicsEngine::sweepAndPrune() {
 	collisions.clear();
 	sweeper.sort();
 
-	for (PhysicsBody* body : bodies) {
-		if (body->collisioninfo) {
+	for (std::shared_ptr<PhysicsBody>& body : bodies) {
+		if (body->collisioninfo.get() != nullptr) {
 			body->collisioninfo->events.clear();
 		}
 	}
@@ -105,7 +102,7 @@ void PhysicsEngine::integrateForce(const float dt) {
 	}
 }
 
-void PhysicsEngine::addBody(PhysicsBody* b) {
+void PhysicsEngine::addBody(std::shared_ptr<PhysicsBody> b) {
 	bodies.push_back(b);
 	auto size = bodies.size();
 	auto polySize = b->getBodies().size();

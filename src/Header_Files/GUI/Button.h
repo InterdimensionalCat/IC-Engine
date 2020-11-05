@@ -13,7 +13,7 @@ class Button :
 
 
 public:
-    Button(const s2d::ScreenUnits::Rectangle& bounds, const float bordersize, const Color& interior_color, const Color& border_color);
+    Button(const s2d::Rectangle& bounds, const float bordersize, const Color& interior_color, const Color& border_color);
 
     //Event handling functions
     virtual void handleEvent(const sf::Event& e, Window& window);
@@ -33,7 +33,7 @@ public:
     virtual void selected();
 
     //update functions
-    virtual void draw(Renderer* renderer);
+    virtual void draw(std::shared_ptr<Renderer>& renderer);
     virtual void updateListener(const float dt) = 0;
 
     enum class ButtonState {

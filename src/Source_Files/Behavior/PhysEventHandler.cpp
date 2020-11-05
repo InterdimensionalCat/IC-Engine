@@ -6,12 +6,13 @@
 
 
 void PhysEventHandler::start() {
-	engine = getActor()->owner->engine.get();
+	engine = getActor()->owner->engine;
 }
-void PhysEventHandler::tick(InputHandle* input) {
+
+void PhysEventHandler::tick(std::shared_ptr<InputHandle>& input) {
 
 }
 
-void PhysEventHandler::draw(Renderer* renderer) {
+void PhysEventHandler::draw(std::shared_ptr<Renderer>& renderer) {
 
 }

@@ -4,6 +4,7 @@
 */
 #pragma once
 #include "Button.h"
+#include <memory>
 
 class MenuState;
 
@@ -12,7 +13,7 @@ class MenuButton :
 {
 public:
 
-    MenuButton(const s2d::ScreenUnits::Point& center, const string& text, const string& font, const size_t& fontSize, MenuState* parent);
+    MenuButton(const s2d::Point& center, const string& text, const string& font, const size_t& fontSize, std::shared_ptr<MenuState>& parent);
 
     //selection functions
     virtual void onSelectEnd();
@@ -24,10 +25,10 @@ public:
     virtual void selected();
 
     //update functions
-    virtual void draw(Renderer* renderer);
+    virtual void draw(std::shared_ptr<Renderer>& renderer);
     virtual void updateListener(const float dt);
 
-    MenuState* parent;
+    std::shared_ptr<MenuState> parent;
     Text option;
     Font buttonFont;
 };

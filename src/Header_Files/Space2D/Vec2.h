@@ -1,175 +1,93 @@
 #pragma once
-#include "Space2D.h"
-
-#ifndef SFML_DISABLE
 #include "SFML/Graphics.hpp"
-#endif
 
-//    Sp::Vec translation;
-
+//Sp::Vec translation;
 namespace Space2D {
-    template <typename T, typename SpaceType>
+
+	class Dimension2;
+	class Vec2;
+	class Point2;
+	class Poly2;
+	class NormalizedVec2;
+	class Rect2;
+
     class Vec2 final
     {
 
     public:
 
-		using Vec = Vec2<T, SpaceType>;
-		using Normal_Vec = NormalizedVec2<T, SpaceType>;
-		using Point = Point2<T, SpaceType>;
-		using Matrix = AffineMatrix<T, SpaceType>;
 
 		//defaults to (0,0)
-        Vec2()  noexcept : x(0), y(0) {}
+		Vec2()  noexcept;
 
-        explicit Vec2(const T& x, const T& y) noexcept : x(x), y(y) {}
+		explicit Vec2(const float& x, const float& y) noexcept;
 
 		//define a vector as the distance from two points in the direction from start to end
-		explicit Vec2(const Point& start, const Point& end) noexcept : x(end.x - start.x), y(end.y - start.y) {}
+		explicit Vec2(const Point2& start, const Point2& end) noexcept;
 
 		//construct a vector from a normal vector
-		Vec2(const Normal_Vec& vec) noexcept : x(vec.x), y(vec.y) {}
+		explicit Vec2(const NormalizedVec2& vec) noexcept;
 
-        const T& operator[] (const unsigned int i) const noexcept {
-            return i == 0 ? x : y;
-        }
+		const float& operator[] (const unsigned int i) const noexcept;
 
-		T& operator[] (const unsigned int i) noexcept {
-			return i == 0 ? x : y;
-		}
+		float& operator[] (const unsigned int i) noexcept;
 
-		Vec operator- () const noexcept {
-			return Vec(-x, -y);
-		}
+		Vec2 operator- () const noexcept;
 
-		bool operator==(const Vec& other) const noexcept {
-			return (std::abs(x - other.x) < 1e-6) && (std::abs(y - other.y) < 1e-6);
-		}
+		bool operator==(const Vec2& other) const noexcept;
 
-		bool operator!= (const Vec& other) const noexcept {
-			return !(operator==(other));
-		}
+		bool operator!= (const Vec2& other) const noexcept;
 
-		Vec& operator-=(const Vec& rhs) noexcept {
-			x -= rhs.x;
-			y -= rhs.y;
-			return *this;
-		}
+		Vec2& operator-=(const Vec2& rhs) noexcept;
 
-		Vec& operator-=(const Normal_Vec& rhs) noexcept {
-			x -= rhs.x;
-			y -= rhs.y;
-			return *this;
-		}
+		Vec2& operator-=(const NormalizedVec2& rhs) noexcept;
 
-		Vec operator-(const Vec& rhs) const noexcept {
-			return Vec(x - rhs.x, y - rhs.y);
-		}
+		Vec2 operator-(const Vec2& rhs) const noexcept;
 
-		Vec operator-(const Normal_Vec& rhs) const noexcept {
-			return Vec(x - rhs.x, y - rhs.y);
-		}
+		Vec2 operator-(const NormalizedVec2& rhs) const noexcept;
 
-		Vec& operator+=(const Vec& rhs) noexcept {
-			x += rhs.x;
-			y += rhs.y;
-			return *this;
-		}
+		Vec2& operator+=(const Vec2& rhs) noexcept;
 
-		Vec& operator+=(const Normal_Vec& rhs) noexcept {
-			x += rhs.x;
-			y += rhs.y;
-			return *this;
-		}
+		Vec2& operator+=(const NormalizedVec2& rhs) noexcept;
 
-		Vec operator+(const Vec& rhs) const noexcept {
-			return Vec(x + rhs.x, y + rhs.y);
-		}
+		Vec2 operator+(const Vec2& rhs) const noexcept;
 
-		Vec operator+(const Normal_Vec& rhs) const noexcept {
-			return Vec(x + rhs.x, y + rhs.y);
-		}
+		Vec2 operator+(const NormalizedVec2& rhs) const noexcept;
 
-		Vec& operator*=(const T& factor) noexcept {
-			x *= factor;
-			y *= factor;
-			return *this;
-		}
+		Vec2& operator*=(const float& factor) noexcept;
 
-		Vec operator*(const T& factor) const noexcept {
-			return Vec(x * factor, y * factor);
-		}
+		Vec2 operator*(const float& factor) const noexcept;
 
-		T Dot(const Vec& other) const noexcept {
-			return x * other.x + y * other.y;
-		}
+		float Dot(const Vec2& other) const noexcept;
 
-		T Dot(const Normal_Vec& other) const noexcept {
-			return x * other.x + y * other.y;
-		}
+		float Dot(const NormalizedVec2& other) const noexcept;
 
-		Normal_Vec Normalize() const {
-			return Normal_Vec(x, y);
-		}
+		NormalizedVec2 Normalize() const;
 
-		T Mag() const noexcept {
-			return std::sqrt(x * x + y * y);
-		}
+		float Mag() const noexcept;
 
-		T MagSquared() const noexcept {
-			return x * x + y * y;
-		}
+		float MagSquared() const noexcept;
 
-		bool perp(const Vec& other) const noexcept {
-			return std::abs(Dot(other)) < 1e-6;
-		}
+		bool perp(const Vec2& other) const noexcept;
 
-		bool perp(const Normal_Vec& other) const noexcept {
-			return std::abs(Dot(other)) < 1e-6;
-		}
+		bool perp(const NormalizedVec2& other) const noexcept;
 
 		//unit normal rule: (x, y) -> (y, -x)
-		Normal_Vec unitNormal() const noexcept {
-			return Normal_Vec(this->y, -this->x);
-		}
+		NormalVec unitNormal() const noexcept;
 
 
-		template <typename other_T, typename other_SpaceType>
-		operator Vec2<other_T, other_SpaceType>() const noexcept {
-			Matrix from = SpaceType::transform_ratio.getInverse();
-
-			//step 1: apply inverse of the reletive space transform the object is in
-			Vec first_transform = from.transformVec(*this);
-
-			//step 2: copy contents into new type container
-			Vec2<other_T, other_SpaceType> second_transform(static_cast<other_T>(first_transform.x), static_cast<other_T>(first_transform.y));
-
-			AffineMatrix<other_T, other_SpaceType> to = other_SpaceType::transform_ratio;
-
-			//apply the reletive space transform of the new space
-			return to.transformVec(second_transform);
-		}
-
-
-#ifndef SFML_DISABLE
 		template <typename SFMLType = T>
 		sf::Vector2<SFMLType> toSFMLVec() const noexcept {
 			return sf::Vector2<SFMLType>(static_cast<SFMLType>(this->x), static_cast<SFMLType>(this->y));
 		}
-#endif
 
-		friend std::ostream& operator << (std::ostream& os, const Vec& it) {
-			const auto space = SpaceTypeNameMap<SpaceType>::name;
-			os << space << "::Vector(" << it.x << ", " << it.y << ")";
+		friend std::ostream& operator << (std::ostream& os, const Vec2& it) {
+			os << "Vector(" << it.x << ", " << it.y << ")";
 			return os;
 		}
 
-		static Vec lerp(const Vec& a, const Vec& b, const T t) {
-			return Vec(a.x + t * (b.x - a.x), a.y + t * (b.y - a.y));
-		}
-
-         T x;
-         T y;
+		float x;
+		float y;
     };
 }
 

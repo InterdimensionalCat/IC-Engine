@@ -19,10 +19,10 @@ public:
 
 
 	//Game Loop Objects
-	unique_ptr <Clock> timer;
-	unique_ptr <InputHandle> input;
-	unique_ptr <StateManager> manager;
-	unique_ptr <Renderer> renderer;
+	shared_ptr <sf::Clock> timer;
+	shared_ptr <InputHandle> input;
+	shared_ptr <StateManager> manager;
+	shared_ptr <Renderer> renderer;
 
 
 	//settings
@@ -31,7 +31,7 @@ public:
 	const int HEIGHT = 1080;
 	float targetFPS = 60.0f;
 	const float targetDT = 1.0f / 60.0f;
-	float dt;
+	float dt = 0.0f;
 
 	bool debug = false;
 	bool paused = false;
@@ -40,10 +40,10 @@ public:
 	TimeStepType timeType = TimeStepType::Fixed;
 
 	float currentfps = 0;
-	Clock fpstimer;
+	sf::Clock fpstimer = sf::Clock();
 
 	//windows
 };
 
-extern Game* instance;
+extern std::shared_ptr<Game> instance;
 

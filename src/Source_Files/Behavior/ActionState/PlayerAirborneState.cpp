@@ -9,7 +9,7 @@
 #include "PhysicsBody.h"
 #include "PhysEventHandler.h"
 
-using Vec = s2d::GameUnits::Vec;
+using namespace s2d;
 
 PlayerAirborneState::PlayerAirborneState() {
 	name = "PlayerAirborne";
@@ -23,7 +23,7 @@ void PlayerAirborneState::enter() {
 	parent->animator->setAnimation(name);
 }
 
-void PlayerAirborneState::run(InputHandle* input) {
+void PlayerAirborneState::run(std::shared_ptr<InputHandle>& input) {
 		if (input->isDown(Keyboard::D)) {
 			if (parent->body->getVelocity().x < 0) {
 				parent->body->setAwake(true);
@@ -64,20 +64,23 @@ void PlayerAirborneState::run(InputHandle* input) {
 				//hit the ground
 				if (abs(parent->body->getVelocity().x) < 0.7 * 60) {
 					parent->setState("PlayerIdle", input);
+					return;
 				}
 				else {
 					if (abs(parent->body->getVelocity().x) < 5.0 * 60) {
 						parent->setState("PlayerMove", input);
+						return;
 					}
 					else {
 						parent->setState("PlayerRun", input);
+						return;
 					}
 				}
 			}
 		}
 }
 
-void PlayerAirborneState::draw(Renderer* renderer) {
+void PlayerAirborneState::draw(std::shared_ptr<Renderer>& renderer) {
 
 }
 

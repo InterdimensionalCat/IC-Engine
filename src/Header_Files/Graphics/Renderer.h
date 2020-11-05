@@ -18,13 +18,13 @@ class Renderer
 {
 public:
 
-	Renderer(Game* in);
+	Renderer(std::shared_ptr<Game> in);
 	~Renderer();
 
 	float interpol = 0.0f;
-	unique_ptr<RenderWindow> window;
+	shared_ptr<RenderWindow> window;
 	RenderStates states = RenderStates::Default;
 
-	Game* instance;
+	std::shared_ptr<Game> instance;
 };
 

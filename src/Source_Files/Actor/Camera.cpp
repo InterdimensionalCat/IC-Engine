@@ -1,9 +1,7 @@
 #include "include.h"
 #include "Camera.h"
 
-using Point = s2d::GameUnits::Point;
-using Vec = s2d::GameUnits::Vec;
-using Rectangle = s2d::GameUnits::Rectangle;
+using namespace s2d;
 
 void Camera::start() {
 
@@ -11,21 +9,20 @@ void Camera::start() {
 	prevscale = 1.0f;
 	rotation = 0.0_rad;
 	prevrotation = 0.0_rad;
-	pos = s2d::PixelUnits::Point(instance->WIDTH / 2.0f, instance->HEIGHT / 2.0f);
-	prevpos = s2d::PixelUnits::Point(instance->WIDTH / 2.0f, instance->HEIGHT / 2.0f);
-	s2d::ScreenUnits::transform_ratio = s2d::ScreenUnits::defaultTransform();
+	pos = Point(instance->WIDTH / 2.0f, instance->HEIGHT / 2.0f);
+	prevpos = Point(instance->WIDTH / 2.0f, instance->HEIGHT / 2.0f);
 
 	Actor::start();
 }
 
-void Camera::tick(InputHandle* input) {
+void Camera::tick(std::shared_ptr<InputHandle>& input) {
 	prevscale = scale;
 	prevrotation = rotation;
 	prevpos = pos;
 	Actor::tick(input);
 }
 
-void Camera::draw(Renderer* renderer) {
+void Camera::draw(std::shared_ptr<Renderer>& renderer) {
 
 	auto target = renderer->window.get();
 
@@ -40,13 +37,13 @@ void Camera::draw(Renderer* renderer) {
 	Actor::draw(renderer);
 }
 
-void Camera::move(Vec trans) {
-	pos += (s2d::PixelUnits::Vec)trans;
+void Camera::move(const Vec& trans) {
+	pos += (Vec)trans;
 	update();
 }
 
-void Camera::setPos(Point newpos) {
-	pos = (s2d::PixelUnits::Point)newpos;
+void Camera::setPos(const Point& newpos) {
+	pos = (Point)newpos;
 	update();
 }
 
@@ -65,9 +62,8 @@ void Camera::reset() {
 	prevscale = 1.0f;
 	rotation = 0.0_rad;
 	prevrotation = 0.0_rad;
-	pos = s2d::PixelUnits::Point(instance->WIDTH / 2.0f, instance->HEIGHT / 2.0f);
-	prevpos = s2d::PixelUnits::Point(instance->WIDTH / 2.0f, instance->HEIGHT / 2.0f);
-	s2d::ScreenUnits::transform_ratio = s2d::ScreenUnits::defaultTransform();
+	pos = Point(instance->WIDTH / 2.0f, instance->HEIGHT / 2.0f);
+	prevpos = Point(instance->WIDTH / 2.0f, instance->HEIGHT / 2.0f);
 }
 
 void Camera::reset(Point pos) {
@@ -75,18 +71,12 @@ void Camera::reset(Point pos) {
 	prevscale = 1.0f;
 	rotation = 0.0_rad;
 	prevrotation = 0.0_rad;
-	this->pos = (s2d::PixelUnits::Point)pos;
-	prevpos = (s2d::PixelUnits::Point)pos;
-	s2d::ScreenUnits::transform_ratio = s2d::ScreenUnits::defaultTransform();
+	this->pos = (Point)pos;
+	prevpos = (Point)pos;
 }
 
 void Camera::update() {
-	auto& ratio = s2d::ScreenUnits::transform_ratio;
-	ratio = s2d::ScreenUnits::defaultTransform();
 
-	ratio.rotate(rotation);
-	ratio.scale(scale, scale);
-	ratio.translate(s2d::PixelUnits::Vec(pos.x, pos.y));
 }
 
 

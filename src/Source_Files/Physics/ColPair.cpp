@@ -6,12 +6,9 @@
 #include "PhysMath.h"
 #include "PhysEventHandler.h"
 
-using Point = s2d::GameUnits::Point;
-using Vec = s2d::GameUnits::Vec;
-using Poly = s2d::GameUnits::Poly;
-using Normal_Vec = s2d::GameUnits::Normal_Vec;
+using namespace s2d;
 
-ColPair::ColPair(PhysicsBody* bodyA, const size_t& ANum, PhysicsBody* bodyB, const size_t& BNum) {
+ColPair::ColPair(std::shared_ptr<PhysicsBody> bodyA, const size_t& ANum, std::shared_ptr<PhysicsBody> bodyB, const size_t& BNum) {
 
 	if (bodyA->getType() > bodyB->getType()) {
 		A = bodyA;
@@ -27,7 +24,7 @@ ColPair::ColPair(PhysicsBody* bodyA, const size_t& ANum, PhysicsBody* bodyB, con
 			BBodyNum = ANum;
 		}
 		else {
-			if (bodyA < bodyB) {
+			if (bodyA.get() < bodyB.get()) {
 				A = bodyA;
 				B = bodyB;
 				ABodyNum = ANum;
@@ -122,8 +119,8 @@ void ColPair::solveCollision() {
 }
 
 bool ColPair::operator==(const ColPair &other) {
-	bool AEqual = A == other.A || A == other.B;
-	bool BEqual = B == other.A || B == other.B;
+	bool AEqual = A.get() == other.A.get() || A.get() == other.B.get();
+	bool BEqual = B.get() == other.A.get() || B.get() == other.B.get();
 	bool AindEqual = ABodyNum == other.ABodyNum || ABodyNum == other.BBodyNum;
 	bool BindEqual = BBodyNum == other.BBodyNum || BBodyNum == other.ABodyNum;
 	return AEqual && BEqual && AindEqual && BindEqual;
@@ -131,8 +128,8 @@ bool ColPair::operator==(const ColPair &other) {
 
 bool RigidPairSAT(ColPair &pair) {
 
-	PhysicsBody* A = pair.A;
-	PhysicsBody* B = pair.B;
+	PhysicsBody* A = pair.A.get();
+	PhysicsBody* B = pair.B.get();
 
 	if (!A->isAwake() && !B->isAwake()) return false;
 
@@ -233,7 +230,7 @@ bool RigidPairSAT(ColPair &pair) {
 
 #ifdef _DEBUG
 	if (leastPen == numeric_limits<float>::infinity()) {
-		throw BadInfinityException<float>(leastPen);
+		throw BadInfinityException();
 	}
 #endif
 	pair.normal = bestAxis.unitNormal();
@@ -267,8 +264,8 @@ bool RigidPairSAT(ColPair &pair) {
 
 bool RigidStaticSAT(ColPair &pair) {
 
-	PhysicsBody* A = pair.A;
-	PhysicsBody* B = pair.B;
+	PhysicsBody* A = pair.A.get();
+	PhysicsBody* B = pair.B.get();
 
 	if (!A->isAwake() && !B->isAwake()) return false;
 
@@ -348,7 +345,7 @@ bool RigidStaticSAT(ColPair &pair) {
 
 	if (leastPen == numeric_limits<float>::infinity()) {
 #ifdef _DEBUG
-		throw BadInfinityException<float>(leastPen);
+		throw BadInfinityException();
 #endif
 	}
 	pair.normal = bestAxis.unitNormal();
@@ -376,8 +373,8 @@ bool RigidStaticSAT(ColPair &pair) {
 
 bool RigidOneWaySAT(ColPair &pair) {
 
-	PhysicsBody* A = pair.A;
-	PhysicsBody* B = pair.B;
+	PhysicsBody* A = pair.A.get();
+	PhysicsBody* B = pair.B.get();
 
 	if (!A->isAwake() && !B->isAwake()) return false;
 
@@ -455,7 +452,7 @@ bool RigidOneWaySAT(ColPair &pair) {
 
 	if (leastPen == numeric_limits<float>::infinity()) {
 #ifdef _DEBUG
-		throw BadInfinityException<float>(leastPen);
+		throw BadInfinityException();
 #endif
 	}
 

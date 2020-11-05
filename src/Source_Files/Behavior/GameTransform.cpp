@@ -1,14 +1,14 @@
 #include "include.h"
 #include "GameTransform.h"
 
-using Point = s2d::GameUnits::Point;
-using Vec = s2d::GameUnits::Vec;
 
-void GameTransform::translate(const Vec trans) {
+using namespace s2d;
+
+void GameTransform::translate(const Vec& trans) {
 	pos += trans; 
 }
 
-void GameTransform::setPos(const Point newpos) {
+void GameTransform::setPos(const Point& newpos) {
 	pos = newpos; 
 }
 
@@ -16,19 +16,19 @@ void GameTransform::setPos(const float x, const float y) {
 	pos = Point(x, y);
 }
 
-Vec GameTransform::forward() const {
+NormalVec GameTransform::forward() const {
 	return fwd;
 }
 
-Vec GameTransform::up() const {
+NormalVec GameTransform::up() const {
 	return upvec;
 }
 
-Vec GameTransform::down() const {
+NormalVec GameTransform::down() const {
 	return -upvec;
 }
 
-Vec GameTransform::back() const {
+NormalVec GameTransform::back() const {
 	return -fwd;
 }
 
@@ -36,11 +36,11 @@ void GameTransform::start() {
 
 }
 
-void GameTransform::tick(InputHandle* input) {
+void GameTransform::tick(std::shared_ptr<InputHandle>& input) {
 	prevpos = pos;
 }
 
-void GameTransform::draw(Renderer* renderer) {
+void GameTransform::draw(std::shared_ptr<Renderer>& renderer) {
 
 	auto target = renderer->window.get();
 	auto states = renderer->states;
@@ -51,7 +51,7 @@ void GameTransform::draw(Renderer* renderer) {
 		shape.setRadius(3);
 		shape.setFillColor(Color::Cyan);
 		shape.setOutlineColor(Color::Cyan);
-		shape.setPosition(lerp(((s2d::PixelUnits::Point)prevpos).toSFMLVec<float>() - Vector2f(1.5f, 1.5f), ((s2d::PixelUnits::Point)pos).toSFMLVec<float>() - Vector2f(1.5f, 1.5f), renderer->interpol));
+		shape.setPosition(lerp(prevpos.toSFMLVec<float>() - Vector2f(1.5f, 1.5f), pos.toSFMLVec<float>() - Vector2f(1.5f, 1.5f), renderer->interpol));
 		target->draw(shape, states);
 	}
 }

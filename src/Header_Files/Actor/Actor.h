@@ -11,39 +11,42 @@ class Actor
 public:
 	virtual ~Actor() {}
 	virtual void start();
-	virtual void tick(InputHandle* input);
-	virtual void draw(Renderer* renderer);
+	//Actor(const Actor& other) = delete;
+	//Actor& operator=(const Actor& other) = delete;
+
+	virtual void tick(std::shared_ptr<InputHandle>& input);
+	virtual void draw(std::shared_ptr<Renderer>& renderer);
 	virtual std::string getTag() const = 0;
-	bool compareTag(const Actor* other) const;
+	bool compareTag(const std::shared_ptr<Actor>& other) const;
 
 	template<class T>
-	T* getBehavior() {
+	std::shared_ptr<T> getBehavior() {
 		for (auto &c : components) {
 			auto ret = std::dynamic_pointer_cast<T>(c);
-			if (ret) {
-				return ret.get();
+			if (ret.get() != nullptr) {
+				return ret;
 			}
 		}
 
-		return nullptr;
+		return std::shared_ptr<T>(nullptr);
 	}
 
 	template<class T>
-	T* addBehavior() {
+	std::shared_ptr<T> addBehavior() {
 		std::shared_ptr<T> t = std::make_shared<T>();
 
 		auto comp = std::dynamic_pointer_cast<Behavior>(t);
-		if (comp) {
-			components.push_back(comp);
-			comp->parent = this;
-			return t.get();
+		if (comp.get() != nullptr) {
+			components.push_back(std::shared_ptr(comp));
+			comp->parent = std::shared_ptr<Actor>(this);
+			return t;
 		}
 		else {
-			return nullptr;
+			return std::shared_ptr<T>(nullptr);
 		}
 	}
 
 	std::vector<std::shared_ptr<Behavior>> components;
-	Level* owner;
+	std::shared_ptr<Level> owner;
 };
 

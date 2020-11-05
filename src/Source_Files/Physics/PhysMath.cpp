@@ -2,10 +2,7 @@
 #include "PhysMath.h"
 
 
-using Poly = s2d::GameUnits::Poly;
-using Vec = s2d::GameUnits::Vec;
-
-using Normal_vec = s2d::GameUnits::Normal_Vec;
+using namespace s2d;
 
 Projection::Projection(float mi, float ma) : min(mi), max(ma) {}
 
@@ -19,7 +16,7 @@ Vec projectVec(const Vec &projectAxis, const Vec &angleAxis) {
 }
 
 
-Projection projectShape(const Poly shape, const s2d::GameUnits::Normal_Vec& angleAxis) {
+Projection projectShape(const Poly shape, const s2d::NormalVec& angleAxis) {
 	//initialize to first possible value
 	Projection proj;
 
@@ -31,13 +28,13 @@ Projection projectShape(const Poly shape, const s2d::GameUnits::Normal_Vec& angl
 
 	if (proj.min == numeric_limits<float>::infinity()) {
 #ifdef _DEBUG
-		throw BadInfinityException<float>(proj.min);
+		throw BadInfinityException();
 #endif
 	}
 
 	if (proj.max == -numeric_limits<float>::infinity()) {
 #ifdef _DEBUG
-		throw BadInfinityException<float>(proj.max);
+		throw BadInfinityException();
 #endif
 	}
 

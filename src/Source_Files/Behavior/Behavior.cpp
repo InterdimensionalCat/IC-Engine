@@ -2,6 +2,6 @@
 #include "Behavior.h"
 #include "Actor.h"
 
-Actor* Behavior::getActor() {
+std::shared_ptr<Actor> Behavior::getActor() {
 	return parent;
 }

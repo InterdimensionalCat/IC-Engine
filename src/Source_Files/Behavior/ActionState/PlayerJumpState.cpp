@@ -9,7 +9,7 @@
 #include "Animator.h"
 #include "Animation.h"
 
-using Vec = s2d::GameUnits::Vec;
+using namespace s2d;
 
 PlayerJumpState::PlayerJumpState() {
 	name = "PlayerJump";
@@ -19,24 +19,23 @@ void PlayerJumpState::init() {
 	//anim.init(Vec(500, 500), Vec(128, 128), "jumpsheet", 23);
 }
 
-
 void PlayerJumpState::enter() {
 	//playerptr->animptr = &anim;
 	//playerptr->spriteOffset = Vec(0, 0);
-	jumpangle = Vec(0, -1);
+	jumpangle = NormalVec(0, -1);
 	velXatJump = parent->body->getVelocity().x;
 	parent->animator->setAnimation(name);
 }
 
-void PlayerJumpState::run(InputHandle* input) {
+void PlayerJumpState::run(std::shared_ptr<InputHandle>& input) {
 
 
 	if (parent->animator->current->frameNum < 4) {
 		for (auto c : parent->collisioninfo->events) {
 			if (c.normal.y < -0.2f) {
 				//hit the ground
-				jumpangle += c.normal;
-				jumpangle = jumpangle.Normalize();
+				Vec sum = jumpangle + c.normal;
+				jumpangle = sum.Normalize();
 			}
 		}
 	}
@@ -98,13 +97,16 @@ void PlayerJumpState::run(InputHandle* input) {
 					//hit the ground
 					if (abs(parent->body->getVelocity().x) < 0.7 * 60) {
 						parent->setState("PlayerIdle", input);
+						return;
 					}
 					else {
 						if (abs(parent->body->getVelocity().x) < 5.0 * 60) {
 							parent->setState("PlayerMove", input);
+							return;
 						}
 						else {
 							parent->setState("PlayerRun", input);
+							return;
 						}
 					}
 				}
@@ -114,6 +116,7 @@ void PlayerJumpState::run(InputHandle* input) {
 			//check for airborne transition
 			if (parent->animator->current->frameNum == parent->animator->current->numFrames - 1) {
 				parent->setState("PlayerAirborne", input);
+				return;
 			}
 
 	    }
@@ -122,7 +125,7 @@ void PlayerJumpState::run(InputHandle* input) {
 	}
 }
 
-void PlayerJumpState::draw(Renderer* renderer) {
+void PlayerJumpState::draw(std::shared_ptr<Renderer>& renderer) {
 
 }
 

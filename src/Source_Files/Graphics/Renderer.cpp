@@ -2,7 +2,7 @@
 #include "Renderer.h"
 
 
-Renderer::Renderer(Game* in) : instance(in) {
+Renderer::Renderer(std::shared_ptr<Game> in) : instance(in) {
 
 }
 

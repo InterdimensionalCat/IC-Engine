@@ -9,25 +9,25 @@ public:
 	float getY() const { return pos.y; }
 	float getPrevX() const { return prevpos.x; }
 	float getPrevY() const { return prevpos.y; }
-	s2d::GameUnits::Point getPos() const { return pos; }
-	s2d::GameUnits::Point getPrevPos() const { return prevpos; }
-	void translate(const s2d::GameUnits::Vec trans);
-	void setPos(const s2d::GameUnits::Point newpos);
+	s2d::Point getPos() const { return pos; }
+	s2d::Point getPrevPos() const { return prevpos; }
+	void translate(const s2d::Vec& trans);
+	void setPos(const s2d::Point& newpos);
 	void setPos(const float x, const float y);
 	void start();
-	void tick(InputHandle* input);
-	void draw(Renderer* renderer);
+	void tick(std::shared_ptr<InputHandle>& input);
+	void draw(std::shared_ptr<Renderer>& renderer);
 
-	s2d::GameUnits::Vec forward() const;
-	s2d::GameUnits::Vec up() const;
-	s2d::GameUnits::Vec down() const;
-	s2d::GameUnits::Vec back() const;
+	s2d::NormalVec forward() const;
+	s2d::NormalVec up() const;
+	s2d::NormalVec down() const;
+	s2d::NormalVec back() const;
 
 private:
-	s2d::GameUnits::Point pos;
-	s2d::GameUnits::Point prevpos;
+	s2d::Point pos;
+	s2d::Point prevpos;
 
-	s2d::GameUnits::Vec fwd = s2d::GameUnits::Vec(1, 0);
-	s2d::GameUnits::Vec upvec = s2d::GameUnits::Vec(0, 1);
+	s2d::NormalVec fwd = s2d::NormalVec(0_deg);
+	s2d::NormalVec upvec = s2d::NormalVec(-90_deg);
 };
 
