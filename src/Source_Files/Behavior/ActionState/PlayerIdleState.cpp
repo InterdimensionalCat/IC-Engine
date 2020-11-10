@@ -15,18 +15,16 @@ PlayerIdleState::PlayerIdleState() {
 }
 
 void PlayerIdleState::init() {
-	//anim.init(Vector2f(500, 500), Vector2f(128, 128), "idlesheet", 15);
+
 }
 
 void PlayerIdleState::enter() {
-	//set the player as grounded here
-	//playerptr->animptr = &anim;
-	//playerptr->spriteOffset = Vector2f(0, 0);
+
 	framesAir = 0;
 	parent->animator->setAnimation(name);
 }
 
-void PlayerIdleState::run(std::shared_ptr<InputHandle>& input) {
+void PlayerIdleState::run(InputHandle* input) {
 	//check if going left, right, jumping
 	if (input->isDown(Keyboard::A) || input->isDown(Keyboard::D)) {
 		parent->setState("PlayerMove", input);
@@ -63,7 +61,7 @@ void PlayerIdleState::run(std::shared_ptr<InputHandle>& input) {
 
 }
 
-void PlayerIdleState::draw(std::shared_ptr<Renderer>& renderer) {
+void PlayerIdleState::draw(Renderer* renderer) {
 
 }
 

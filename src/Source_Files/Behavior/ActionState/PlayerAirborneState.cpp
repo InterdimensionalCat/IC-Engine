@@ -16,14 +16,18 @@ PlayerAirborneState::PlayerAirborneState() {
 }
 
 void PlayerAirborneState::init() {
-	//anim.init(Vector2f(500, 500), Vector2f(128, 128), "airbornesheet", 30);
+
 }
 
 void PlayerAirborneState::enter() {
+
+	airaccel = parent->speedValues.at("asp");
+	maxVelX = parent->speedValues.at("maxAsp");
+
 	parent->animator->setAnimation(name);
 }
 
-void PlayerAirborneState::run(std::shared_ptr<InputHandle>& input) {
+void PlayerAirborneState::run(InputHandle* input) {
 		if (input->isDown(Keyboard::D)) {
 			if (parent->body->getVelocity().x < 0) {
 				parent->body->setAwake(true);
@@ -80,7 +84,7 @@ void PlayerAirborneState::run(std::shared_ptr<InputHandle>& input) {
 		}
 }
 
-void PlayerAirborneState::draw(std::shared_ptr<Renderer>& renderer) {
+void PlayerAirborneState::draw(Renderer* renderer) {
 
 }
 

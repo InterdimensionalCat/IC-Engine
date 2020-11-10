@@ -98,6 +98,6 @@ void Button::selected() {
     state = ButtonState::Selected;
 }
 
-void Button::draw(std::shared_ptr<Renderer>& renderer) {
+void Button::draw(Renderer* renderer) {
     Widget::draw(renderer);
 }

@@ -4,23 +4,21 @@
 #include "MenuState.h"
 #include "GameState.h"
 
-StateManager::StateManager(std::shared_ptr<Game> in) : instance(in) {
-	std::shared_ptr<MenuState> menu = std::make_shared<MenuState>(std::shared_ptr<StateManager>(this));
-	std::shared_ptr<GameState> game = std::make_shared<GameState>(std::shared_ptr<StateManager>(this));
-	addState(static_pointer_cast<State, MenuState>(menu));
-	addState(static_pointer_cast<State, GameState>(game));
+StateManager::StateManager(Game* in) : instance(in) {
+	addState(new MenuState(this));
+	addState(new GameState(this));
 }
 
 StateManager::~StateManager() {
 
 }
 
-void StateManager::addState(std::shared_ptr<State> state) {
+void StateManager::addState(State* state) {
 
-	states.emplace(state->getName(), state);
+	states.emplace(state->getName(), std::unique_ptr<State>(state));
 	state->init();
 	if (current == nullptr) {
-		current = states.at(state->getName());
+		current = states.at(state->getName()).get();
 		current->enter();
 	}
 }
@@ -28,7 +26,7 @@ void StateManager::addState(std::shared_ptr<State> state) {
 void StateManager::setState(const string &key) {
 	if (states.find(key) != states.end()) {
 		current->exit();
-		current = states.at(key);
+		current = states.at(key).get();
 		current->enter();
 	}
 	else {
@@ -39,10 +37,10 @@ void StateManager::setState(const string &key) {
 	}
 }
 
-void StateManager::tick(std::shared_ptr<InputHandle>& input) {
+void StateManager::tick(InputHandle* input) {
 	current->tick(input);
 }
 
-void StateManager::draw(std::shared_ptr<Renderer>& renderer) {
+void StateManager::draw(Renderer* renderer) {
 	current->draw(renderer);
 }

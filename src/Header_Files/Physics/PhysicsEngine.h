@@ -8,7 +8,7 @@
 #include <map>
 #include "ColPair.h"
 #include "SweepAndPrune.h"
-#include "collisionEvent.h"
+#include "CollisionEvent.h"
 
 class PhysicsBody;
 
@@ -25,7 +25,7 @@ public:
 
 	void updatePhysics(const float deltaTime);
 
-	void addBody(std::shared_ptr<PhysicsBody> b);
+	void addBody(PhysicsBody* b);
 
 	//sweep and prune container
 	SweepAndPrune sweeper;
@@ -44,7 +44,7 @@ private:
 	void integrateForce(const float dt);
 
 
-	std::vector<std::shared_ptr<PhysicsBody>> bodies;
+	std::vector<PhysicsBody*> bodies;
 
 	//container storing all generated possible collisions on a particular
 	//physics update
@@ -61,13 +61,9 @@ private:
 
 //necessasary for the map to function
 inline bool operator<(const PairKey &lhs, const PairKey &rhs) {
-	if (lhs.bmin.get() < rhs.bmin.get()) {
-		return true;
-	}
-
-	if (lhs.bmin.get() == rhs.bmin.get() && lhs.bmax.get() < rhs.bmax.get()) {
-		return true;
-	}
-
-	return false;
+	bool b1 = lhs.bmin < rhs.bmin;
+	bool b2 = lhs.bmin == rhs.bmin && lhs.bmax < rhs.bmax;
+	bool b3 = lhs.minnum < rhs.minnum;
+	bool b4 = lhs.minnum == rhs.minnum && lhs.maxnum < rhs.maxnum;
+	return b1 || b2 || b3 || b4;
 }

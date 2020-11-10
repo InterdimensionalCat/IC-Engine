@@ -4,6 +4,11 @@
 #include "PhysicsBody.h"
 #include "Space2D.h"
 
+//TestActor.h
+/*
+  Actor used to test terrain for the physics engine
+*/
+
 class TestActor :
 	public Actor
 {
@@ -13,8 +18,8 @@ public:
 		body = addBehavior<PhysicsBody>();
 		trans = addBehavior<GameTransform>();
 
-		auto pos = s2d::Vec(3 * 60, 5 * 60);
-		auto size = s2d::Vec(4 * 60, 4 * 60);
+		auto pos = s2d::Vec(0 * 60, 17 * 60);
+		auto size = s2d::Vec(32 * 60, 2 * 60);
 
 		trans->setPos(s2d::Point(pos.x + size.x / 2.0f, pos.y + size.y / 2.0f));
 
@@ -29,6 +34,8 @@ public:
 
 		s2d::Poly b = s2d::Poly(s2d::Rectangle(s2d::Point(pos.x, pos.y), s2d::Dimension(size.x, size.y)));
 		body->addPoly(b, true);
+		s2d::Poly b1 = s2d::Poly(s2d::Rectangle(s2d::Point(10 * 60, 15 * 60), s2d::Dimension(2 * 60, 2 * 60)));
+		body->addPoly(b1, true);
 		//body->setEdgeActive(0, 0, true);
 		body->setType(CollisionType::Static);
 
@@ -37,7 +44,7 @@ public:
 		Actor::start();
 	}
 
-	void draw(std::shared_ptr<Renderer>& renderer) {
+	void draw(Renderer* renderer) {
 		for (auto b : body->getBodies()) {
 			auto drawn = b.getDrawableSFMLPolygon(5.0, sf::Color(0, 255, 0, 50), sf::Color(255, 0, 0, 255));
 			renderer->window->draw(drawn, renderer->states);
@@ -50,7 +57,7 @@ public:
 	}
 
 
-	std::shared_ptr<GameTransform> trans;
-	std::shared_ptr<PhysicsBody> body;
+	GameTransform* trans;
+	PhysicsBody* body;
 };
 

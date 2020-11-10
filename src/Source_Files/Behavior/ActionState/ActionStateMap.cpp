@@ -9,23 +9,23 @@
 
 
 
-void ActionStateMap::addState(std::shared_ptr<ActionState>& state) {
+void ActionStateMap::addState(ActionState* state) {
 
-	map.emplace(state->getName(), state);
-	state->parent = std::shared_ptr<ActionStateMap>(this);
+	map.emplace(state->getName(), std::unique_ptr<ActionState>(state));
+	state->parent = this;
 	state->init();
-	if (current.get() == nullptr) {
-		current = map.at(state->getName());
+	if (current == nullptr) {
+		current = map.at(state->getName()).get();
 		current->enter();
 	}
 }
 
-void ActionStateMap::setState(const string &key, shared_ptr<InputHandle>& input) {
+void ActionStateMap::setState(const string &key, InputHandle* input) {
 	if (map.find(key) != map.end()) {
-		if (current.get() != nullptr) {
+		if (current != nullptr) {
 			current->exit();
 		}
-		current = map.at(key);
+		current = map.at(key).get();
 		current->enter();
 		current->run(input);
 	}
@@ -39,10 +39,10 @@ void ActionStateMap::setState(const string &key, shared_ptr<InputHandle>& input)
 
 void ActionStateMap::setState(const string &key) {
 	if (map.find(key) != map.end()) {
-		if (current.get() != nullptr) {
+		if (current != nullptr) {
 			current->exit();
 		}
-		current = map.at(key);
+		current = map.at(key).get();
 		current->enter();
 	}
 	else {
@@ -58,12 +58,17 @@ void ActionStateMap::start() {
 	transform = getActor()->getBehavior<GameTransform>();
 	body = getActor()->getBehavior<PhysicsBody>();
 	collisioninfo = getActor()->getBehavior<PhysEventHandler>();
+	speedValues.emplace("gsp", 950.0f * body->getMass());
+	speedValues.emplace("maxGsp", 500.0f);
+	speedValues.emplace("asp", 625.0f * body->getMass());
+	speedValues.emplace("maxAsp", 500.0f);
+	speedValues.emplace("jmp", 40000.0f * body->getMass());
 }
 
-void ActionStateMap::tick(std::shared_ptr<InputHandle>& input) {
+void ActionStateMap::tick(InputHandle* input) {
 	current->run(input);
 }
 
-void ActionStateMap::draw(std::shared_ptr<Renderer>& renderer) {
+void ActionStateMap::draw(Renderer* renderer) {
 	current->draw(renderer);
 }

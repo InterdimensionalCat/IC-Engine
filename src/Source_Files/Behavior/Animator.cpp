@@ -4,18 +4,18 @@
 #include "GameTransform.h"
 #include "Actor.h"
 
-void Animator::addAnimation(std::shared_ptr<Animation>& anim) {
-	anim->parent = std::shared_ptr<Animator>(this);
-	map.emplace(anim->getName(), shared_ptr<Animation>(anim));
-	if (current.get() == nullptr) {
-		current = map.at(anim->getName());
+void Animator::addAnimation(Animation* anim) {
+	anim->parent = this;
+	map.emplace(anim->getName(), std::unique_ptr<Animation>(anim));
+	if (current == nullptr) {
+		current = map.at(anim->getName()).get();
 		current->reset();
 	}
 }
 
 void Animator::setAnimation(const std::string& key) {
 	if (map.find(key) != map.end()) {
-		current = map.at(key);
+		current = map.at(key).get();
 		current->reset();
 	}
 	else {
@@ -30,10 +30,10 @@ void Animator::start() {
 	transform = getActor()->getBehavior<GameTransform>();
 }
 
-void Animator::tick(std::shared_ptr<InputHandle>& input) {
+void Animator::tick(InputHandle* input) {
 
 }
 
-void Animator::draw(std::shared_ptr<Renderer>& renderer) {
+void Animator::draw(Renderer* renderer) {
 	current->draw(renderer);
 }

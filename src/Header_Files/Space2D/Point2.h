@@ -80,7 +80,7 @@ namespace Space2D {
         Point operator/(const float& factor) const noexcept;
 
         //convert the point to an sf::Vector2<T> (T defaults to float)
-        template <typename SFMLType = T>
+        template <typename SFMLType = float>
         sf::Vector2<SFMLType> toSFMLVec() const noexcept {
             return sf::Vector2<SFMLType>(static_cast<SFMLType>(this->x), static_cast<SFMLType>(this->y));
         }

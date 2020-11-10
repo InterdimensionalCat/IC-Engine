@@ -2,13 +2,19 @@
 #include <unordered_map>
 #include <map>
 
+//InputHandle.h
+/*
+ object that manages all input to the program through keyboard/mouse/gamepad(eventually)
+ and distributes events to the eventlisteners
+*/
+
 class Game;
 class EventListener;
 
 class InputHandle
 {
 public:
-	InputHandle(std::shared_ptr<Game> in) : instance(in) {}
+	InputHandle(Game* in) : instance(in) {}
 	~InputHandle() {}
 
 	//TODO: create methods to check for these with a particular window
@@ -30,18 +36,18 @@ public:
 	void updateInput(const float dt);
 
 	//add and remove input event listeners
-	void addListener(shared_ptr<EventListener>& new_listener);
-	void removeListener(shared_ptr<EventListener>& to_remove);
+	void addListener(EventListener* new_listener);
+	void removeListener(EventListener* to_remove);
 
-	std::shared_ptr<RenderWindow> getWindow();
+	RenderWindow* getWindow();
 
 	//map containing all the keys
 	unordered_map<int, Keyboard::Key> pressedKeys;
 	unordered_map<int, Mouse::Button> pressedButtons;
 
-	std::vector<std::shared_ptr<EventListener>> listeners;
+	std::vector<EventListener*> listeners;
 
-	std::shared_ptr<Game> instance;
+	Game* instance;
 
 	//if window is "inactive" for whatever reason, do not
 	//register inputs/poll certain events

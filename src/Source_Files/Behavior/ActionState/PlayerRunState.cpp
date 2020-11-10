@@ -16,18 +16,19 @@ PlayerRunState::PlayerRunState() {
 }
 
 void PlayerRunState::init() {
-	//anim.init(Vector2f(500, 500), Vector2f(128, 128), "walksheet", 21);
+
 }
 
 void PlayerRunState::enter() {
-	//set the player as grounded here
-	//playerptr->animptr = &anim;
-	//playerptr->spriteOffset = Vector2f(0, -10);
+
+	groundAccel = parent->speedValues.at("gsp");
+	maxVelX = parent->speedValues.at("maxGsp");
+
 	framesAir = 0;
 	parent->animator->setAnimation(name);
 }
 
-void PlayerRunState::run(std::shared_ptr<InputHandle>& input) {
+void PlayerRunState::run(InputHandle* input) {
 
 
 	//move if going left, right, can jump from this state
@@ -114,7 +115,7 @@ void PlayerRunState::run(std::shared_ptr<InputHandle>& input) {
 
 }
 
-void PlayerRunState::draw(std::shared_ptr<Renderer>& renderer) {
+void PlayerRunState::draw(Renderer* renderer) {
 
 }
 

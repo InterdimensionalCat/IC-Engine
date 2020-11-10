@@ -11,12 +11,12 @@ public:
 
 	void enter();
 
-	void run(std::shared_ptr<InputHandle>& input);
-	void draw(std::shared_ptr<Renderer>& renderer);
+	void run(InputHandle* input);
+	void draw(Renderer* renderer);
 
 	void exit();
 
-	float airaccel = 2.5f * 60 * 60;
-	float maxVelX = 5.0f * 60 * 60;
+	float airaccel = 2.5f * 60 * 60 * 60;
+	float maxVelX = 5.0f * 60 * 60 * 60;
 
 };

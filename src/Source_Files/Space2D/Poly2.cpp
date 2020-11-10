@@ -57,6 +57,14 @@ const Point& Poly2::centroid() const {
     return cent;
 }
 
+void Poly2::setCenter(const Point2& newcenter) {
+    auto diffVec = Vec(cent, newcenter);
+    cent = newcenter;
+    for (auto& p : points) {
+        p += diffVec;
+    }
+}
+
 NormalVec Poly2::normal(const unsigned int i) const {
     unsigned int j = i < points.size() - 1 ? i + 1 : 0;
     return Vec((*this)[i], (*this)[j]).unitNormal();
@@ -190,7 +198,7 @@ Rectangle Poly2::getAABB() const noexcept {
     float maxx = points[0].x;
     float maxy = points[0].y;
     auto len = size();
-    for (size_t i = 1; i < size(); i++) {
+    for (size_t i = 1; i < len; i++) {
         minx = min(minx, points[i].x);
         maxx = max(maxx, points[i].x);
 

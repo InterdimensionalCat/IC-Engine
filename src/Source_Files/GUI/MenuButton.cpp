@@ -4,7 +4,7 @@
 
 using namespace s2d;
 
-MenuButton::MenuButton(const Point& center, const string& text, const string& font, const size_t& fontSize, std::shared_ptr<MenuState>& parent) : Button(Rectangle(0,0,1,1), 0.0f, Color(0,0,0,0), Color(0,0,0,0)), parent(parent) {
+MenuButton::MenuButton(const Point& center, const string& text, const string& font, const size_t& fontSize, MenuState* parent) : Button(Rectangle(0,0,1,1), 0.0f, Color(0,0,0,0), Color(0,0,0,0)), parent(parent) {
 
 	fs::path filepath(fs::current_path());
 	filepath /= "resources";
@@ -75,7 +75,7 @@ void MenuButton::selected() {
 }
 
 //update functions
-void MenuButton::draw(std::shared_ptr<Renderer>& renderer) {
+void MenuButton::draw(Renderer* renderer) {
 	Widget::draw(renderer);
 	renderer->window->draw(option, renderer->states);
 #ifdef debug_mode

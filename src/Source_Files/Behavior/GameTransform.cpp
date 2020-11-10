@@ -36,11 +36,11 @@ void GameTransform::start() {
 
 }
 
-void GameTransform::tick(std::shared_ptr<InputHandle>& input) {
+void GameTransform::tick(InputHandle* input) {
 	prevpos = pos;
 }
 
-void GameTransform::draw(std::shared_ptr<Renderer>& renderer) {
+void GameTransform::draw(Renderer* renderer) {
 
 	auto target = renderer->window.get();
 	auto states = renderer->states;

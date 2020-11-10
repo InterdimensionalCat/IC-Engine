@@ -37,7 +37,7 @@ void PhysicsBody::translate(const Vec& trans) {
 
 	SweepAndPrune& parent = Behavior::getActor()->owner->engine->sweeper;
 	for (size_t i = 0; i < bodies.size(); i++) {
-		parent.updateBody(std::shared_ptr<PhysicsBody>(this), i);
+		parent.updateBody(this, i);
 	}
 }
 
@@ -98,7 +98,7 @@ Poly PhysicsBody::getBody(const size_t bodyNum) {
 	return bodies[bodyNum];
 }
 
-std::vector<std::shared_ptr<PhysicsBody>>& PhysicsBody::getNeighbors() {
+std::vector<PhysicsBody*>& PhysicsBody::getNeighbors() {
 	return neighbors;
 }
 
@@ -202,20 +202,20 @@ Point PhysicsBody::getMaxBound() const {
 
 void PhysicsBody::start() {
 	transform = Behavior::getActor()->getBehavior<GameTransform>();
-	engine = Behavior::getActor()->owner->engine;
+	engine = Behavior::getActor()->owner->engine.get();
 	collisioninfo = Behavior::getActor()->getBehavior<PhysEventHandler>();
-	engine->addBody(std::shared_ptr<PhysicsBody>(this));
+	engine->addBody(this);
 }
 
-std::shared_ptr<PhysEventHandler> PhysicsBody::getInfo() {
+PhysEventHandler* PhysicsBody::getInfo() {
 	return collisioninfo;
 }
 
-void PhysicsBody::tick(std::shared_ptr<InputHandle>& input) {
+void PhysicsBody::tick(InputHandle* input) {
 
 }
 
-void PhysicsBody::draw(std::shared_ptr<Renderer>& renderer) {
+void PhysicsBody::draw(Renderer* renderer) {
 	if (instance->debug) {
 		for (auto& b : bodies) {
 			renderer->window->draw(b.getDrawableSFMLPolygon(1.0f, sf::Color(0,0,0,0), sf::Color(0, 0, 0, 255)), renderer->states);

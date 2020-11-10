@@ -13,7 +13,7 @@ class MenuButton :
 {
 public:
 
-    MenuButton(const s2d::Point& center, const string& text, const string& font, const size_t& fontSize, std::shared_ptr<MenuState>& parent);
+    MenuButton(const s2d::Point& center, const string& text, const string& font, const size_t& fontSize, MenuState* parent);
 
     //selection functions
     virtual void onSelectEnd();
@@ -25,10 +25,10 @@ public:
     virtual void selected();
 
     //update functions
-    virtual void draw(std::shared_ptr<Renderer>& renderer);
+    virtual void draw(Renderer* renderer);
     virtual void updateListener(const float dt);
 
-    std::shared_ptr<MenuState> parent;
+    MenuState* parent;
     Text option;
     Font buttonFont;
 };

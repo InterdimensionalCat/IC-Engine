@@ -1,4 +1,8 @@
 #pragma once
+//Game.h
+/*
+  Main gameloop object; holds the primary systems that run the game
+*/
 
 class StateManager;
 class InputHandle;
@@ -18,11 +22,11 @@ public:
 	void stop();
 
 
-	//Game Loop Objects
-	shared_ptr <sf::Clock> timer;
-	shared_ptr <InputHandle> input;
-	shared_ptr <StateManager> manager;
-	shared_ptr <Renderer> renderer;
+	//Game Loop Objects:
+	std::unique_ptr<sf::Clock> timer;
+	std::unique_ptr<InputHandle> input;
+	std::unique_ptr<StateManager> manager;
+	std::unique_ptr<Renderer> renderer;
 
 
 	//settings
@@ -41,9 +45,8 @@ public:
 
 	float currentfps = 0;
 	sf::Clock fpstimer = sf::Clock();
-
-	//windows
 };
 
-extern std::shared_ptr<Game> instance;
+//depriciated: dont use unless absolutely necessasary
+extern Game* instance;
 

@@ -4,7 +4,7 @@
 
 
 
-GameState::GameState(std::shared_ptr<StateManager> p) : State(p), currentLevel(nullptr) {
+GameState::GameState(StateManager* p) : State(p), currentLevel(nullptr) {
 
 }
 
@@ -13,19 +13,18 @@ GameState::~GameState() {
 }
 
 void GameState::init() {
-	auto level1 = std::make_shared<Level>();
-	levels.emplace("level1", level1);
-	currentLevel = level1.get();
+	levels.emplace("level1", std::make_unique<Level>());
+	currentLevel = levels.at("level1").get();
 }
 
 void GameState::enter() {
 	currentLevel->loadFrom("");
 }
 
-void GameState::tick(std::shared_ptr<InputHandle>& input) {
+void GameState::tick(InputHandle* input) {
 	currentLevel->tick(input);
 }
-void GameState::draw(std::shared_ptr<Renderer>& renderer) {
+void GameState::draw(Renderer* renderer) {
 	currentLevel->draw(renderer);
 }
 void GameState::exit() {

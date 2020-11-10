@@ -1,13 +1,17 @@
 #pragma once
 #include "Actor.h"
+//Camera.h
+/*
+  The camrea object is responsible for moving the view of the window around and otherwise transforming it
+*/
 
 class Camera : public Actor
 {
 public:
 	string getTag() const { return "Camera"; }
 	virtual void start();
-	virtual void tick(std::shared_ptr<InputHandle>& input);
-	virtual void draw(std::shared_ptr<Renderer>& input);
+	virtual void tick(InputHandle* input);
+	virtual void draw(Renderer* renderer);
 
 	void move(const s2d::Vec& trans);
 	void setPos(const s2d::Point& newpos);

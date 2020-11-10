@@ -32,8 +32,10 @@ void PhysicsEngine::updatePhysics(const float deltaTime) {
 
 	//solve collisions iteratively
 	for (int i = 0; i < iterations; i++) {
-		for (auto it = collisions.begin(); it != collisions.end(); it++) {
-			it->second.solveCollision();
+		for(auto& [key, pair] : collisions) {
+			pair.solveCollision();
+		//for (auto it = collisions.begin(); it != collisions.end(); it++) {
+			//it->second.solveCollision();
 		}
 	}
 
@@ -45,9 +47,9 @@ void PhysicsEngine::sweepAndPrune() {
 	collisions.clear();
 	sweeper.sort();
 
-	for (std::shared_ptr<PhysicsBody>& body : bodies) {
-		if (body->collisioninfo.get() != nullptr) {
-			body->collisioninfo->events.clear();
+	for (PhysicsBody* body : bodies) {
+		if (body->getInfo() != nullptr) {
+			body->getInfo()->events.clear();
 		}
 	}
 
@@ -70,12 +72,14 @@ void PhysicsEngine::sweepAndPrune() {
 
 				if (b1 == b2) continue;
 
-				PairKey key(b1, b2);
+				PairKey key(b1, entry.polyInd, b2, entry2.polyInd);
 				ColPair pair(b1, entry.polyInd, b2, entry2.polyInd);
 				if (pair.valid) {
 					pair.A->getNeighbors().push_back(pair.B);
 					pair.B->getNeighbors().push_back(pair.A);
-					collisions.emplace(key, pair);
+					if (collisions.find(key) == collisions.end()) {
+						collisions.insert(std::pair(key, pair));
+					}
 				}
 			}
 
@@ -96,13 +100,13 @@ void PhysicsEngine::moveBodies(float dt) {
 }
 
 void PhysicsEngine::integrateForce(const float dt) {
-	for (auto &b : bodies) {
+	for (auto b : bodies) {
 		if (b->getMass() == 0) continue;
 		b->addVelocity((gravity +  b->getForce() * b->getInvMass()) * dt);
 	}
 }
 
-void PhysicsEngine::addBody(std::shared_ptr<PhysicsBody> b) {
+void PhysicsEngine::addBody(PhysicsBody* b) {
 	bodies.push_back(b);
 	auto size = bodies.size();
 	auto polySize = b->getBodies().size();

@@ -6,8 +6,8 @@
 using namespace s2d;
 
 //params: fdim = dimension of 1 frame on the texture, tdim = dimension 1 frame to output
-Animation::Animation(const sf::Vector2i& frameDim, const Dimension& targetDim, const std::string& filename, const int numFrames) :
-frameDim(frameDim), targetDim(targetDim.toSFMLVec<float>()), name(filename), numFrames(numFrames) {
+Animation::Animation(const sf::Vector2i& frameDim, const Dimension& targetDim, const std::string& filename, const int numFrames, const Vector2f& offset) :
+frameDim(frameDim), targetDim(targetDim.toSFMLVec<float>()), name(filename), numFrames(numFrames), offset(offset) {
 
 	fs::path filepath(fs::current_path());
 	filepath /= "resources";
@@ -60,7 +60,7 @@ void Animation::reset() {
 }
 
 
-void Animation::draw(std::shared_ptr<Renderer>& renderer) {
+void Animation::draw(Renderer* renderer) {
 
 	auto states = renderer->states;
 	auto target = renderer->window.get();
@@ -71,11 +71,11 @@ void Animation::draw(std::shared_ptr<Renderer>& renderer) {
 	}
 
 	//interpolate frame
-	frame.setOrigin(lerp(parent->transform->getPrevPos().toSFMLVec<float>() - targetDim / 2.0f, 
-		parent->transform->getPos().toSFMLVec<float>() - targetDim / 2.0f, renderer->interpol));
+	//frame.setOrigin(lerp(parent->transform->getPrevPos().toSFMLVec<float>() - targetDim / 2.0f, 
+	//	parent->transform->getPos().toSFMLVec<float>() - targetDim / 2.0f, renderer->interpol));
 
-	frame.setPosition(lerp(parent->transform->getPrevPos().toSFMLVec<float>(),
-		parent->transform->getPos().toSFMLVec<float>(), renderer->interpol));
+	frame.setPosition(lerp(parent->transform->getPrevPos().toSFMLVec<float>() - targetDim / 2.0f + offset,
+		parent->transform->getPos().toSFMLVec<float>() - targetDim / 2.0f + offset, renderer->interpol));
 
 	target->draw(frame, states);
 

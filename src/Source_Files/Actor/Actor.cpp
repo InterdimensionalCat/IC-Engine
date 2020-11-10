@@ -9,18 +9,18 @@ void Actor::start() {
 	}
 }
 
-void Actor::tick(std::shared_ptr<InputHandle>& input) {
+void Actor::tick(InputHandle* input) {
 	for (auto &c : components) {
 		c->tick(input);
 	}
 }
 
-void Actor::draw(std::shared_ptr<Renderer>& renderer) {
+void Actor::draw(Renderer* renderer) {
 	for (auto &c : components) {
 		c->draw(renderer);
 	}
 }
 
-bool Actor::compareTag(const std::shared_ptr<Actor>& other) const {
+bool Actor::compareTag(const Actor* other) const {
 	return getTag() == other->getTag();
 }

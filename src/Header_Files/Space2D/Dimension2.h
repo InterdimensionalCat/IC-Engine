@@ -67,7 +67,7 @@ namespace Space2D {
 
         Dimension2 operator/(const float& factor) const noexcept;
 
-        template <typename SFMLType = T>
+        template <typename SFMLType = float>
         sf::Vector2<SFMLType> toSFMLVec() const noexcept {
             return sf::Vector2<SFMLType>(static_cast<SFMLType>(this->x), static_cast<SFMLType>(this->y));
         }

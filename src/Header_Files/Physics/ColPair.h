@@ -11,19 +11,29 @@ class StaticBody;
 
 //key used to search the map of collisions
 struct PairKey {
-	PairKey(std::shared_ptr<PhysicsBody>& A, std::shared_ptr<PhysicsBody>& B) {
-		if (A.get() < B.get()) {
+	PairKey(PhysicsBody* A, const size_t An, PhysicsBody* B, const size_t Bn) {
+		if (A < B) {
 			bmin = A;
+			minnum = An;
 			bmax = B;
+			maxnum = Bn;
 		}
 		else {
 			bmin = B;
+			minnum = Bn;
 			bmax = A;
+			maxnum = An;
 		}
 	}
 
-	std::shared_ptr<PhysicsBody> bmin;
-	std::shared_ptr<PhysicsBody> bmax;
+	PhysicsBody* bmin;
+	PhysicsBody* bmax;
+	size_t minnum;
+	size_t maxnum;
+
+	const bool operator==(const PairKey& other) {
+		return false;
+	}
 };
 
 //data structure used for collisiosn
@@ -34,11 +44,11 @@ struct ColPair
 public:
 	//construct a collisionPair with the two potentially
 	//colliding bodies
-	ColPair(std::shared_ptr<PhysicsBody> A, const size_t& ANum, std::shared_ptr<PhysicsBody> B, const size_t& BNum);
+	ColPair(PhysicsBody* A, const size_t& ANum, PhysicsBody* B, const size_t& BNum);
 
 	//the two objects in question
-	std::shared_ptr<PhysicsBody> A;
-	std::shared_ptr<PhysicsBody> B;
+	PhysicsBody* A;
+	PhysicsBody* B;
 
 	size_t ABodyNum;
 	size_t BBodyNum;

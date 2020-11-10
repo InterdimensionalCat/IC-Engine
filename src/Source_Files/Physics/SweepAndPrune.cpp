@@ -3,7 +3,7 @@
 #include "PhysicsBody.h"
 
 
-void SweepAndPrune::updateBody(std::shared_ptr<PhysicsBody>& body, const size_t& polyInd) {
+void SweepAndPrune::updateBody(PhysicsBody* body, const size_t& polyInd) {
 	for (size_t i = 0; i < bodies.size(); i++) {
 		if (bodies[i].body == body && bodies[i].polyInd == polyInd) {
 			//update already existing body
@@ -49,7 +49,7 @@ void SweepAndPrune::updateBody(std::shared_ptr<PhysicsBody>& body, const size_t&
 	addBody(body, polyInd);
 }
 
-void SweepAndPrune::addBody(std::shared_ptr<PhysicsBody>& body, const size_t& polyInd) {
+void SweepAndPrune::addBody(PhysicsBody* body, const size_t& polyInd) {
 	bodies.emplace_back(SweepInterval(), body, polyInd);
 	auto& interval = bodies[bodies.size() - 1].interval;
 	auto poly = body->getBodies()[polyInd];

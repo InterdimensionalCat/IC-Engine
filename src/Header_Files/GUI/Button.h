@@ -33,7 +33,7 @@ public:
     virtual void selected();
 
     //update functions
-    virtual void draw(std::shared_ptr<Renderer>& renderer);
+    virtual void draw(Renderer* renderer);
     virtual void updateListener(const float dt) = 0;
 
     enum class ButtonState {

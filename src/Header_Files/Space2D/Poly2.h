@@ -39,6 +39,8 @@ namespace Space2D {
 
         const Point2& centroid() const;
 
+        void setCenter(const Point2& newcenter);
+
         NormalizedVec2 normal(const unsigned int i) const;
 
 

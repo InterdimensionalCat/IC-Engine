@@ -15,14 +15,14 @@ void Camera::start() {
 	Actor::start();
 }
 
-void Camera::tick(std::shared_ptr<InputHandle>& input) {
+void Camera::tick(InputHandle* input) {
 	prevscale = scale;
 	prevrotation = rotation;
 	prevpos = pos;
 	Actor::tick(input);
 }
 
-void Camera::draw(std::shared_ptr<Renderer>& renderer) {
+void Camera::draw(Renderer* renderer) {
 
 	auto target = renderer->window.get();
 

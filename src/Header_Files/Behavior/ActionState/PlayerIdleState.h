@@ -11,8 +11,8 @@ public:
 	void enter();
 	void exit();
 
-	void run(std::shared_ptr<InputHandle>& input);
-	void draw(std::shared_ptr<Renderer>& renderer);
+	void run(InputHandle* input);
+	void draw(Renderer* renderer);
 
 	int framesAir = 0;
 	int maxFramesAir = 7;

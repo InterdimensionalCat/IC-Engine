@@ -19,11 +19,11 @@ struct SweepInterval {
 
 struct SweepEntry {
 	SweepEntry(SweepInterval interval,
-		std::shared_ptr<PhysicsBody> body,
+		PhysicsBody* body,
 		size_t polyInd) : interval(interval), body(body),
 		polyInd(polyInd) {}
 	SweepInterval interval;
-	std::shared_ptr<PhysicsBody> body;
+	PhysicsBody* body;
 	size_t polyInd;
 };
 
@@ -42,10 +42,10 @@ class SweepAndPrune
 public:
 	//adds a new body to the sweep and prune check
 	//or updates the body if it already exists
-	void updateBody(std::shared_ptr<PhysicsBody>& body, const size_t& polyInd);
+	void updateBody(PhysicsBody* body, const size_t& polyInd);
 
 	//strictly adds a new body
-	void addBody(std::shared_ptr<PhysicsBody>& body, const size_t& polyInd);
+	void addBody(PhysicsBody* body, const size_t& polyInd);
 
 	//sort all the intervals
 	void sort();

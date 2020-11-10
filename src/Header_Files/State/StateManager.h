@@ -13,20 +13,20 @@ class State;
 class StateManager
 {
 public:
-	StateManager(std::shared_ptr<Game> in);
+	StateManager(Game* in);
 
 	//StateManager is one of the few objects in the engine 
 	//that uses manual dynamic memory allocation
 	~StateManager();
 
-	void addState(std::shared_ptr<State> state);
+	void addState(State* state);
 	void setState(const string &key);
-	void tick(std::shared_ptr<InputHandle>& input);
-	void draw(std::shared_ptr<Renderer>& renderer);
+	void tick(InputHandle* input);
+	void draw(Renderer* renderer);
 
-	std::shared_ptr<Game> instance;
+	Game* instance;
 private:
-	unordered_map<string, std::shared_ptr<State>> states;
-	std::shared_ptr<State> current = nullptr;
+	unordered_map<string, std::unique_ptr<State>> states;
+	State* current = nullptr;
 };
 

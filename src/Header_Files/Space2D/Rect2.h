@@ -84,7 +84,7 @@ namespace Space2D {
 
         NormalVec getNormal_0_neg1();
 
-        template <typename SFMLType = T>
+        template <typename SFMLType = float>
         sf::Rect<SFMLType> toSFMLRect() const noexcept {
             sf::Vector2<SFMLType> v1 = sf::Vector2<SFMLType>(static_cast<SFMLType>(min.x), static_cast<SFMLType>(min.y));
             sf::Vector2<SFMLType> v2 = sf::Vector2<SFMLType>(static_cast<SFMLType>(getWidth()), static_cast<SFMLType>(getHeight()));

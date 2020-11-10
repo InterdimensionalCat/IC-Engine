@@ -2,6 +2,13 @@
 #include <unordered_map>
 #include "Behavior.h"
 
+//ActionStateMap.h
+/*
+  A very powerful structure that can create both complex behavior responding to player input, as well as
+  create complex AI for enemies. It is a Finite State Machine that runs logic from the current state, and
+  can switch to other states according to input or other factors
+*/
+
 class ActionState;
 class Animator;
 class GameTransform;
@@ -12,22 +19,23 @@ class ActionStateMap : public Behavior
 {
 public:
 
-	void addState(std::shared_ptr<ActionState>& state);
+	void addState(ActionState* state);
 
-	void setState(const string &key, std::shared_ptr<InputHandle>& input);
+	void setState(const string &key, InputHandle* input);
 	void setState(const string &key);
 
-	void tick(std::shared_ptr<InputHandle>& input);
-	virtual void draw(std::shared_ptr<Renderer>& renderer);
+	void tick(InputHandle* input);
+	virtual void draw(Renderer* renderer);
 	void start();
 
-	std::shared_ptr<PhysicsBody> body;
-	std::shared_ptr<GameTransform> transform;
-	std::shared_ptr<PhysEventHandler> collisioninfo;
-	std::shared_ptr<Animator> animator;
+	PhysicsBody* body;
+	GameTransform* transform;
+	PhysEventHandler* collisioninfo;
+	Animator* animator;
+	std::unordered_map<std::string, float> speedValues;
 
 private:
-	std::unordered_map<std::string, shared_ptr<ActionState>> map;
-	std::shared_ptr<ActionState> current = std::shared_ptr<ActionState>(nullptr);
+	std::unordered_map<std::string, unique_ptr<ActionState>> map;
+	ActionState* current = nullptr;
 };
 

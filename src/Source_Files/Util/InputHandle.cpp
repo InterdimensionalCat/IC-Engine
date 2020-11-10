@@ -83,14 +83,14 @@ bool InputHandle::isPressed(Mouse::Button key) const {
 	return pressedButtons.find((int)key) != pressedButtons.end();
 }
 
-std::shared_ptr<RenderWindow> InputHandle::getWindow() {
-	return instance->renderer->window;
+RenderWindow* InputHandle::getWindow() {
+	return instance->renderer->window.get();
 }
 
-void InputHandle::addListener(shared_ptr<EventListener>& new_listener) {
+void InputHandle::addListener(EventListener* new_listener) {
 	listeners.push_back(new_listener);
 }
 
-void InputHandle::removeListener(shared_ptr<EventListener>& to_remove) {
+void InputHandle::removeListener(EventListener* to_remove) {
 	listeners.erase(std::remove(listeners.begin(), listeners.end(), to_remove), listeners.end());
 }

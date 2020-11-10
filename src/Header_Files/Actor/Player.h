@@ -2,6 +2,11 @@
 #include "Actor.h"
 #include <memory>
 
+//Player.h
+/*
+  The character that you control
+*/
+
 class ActionStateMap;
 class GameTransform;
 class PhysicsBody;
@@ -16,11 +21,11 @@ public:
 
 	std::string getTag() const { return "Player"; }
 
-	std::shared_ptr<PhysicsBody> body;
-	std::shared_ptr<ActionStateMap> states;
-	std::shared_ptr<GameTransform> transform;
-	std::shared_ptr<PhysEventHandler> collisioninfo;
-	std::shared_ptr<Animator> animator;
+	PhysicsBody* body;
+	ActionStateMap* states;
+	GameTransform* transform;
+	PhysEventHandler* collisioninfo;
+	Animator* animator;
 
 };
 

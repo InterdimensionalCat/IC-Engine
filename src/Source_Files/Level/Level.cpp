@@ -2,7 +2,6 @@
 #include "Level.h"
 #include "PhysicsEngine.h"
 #include "Player.h"
-#include "Actor.h"
 #include "testActor.h"
 #include "Camera.h"
 
@@ -13,22 +12,21 @@ Level::Level() {
 
 
 void Level::loadFrom(const std::string &mapname) {
-	//player = std::make_shared<Player>();
-	player = std::make_shared<Player>();
-	addActor(static_pointer_cast<Actor>(player));
-	//addActor(static_pointer_cast<Actor>(std::make_shared<TestActor>()));
-	camera = std::make_shared<Camera>();
-	addActor(static_pointer_cast<Actor>(camera));
+	player = new Player();
+	addActor(player);
+	camera = new Camera();
+	addActor(camera);
+	addActor(new TestActor());
 	start();
 }
 
-void Level::addActor(std::shared_ptr<Actor> a) {
-	actors.push_back(a);
-	a->owner = std::shared_ptr<Level>(this);
+void Level::addActor(Actor* a) {
+	actors.push_back(std::unique_ptr<Actor>(a));
+	a->owner = this;
 }
 
-void Level::removeActor(std::shared_ptr<Actor> a) {
-	actors.erase(std::remove_if(actors.begin(), actors.end(), [a](shared_ptr<Actor>& other) {return a.get() == other.get(); }), actors.end());
+void Level::removeActor(Actor* a) {
+	actors.erase(std::remove_if(actors.begin(), actors.end(), [a](std::unique_ptr<Actor>& other) {return a == other.get(); }), actors.end());
 }
 
 void Level::start() {
@@ -37,7 +35,7 @@ void Level::start() {
 	}
 }
 
-void Level::tick(std::shared_ptr<InputHandle>& input) {
+void Level::tick(InputHandle* input) {
 
 	//player->tick(input);
 	engine->updatePhysics(instance->dt);
@@ -55,7 +53,7 @@ void Level::tick(std::shared_ptr<InputHandle>& input) {
 	}
 }
 
-void Level::draw(std::shared_ptr<Renderer>& renderer) {
+void Level::draw(Renderer* renderer) {
 
 
 	//temporary debug drawing code

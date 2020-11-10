@@ -16,18 +16,21 @@ PlayerJumpState::PlayerJumpState() {
 }
 
 void PlayerJumpState::init() {
-	//anim.init(Vec(500, 500), Vec(128, 128), "jumpsheet", 23);
+
 }
 
 void PlayerJumpState::enter() {
-	//playerptr->animptr = &anim;
-	//playerptr->spriteOffset = Vec(0, 0);
+
+	airaccel = parent->speedValues.at("asp");
+	maxVelX = parent->speedValues.at("maxAsp");
+	jump = parent->speedValues.at("jmp");
+
 	jumpangle = NormalVec(0, -1);
 	velXatJump = parent->body->getVelocity().x;
 	parent->animator->setAnimation(name);
 }
 
-void PlayerJumpState::run(std::shared_ptr<InputHandle>& input) {
+void PlayerJumpState::run(InputHandle* input) {
 
 
 	if (parent->animator->current->frameNum < 4) {
@@ -125,7 +128,7 @@ void PlayerJumpState::run(std::shared_ptr<InputHandle>& input) {
 	}
 }
 
-void PlayerJumpState::draw(std::shared_ptr<Renderer>& renderer) {
+void PlayerJumpState::draw(Renderer* renderer) {
 
 }
 

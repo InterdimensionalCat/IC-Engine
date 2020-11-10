@@ -3,21 +3,27 @@
 #include "Behavior.h"
 #include <memory>
 
+//Animator.h
+/*
+  The Animator is in charge of setting and drawing the proper animation on each frame,
+  functions similarly to the ActionStateMap
+*/
+
 class Animation;
 class GameTransform;
 
 class Animator : public Behavior {
 public:
-	void addAnimation(std::shared_ptr<Animation>& anim);
+	void addAnimation(Animation* anim);
 	void setAnimation(const std::string& key);
 
-	void tick(std::shared_ptr<InputHandle>& input);
-	void draw(std::shared_ptr<Renderer>& renderer);
+	void tick(InputHandle* input);
+	void draw(Renderer* renderer);
 	void start();
 
-	std::shared_ptr<GameTransform> transform = std::shared_ptr<GameTransform>(nullptr);
-	std::shared_ptr<Animation> current = std::shared_ptr<Animation>(nullptr);
+	GameTransform* transform = nullptr;
+	Animation* current = nullptr;
 
 private:
-	std::unordered_map<std::string, shared_ptr<Animation>> map;
+	std::unordered_map<std::string, std::unique_ptr<Animation>> map;
 };

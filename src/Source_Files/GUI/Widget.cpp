@@ -11,7 +11,7 @@ Widget::Widget(const Rectangle& bounds, float border_size, const sf::Color& cont
 	: bounds(bounds), border_size(border_size), content_color(content_color), border_color(border_color) {
 }
 
-void Widget::draw(std::shared_ptr<Renderer>& renderer) {
+void Widget::draw(Renderer* renderer) {
 	auto target = renderer->window.get();
 	target->draw(bounds.makeDrawableSFMLRect(border_size, content_color, border_color), renderer->states);
 }

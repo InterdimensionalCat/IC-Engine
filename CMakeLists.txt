@@ -176,6 +176,8 @@ include_directories(${SFML_INCLUDE_DIR})
 target_include_directories(${PROJECT_NAME} PUBLIC ${SFML_INCLUDE_DIR})
 target_include_directories(${PROJECT_NAME} PUBLIC ${SOURCE_H})
 
+set(CMAKE_CXX_CLANG_TIDY clang-tidy -checks=-*,readability-*)
+
 #add_subdirectory(${SRC_DIR})
 
 #get_property(dirs DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY INCLUDE_DIRECTORIES)
