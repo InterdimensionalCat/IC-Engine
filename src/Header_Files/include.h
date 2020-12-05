@@ -75,6 +75,16 @@ struct TextureLoadException : public exception {
 	string path;
 };
 
+struct AudioLoadException : public exception {
+	AudioLoadException(const string& filename, const string& path) : filename(filename), path(path) {}
+	const char* what() const throw () {
+		return "Audio file not found!";
+	}
+
+	string filename;
+	string path;
+};
+
 struct MapIOException : public exception {
 	MapIOException() {}
 	const char * what() const throw () {

@@ -75,11 +75,14 @@ set(S2D_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Space2D")
 set(AS_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Behavior/ActionState")
 set(AS_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Behavior/ActionState")
 
+set(AUDIO_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Audio")
+set(AUDIO_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Audio")
+
 include_directories(
 ${SRC_DIR} ${Actor_H} ${Actor_C} ${Behavior_H} ${Behavior_C} ${Graphics_H} 
 ${Graphics_C} ${GUI_H} ${GUI_C} ${Level_H} ${Level_C} ${Physics_H} ${Physics_C} 
 ${State_H} ${State_C} ${Util_H} ${Util_C} ${S2D_H} ${S2D_C} ${Bodies_H} ${Bodies_C}
-${AS_H} ${AS_C}
+${AS_H} ${AS_C} ${AUDIO_H} ${AUDIO_C}
 )
 
 file(GLOB SRC
@@ -105,6 +108,8 @@ file(GLOB SRC
 "${Bodies_C}/*.cpp"
 "${AS_H}/*.h"
 "${AS_C}/*.cpp"
+"${AUDIO_H}/*.h"
+"${AUDIO_C}/*.cpp"
 "${PROJECT_SOURCE_DIR}/src/Source_Files/GameEngine2020.cpp"
 "${PROJECT_SOURCE_DIR}/src/Header_Files/GameEngine2020.h"
 "${PROJECT_SOURCE_DIR}/src/Source_Files/include.cpp"

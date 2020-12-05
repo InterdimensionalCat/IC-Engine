@@ -1,7 +1,6 @@
 #include "include.h"
 
 
-
 Game::Game() {
 	//initialize settings?
 }
