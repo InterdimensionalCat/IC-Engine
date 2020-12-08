@@ -4,14 +4,15 @@
 #include "GameEngine2020.h"
 #include "InputHandle.h"
 #include "EventListener.h"
+#include "SettingsProvider.h"
 
-void InputHandle::updateInput(const float dt) {
+bool InputHandle::updateInput(const float dt, sf::RenderWindow* window) {
 
 	//clear pressed keys from the previous update
 	pressedKeys.clear();
 	pressedButtons.clear();
 
-	auto MainWindow = getWindow();
+	auto MainWindow = window;
 
 	active = MainWindow->hasFocus();
 	//active = true;
@@ -27,13 +28,13 @@ void InputHandle::updateInput(const float dt) {
 
 	//window events for main window;
 
-	Event event;
+	sf::Event event;
 	while (MainWindow->pollEvent(event))
 	{
 
 		//events that should be polled regardless of window active state:
-		if (event.type == Event::Closed) {
-			instance->stop();
+		if (event.type == sf::Event::Closed) {
+			return false;
 		}
 
 		if (active) {
@@ -45,46 +46,45 @@ void InputHandle::updateInput(const float dt) {
 				}
 			}
 
-			if (event.type == Event::KeyPressed) {
+			if (event.type == sf::Event::KeyPressed) {
 				pressedKeys[(int)event.key.code] = event.key.code;
 
-				if (event.key.code == Keyboard::I) {
-					cout << "In game debug mode toggled\n";
-					instance->debug = !instance->debug;
+				if (event.key.code == sf::Keyboard::I) {
+					std::cout << "In game debug mode toggled\n";
+					SettingsProvider::setSetting<bool>("debug", !SettingsProvider::getSetting<bool>("debug"));
+					//instance->debug = !instance->debug;
 				}
 
-				if (event.key.code == Keyboard::Escape) {
-					instance->stop();
+				if (event.key.code == sf::Keyboard::Escape) {
+					return false;
 				}
 
 			}
 
-			if (event.type == Event::MouseButtonPressed) {
+			if (event.type == sf::Event::MouseButtonPressed) {
 				pressedButtons[(int)event.mouseButton.button] = event.mouseButton.button;
 			}
 
 		}
 	}
+
+	return true;
 }
 
-bool InputHandle::isDown(Keyboard::Key key) const {
-	return Keyboard::isKeyPressed(key);
+bool InputHandle::isDown(sf::Keyboard::Key key) const {
+	return sf::Keyboard::isKeyPressed(key);
 }
 
-bool InputHandle::isDown(Mouse::Button key) const {
-	return Mouse::isButtonPressed(key);
+bool InputHandle::isDown(sf::Mouse::Button key) const {
+	return sf::Mouse::isButtonPressed(key);
 }
 
-bool InputHandle::isPressed(Keyboard::Key key) const {
+bool InputHandle::isPressed(sf::Keyboard::Key key) const {
 	return pressedKeys.find((int)key) != pressedKeys.end();
 }
 
-bool InputHandle::isPressed(Mouse::Button key) const {
+bool InputHandle::isPressed(sf::Mouse::Button key) const {
 	return pressedButtons.find((int)key) != pressedButtons.end();
-}
-
-RenderWindow* InputHandle::getWindow() {
-	return instance->renderer->window.get();
 }
 
 void InputHandle::addListener(EventListener* new_listener) {

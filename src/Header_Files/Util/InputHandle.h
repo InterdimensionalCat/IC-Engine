@@ -8,46 +8,41 @@
  and distributes events to the eventlisteners
 */
 
-class Game;
 class EventListener;
 
 class InputHandle
 {
 public:
-	InputHandle(Game* in) : instance(in) {}
+	InputHandle() {}
 	~InputHandle() {}
 
 	//TODO: create methods to check for these with a particular window
 	//only parse input is the window has focus
 
 	//determine if a key is held down
-	bool isDown(Keyboard::Key key) const;
+	bool isDown(sf::Keyboard::Key key) const;
 
 	//determine if a mouse button is held down
-	bool isDown(Mouse::Button key) const;
+	bool isDown(sf::Mouse::Button key) const;
 
 	//determine if a key was pressed on this update
-	bool isPressed(Keyboard::Key key) const;
+	bool isPressed(sf::Keyboard::Key key) const;
 
 	//determine if a mouse button was pressed on this update
-	bool isPressed(Mouse::Button key) const;
+	bool isPressed(sf::Mouse::Button key) const;
 
 	//read in all input given on this frame
-	void updateInput(const float dt);
+	bool updateInput(const float dt, sf::RenderWindow* window);
 
 	//add and remove input event listeners
 	void addListener(EventListener* new_listener);
 	void removeListener(EventListener* to_remove);
 
-	RenderWindow* getWindow();
-
 	//map containing all the keys
-	unordered_map<int, Keyboard::Key> pressedKeys;
-	unordered_map<int, Mouse::Button> pressedButtons;
+	std::unordered_map<int, sf::Keyboard::Key > pressedKeys;
+	std::unordered_map<int, sf::Mouse::Button> pressedButtons;
 
 	std::vector<EventListener*> listeners;
-
-	Game* instance;
 
 	//if window is "inactive" for whatever reason, do not
 	//register inputs/poll certain events

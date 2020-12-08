@@ -20,16 +20,16 @@ public:
 	virtual void tick(InputHandle* input);
 	virtual void draw(Renderer* renderer);
 	virtual void exit();
-	virtual string getName() const { return "MENU"; };
+	virtual std::string getName() const { return "MENU"; };
 
 	void select(std::string pressedButtonName);
 private:
-	Text title;
+	sf::Text title;
 	std::array<std::unique_ptr<MenuButton>, 3> buttons;
 
 	//careful, font needs to be active 
 	//for the entire duration of the text it
 	//is being used for
-	Font titleFont;
+	sf::Font titleFont;
 };
 

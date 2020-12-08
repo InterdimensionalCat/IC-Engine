@@ -13,10 +13,10 @@ class Button :
 
 
 public:
-    Button(const s2d::Rectangle& bounds, const float bordersize, const Color& interior_color, const Color& border_color);
+    Button(const s2d::Rectangle& bounds, const float bordersize, const sf::Color& interior_color, const sf::Color& border_color);
 
     //Event handling functions
-    virtual void handleEvent(const sf::Event& e, Window& window);
+    virtual void handleEvent(const sf::Event& e, sf::Window& window);
     void onMouseMove(const sf::Event& e);
     void onMousePress(const sf::Event& e);
     void onMouseRelease(const sf::Event& e);
