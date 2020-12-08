@@ -83,40 +83,51 @@ ${AS_H} ${AS_C}
 )
 
 file(GLOB SRC
-"${Actor_H}/*.h"
-"${Actor_C}/*.cpp"
-"${Behavior_H}/*.h"
-"${Behavior_C}/*.cpp"
-"${Graphics_H}/*.h"
-"${Graphics_C}/*.cpp"
-"${GUI_H}/*.h"
-"${GUI_C}/*.cpp"
-"${Level_H}/*.h"
-"${Level_C}/*.cpp"
-"${Physics_H}/*.h"
-"${Physics_C}/*.cpp"
-"${State_H}/*.h"
-"${State_C}/*.cpp"
+#"${Actor_H}/*.h"
+#"${Actor_C}/*.cpp"
+#"${Behavior_H}/*.h"
+#"${Behavior_C}/*.cpp"
+#"${Graphics_H}/*.h"
+#"${Graphics_C}/*.cpp"
+#"${GUI_H}/*.h"
+#"${GUI_C}/*.cpp"
+#"${Level_H}/*.h"
+#"${Level_C}/*.cpp"
+#"${Physics_H}/*.h"
+#"${Physics_C}/*.cpp"
+#"${State_H}/*.h"
+#"${State_C}/*.cpp"
 "${Util_H}/*.h"
 "${Util_C}/*.cpp"
-"${S2D_H}/*.h"
-"${S2D_C}/*.cpp"
-"${Bodies_H}/*.h"
-"${Bodies_C}/*.cpp"
-"${AS_H}/*.h"
-"${AS_C}/*.cpp"
+#"${S2D_H}/*.h"
+#"${S2D_C}/*.cpp"
+#"${Bodies_H}/*.h"
+#"${Bodies_C}/*.cpp"
+#"${AS_H}/*.h"
+#"${AS_C}/*.cpp"
 "${PROJECT_SOURCE_DIR}/src/Source_Files/GameEngine2020.cpp"
 "${PROJECT_SOURCE_DIR}/src/Header_Files/GameEngine2020.h"
 "${PROJECT_SOURCE_DIR}/src/Source_Files/include.cpp"
 "${PROJECT_SOURCE_DIR}/src/Header_Files/include.h"
+
+
+"${State_H}/StateManager.h"
+"${State_C}/StateManager.cpp"
+"${Graphics_H}/Renderer.h"
+"${Graphics_C}/Renderer.cpp"
 )
 
 if(WIN32)
 
 #windows-specific stuff
 set(SFML_DIR "${PROJECT_SOURCE_DIR}/libraries/Windows/SFML/lib/cmake/SFML")
+
 set(SFML_LIB_DIR "${PROJECT_SOURCE_DIR}/libraries/Windows/SFML/lib")
+set(BOOST_LIB_DIR "${PROJECT_SOURCE_DIR}/libraries/Windows/boost_1_74_0/stage/lib")
+
 set(SFML_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/libraries/Windows/SFML/include")
+set(BOOST_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/libraries/Windows/boost_1_74_0")
+set(Boost_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/libraries/Windows/boost_1_74_0")
 
 file(GLOB COMBINED_DLL_FILES "${PROJECT_SOURCE_DIR}/libraries/Windows/SFML/bin/*.dll")
 
@@ -135,8 +146,14 @@ ENDIF(X11_FOUND)
 
 
     set(SFML_DIR "${PROJECT_SOURCE_DIR}/libraries/Linux/SFML/lib/cmake/SFML")
+
     set(SFML_LIB_DIR "${PROJECT_SOURCE_DIR}/libraries/Linux/SFML/lib")
+    set(BOOST_LIB_DIR "${PROJECT_SOURCE_DIR}/libraries/Linux/boost_1_74_0/stage/lib")
+
     set(SFML_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/libraries/Linux/SFML/include")
+    set(BOOST_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/libraries/Linux/boost_1_74_0")
+    set(Boost_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/libraries/Linux/boost_1_74_0")
+
     set(CMAKE_CXX_COMPILER /usr/bin/g++-10)
 endif()
 
@@ -147,9 +164,36 @@ endif()
 
 
 find_package(SFML 2.5 COMPONENTS graphics audio window network system REQUIRED)
+
+
+   set(Boost_USE_STATIC_LIBS        ON)
+   set(Boost_USE_MULTITHREADED      ON)
+   set(Boost_USE_STATIC_RUNTIME    OFF)
+   find_package(Boost 1.74.0 COMPONENTS date_time filesystem log system thread chrono atomic regex REQUIRED)
+
+   include_directories(${Boost_INCLUDE_DIRS})
+
+
 add_executable(${PROJECT_NAME} ${SRC})
 
 target_link_libraries(${PROJECT_NAME} sfml-window sfml-graphics sfml-audio sfml-system sfml-network)
+
+#target_link_libraries(${PROJECT_NAME} ${BOOST_LIB_DIR})
+
+#set(Boost_USE_STATIC_LIBS OFF) 
+#set(Boost_USE_MULTITHREADED ON)  
+#set(Boost_USE_STATIC_RUNTIME OFF)
+
+
+target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
+
+#if(Boost_FOUND)
+#   message(STATUS "boost found")
+#endif()
+#link_directories(${Boost_LOG_LIBRARY})
+#include_directories(${Boost_INCLUDE_DIRS}) 
+#target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
+#target_link_libraries(${PROJECT_NAME} Boost::log)
 
 #target_link_libraries(${PROJECT_NAME} 
 #${SFML_LIB_DIR}/sfml-graphics-s-d
@@ -173,7 +217,9 @@ target_link_libraries(${PROJECT_NAME} sfml-window sfml-graphics sfml-audio sfml-
 #target_link_libraries(${PROJECT_NAME} ${SFML_LIBRARIES} ${SFML_DEPENDENCIES})
 
 include_directories(${SFML_INCLUDE_DIR})
+include_directories(${BOOST_INCLUDE_DIR})
 target_include_directories(${PROJECT_NAME} PUBLIC ${SFML_INCLUDE_DIR})
+target_include_directories(${PROJECT_NAME} PUBLIC ${BOOST_INCLUDE_DIR})
 target_include_directories(${PROJECT_NAME} PUBLIC ${SOURCE_H})
 
 set(CMAKE_CXX_CLANG_TIDY clang-tidy -checks=-*,readability-*)

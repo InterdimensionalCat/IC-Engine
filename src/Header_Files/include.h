@@ -17,9 +17,6 @@ and a few game related includes that almost every file uses
 #include <string>
 #include <filesystem>
 
-using namespace std;
-using namespace sf;
-
 namespace fs = std::filesystem;
 
 //windows specifc macros/setup
@@ -36,11 +33,11 @@ namespace fs = std::filesystem;
  to better diagnose memory leaks. Since I mostly use smart pointers nowadays
  not super helpful anymore
 */
-#ifdef _DEBUG
-#define new new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
-#else
-#define new new
-#endif
+//#ifdef _DEBUG
+//#define new new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+//#else
+//#define new new
+//#endif
 
 ///////////////////////////////////////////////////////////
 
@@ -65,17 +62,17 @@ namespace fs = std::filesystem;
 #include "Renderer.h"
 
 #ifdef debug_mode
-struct TextureLoadException : public exception {
-	TextureLoadException(const string &filename, const string &path) : filename(filename), path(path) {}
+struct TextureLoadException : public std::exception {
+	TextureLoadException(const std::string &filename, const std::string &path) : filename(filename), path(path) {}
 	const char * what() const throw () {
 		return "Texture file not found!";
 	}
 
-	string filename;
-	string path;
+	std::string filename;
+	std::string path;
 };
 
-struct MapIOException : public exception {
+struct MapIOException : public std::exception {
 	MapIOException() {}
 	const char * what() const throw () {
 		return "Error loading Map/Tileset file!";
@@ -83,7 +80,7 @@ struct MapIOException : public exception {
 
 };
 
-struct BadInfinityException : public exception {
+struct BadInfinityException : public std::exception {
 	BadInfinityException() {}
 	const char * what() const throw () {
 		return "Value cannot be infinity!";

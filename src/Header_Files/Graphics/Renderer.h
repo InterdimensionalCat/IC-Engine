@@ -18,13 +18,11 @@ class Renderer
 {
 public:
 
-	Renderer(Game* in);
+	Renderer();
 	~Renderer();
 
 	float interpol = 0.0f;
-	std::unique_ptr<RenderWindow> window;
-	RenderStates states = RenderStates::Default;
-
-	Game* instance = nullptr;
+	std::unique_ptr<sf::RenderWindow> window;
+	sf::RenderStates states = sf::RenderStates::Default;
 };
 

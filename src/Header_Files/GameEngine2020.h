@@ -9,8 +9,6 @@ class InputHandle;
 class PhysicsEngine;
 class Renderer;
 
-enum class TimeStepType {Fixed, Variable};
-
 class Game {
 public:
 
@@ -30,23 +28,20 @@ public:
 
 
 	//settings
-	const string TITLE = "Game Engine 2020";
-	const int WIDTH = 1920;
-	const int HEIGHT = 1080;
-	float targetFPS = 60.0f;
-	const float targetDT = 1.0f / 60.0f;
+	//const string TITLE = "Game Engine 2020";
+	//const int WIDTH = 1920;
+	//const int HEIGHT = 1080;
+	//float targetFPS = 60.0f;
+	//const float targetDT = 1.0f / 60.0f;
 	float dt = 0.0f;
 
-	bool debug = false;
-	bool paused = false;
-	bool vsync = false;
-	bool running = true;
-	TimeStepType timeType = TimeStepType::Fixed;
+	//bool debug = false;
+	//bool paused = false;
+	//bool vsync = false;
+	//bool running = true;
+	//TimeStepType timeType = TimeStepType::Fixed;
 
 	float currentfps = 0;
 	sf::Clock fpstimer = sf::Clock();
 };
-
-//depriciated: dont use unless absolutely necessasary
-extern Game* instance;
 

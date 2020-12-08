@@ -13,7 +13,7 @@ class MenuButton :
 {
 public:
 
-    MenuButton(const s2d::Point& center, const string& text, const string& font, const size_t& fontSize, MenuState* parent);
+    MenuButton(const s2d::Point& center, const std::string& text, const std::string& font, const size_t& fontSize, MenuState* parent);
 
     //selection functions
     virtual void onSelectEnd();
@@ -29,6 +29,6 @@ public:
     virtual void updateListener(const float dt);
 
     MenuState* parent;
-    Text option;
-    Font buttonFont;
+    sf::Text option;
+    sf::Font buttonFont;
 };

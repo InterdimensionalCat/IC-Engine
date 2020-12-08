@@ -19,7 +19,7 @@ public:
 	virtual void tick(InputHandle* input) = 0;
 	virtual void draw(Renderer* renderer) = 0;
 	virtual void exit() = 0;
-	virtual string getName() const = 0;
+	virtual std::string getName() const = 0;
 
 	StateManager* parent;
 };

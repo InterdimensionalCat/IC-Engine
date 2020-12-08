@@ -20,17 +20,17 @@ public:
 	virtual void tick(InputHandle* input);
 	virtual void draw(Renderer* renderer);
 	virtual void exit();
-	virtual string getName() const { return "GAME"; }
+	virtual std::string getName() const { return "GAME"; }
 
-	string getCurrentLevel() {
+	std::string getCurrentLevel() {
 		return "";
 	}
 
-	void switchLevel(const string &next) {
+	void switchLevel(const std::string &next) {
 
 	}
 
-	unordered_map<string, std::unique_ptr<Level>> levels;
+	std::unordered_map<std::string, std::unique_ptr<Level>> levels;
 	Level* currentLevel;
 };
 
