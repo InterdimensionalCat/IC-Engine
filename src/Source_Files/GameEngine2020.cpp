@@ -1,6 +1,6 @@
 #include "include.h"
 #include "SettingsProvider.h"
-#include "Logger.h"
+#include "LoggerProvider.h"
 
 
 Game::Game() {
@@ -133,8 +133,8 @@ int main(int argc, char *argv[])
 #ifdef debug_mode
 	//std::cout << "Running in debug mode.\n";
 	//std::cout << "Current working directory: " << fs::current_path().generic_u8string() << "\n";
-	logInstance.log("Running in debug mode", LogSeverity::Debug);
-	logInstance.log("Current working directory: " + fs::current_path().generic_u8string(), LogSeverity::Info);
+	LoggerProvider::log("Running in debug mode", LogSeverity::Debug);
+	LoggerProvider::log("Current working directory: " + fs::current_path().generic_u8string(), LogSeverity::Info);
 #endif
 
 #ifdef _WIN32
@@ -152,6 +152,9 @@ int main(int argc, char *argv[])
 #ifdef __APPLE__
 	cout << "Current OS is: Mac OSX\n";
 #endif
+
+	float x = SettingsProvider::getSetting<float>("fail");
+	float y = SettingsProvider::getSetting<float>("Width");
 
 	instance->game();
 	delete instance;
