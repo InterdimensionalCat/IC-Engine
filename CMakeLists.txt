@@ -1,7 +1,18 @@
 ﻿# CMakeList.txt : CMake project for GameEngine2020, include source and define
 # project specific logic here.
 #
+
+#ccmake[-Wno-dev]
 # set minimum version required for CMake
+
+function(message)
+    if (NOT MESSAGE_QUIET)
+        #_message(${ARGN})
+    endif()
+endfunction()
+
+set(MESSAGE_QUIET OFF)
+
 cmake_minimum_required (VERSION 3.8)
 
 set(PROJECT_NAME "GameEngine2020")
@@ -137,11 +148,15 @@ FILE(COPY ${COMBINED_DLL_FILES} DESTINATION "${CMAKE_BINARY_DIR}")
    else()
 
    #linux-specific stuff
+   set(MESSAGE_QUIET ON)
    MESSAGE("Searching X11")
+   set(MESSAGE_QUIET OFF)
 FIND_PACKAGE(X11 REQUIRED)
 IF(X11_FOUND)
+set(MESSAGE_QUIET ON)
     MESSAGE(" X11 include path: " ${X11_INCLUDE_DIR})
     MESSAGE(" X11 library path: " ${X11_LIBRARIES})
+    set(MESSAGE_QUIET OFF)
 ENDIF(X11_FOUND)
 
 
@@ -158,7 +173,9 @@ ENDIF(X11_FOUND)
 endif()
 
 if(CMAKE_BUILD_TYPE MATCHES Debug)
+    set(MESSAGE_QUIET ON)
     message(STATUS "building on debug mode; debug_mode defined")
+    set(MESSAGE_QUIET OFF)
     add_compile_definitions(debug_mode)
 endif()
 

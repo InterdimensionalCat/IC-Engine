@@ -2,6 +2,8 @@
 #include <iostream>
 #include <ostream>
 #include <string>
+#include <sstream>
+#include <boost/date_time.hpp>
 #include <boost/log/trivial.hpp>
 #include <boost/log/sinks.hpp>
 #include <boost/log/common.hpp>
@@ -24,6 +26,8 @@
 
 #include <boost/log/attributes/scoped_attribute.hpp>
 #include <boost/log/utility/setup/common_attributes.hpp>
+#include <boost/date_time/local_time/local_time.hpp>
+#include <iostream>
 
 
 namespace logging = boost::log;
@@ -51,33 +55,6 @@ enum class LogType {
     Audio
 };
 
-std::ostream& operator<< (std::ostream& os, const LogType type) {
-    switch (type) {
-    case(LogType::General):
-        os << "General";
-        break;
-    case(LogType::Input):
-        os << "Input";
-        break;
-    case(LogType::Physics):
-        os << "Physics";
-        break;
-    case(LogType::Ai):
-        os << "Ai";
-        break;
-    case(LogType::Rendering):
-        os << "Rendering";
-        break;
-    case(LogType::Audio):
-        os << "Audio";
-        break;
-    }
-
-    return os;
-}
-
-BOOST_LOG_ATTRIBUTE_KEYWORD(log_type, "log_type", LogType);
-
 class Logger {
 public:
     Logger() {
@@ -85,21 +62,23 @@ public:
         fs::path filepath(fs::current_path());
         filepath /= "logs";
 
-        //boost::log::add_file_log("sample.log");
+        boost::posix_time::ptime timeLocal = boost::posix_time::second_clock::local_time();
+        boost::gregorian::date dateObj = timeLocal.date();
 
-        boost::log::register_simple_formatter_factory<
-            boost::log::trivial::severity_level, char >("log_type");
+        std::ostringstream oss;
+        oss << dateObj;
 
         logging::add_file_log
         (
-            keywords::file_name = "sample_%N.log",
+            //keywords::file_name = "sample_%N.log",
+            keywords::file_name = oss.str() + "_%N.log",
             keywords::rotation_size = 10 * 1024 * 1024,
             keywords::target = filepath.string(),
-            keywords::format = "[Thread:%ThreadID%][%TimeStamp%][%Severity%][%log_type%]: %Message%"
+            keywords::format = "[Thread:%ThreadID%][%TimeStamp%][%Severity%]%Message%"
         );
 
         logging::add_console_log(std::cout, 
-            keywords::format = "[Thread:%ThreadID%][%TimeStamp%][%Severity%][%log_type%]: %Message%"
+            keywords::format = "[Thread:%ThreadID%][%TimeStamp%][%Severity%]%Message%"
         );
 
         logging::core::get()->set_filter
@@ -108,35 +87,55 @@ public:
         );
 
         logging::add_common_attributes();
-        logging::core::get()->add_global_attribute("log_type", logtype);
-       // BOOST_LOG_TRIVIAL(trace) << "logtype created and registered";
     }
+
 	void log(const std::string &message, const LogSeverity severity = LogSeverity::Debug, const LogType type = LogType::General) {
+        //std::ostringstream oss;
+        //oss << "[" << type << "]: " << message;
         switch (severity) {
         case LogSeverity::Trace:
-            BOOST_LOG_TRIVIAL(trace) << message;
+            BOOST_LOG_TRIVIAL(trace) << "[" << type << "]: " << message;
             break;
         case LogSeverity::Debug:
-            BOOST_LOG_TRIVIAL(debug) << message;
+            BOOST_LOG_TRIVIAL(debug) << "[" << type << "]: " << message;
             break;
         case LogSeverity::Info:
-            BOOST_LOG_TRIVIAL(info) << message;
+            BOOST_LOG_TRIVIAL(info) << "[" << type << "]: " << message;
             break;
         case LogSeverity::Warning:
-            BOOST_LOG_TRIVIAL(warning) << message;
+            BOOST_LOG_TRIVIAL(warning) << "[" << type << "]: " << message;
             break;
         case LogSeverity::Error:
-            BOOST_LOG_TRIVIAL(error) << message;
+            BOOST_LOG_TRIVIAL(error) << "[" << type << "]: " << message;
             break;
         case LogSeverity::Fatal:
-            BOOST_LOG_TRIVIAL(fatal) << message;
+            BOOST_LOG_TRIVIAL(fatal) << "[" << type << "]: " << message;
             break;
         }
 	}
 private:
-    //src::severity_logger< severity_level > slg;
-    //src::severity_logger_mt<LogSeverity> slg;
-    attrs::mutable_constant<LogType> logtype = attrs::mutable_constant<LogType>(LogType::General);
-};
+    friend std::ostream& operator<< (std::ostream& os, const LogType type) {
+        switch (type) {
+        case(LogType::General):
+            os << "General";
+            break;
+        case(LogType::Input):
+            os << "Input";
+            break;
+        case(LogType::Physics):
+            os << "Physics";
+            break;
+        case(LogType::Ai):
+            os << "Ai";
+            break;
+        case(LogType::Rendering):
+            os << "Rendering";
+            break;
+        case(LogType::Audio):
+            os << "Audio";
+            break;
+        }
 
-static inline Logger logInstance = Logger();
+        return os;
+    }
+};
