@@ -58,32 +58,35 @@ namespace fs = std::filesystem;
 #include "SFMLHelpers.h"
 #include "GameEngine2020.h"
 #include "InputHandle.h"
-#include "StateManager.h"
 #include "Renderer.h"
+#include "LoggerProvider.h"
+#include "SettingsProvider.h"
 
+namespace ic {
 #ifdef debug_mode
-struct TextureLoadException : public std::exception {
-	TextureLoadException(const std::string &filename, const std::string &path) : filename(filename), path(path) {}
-	const char * what() const throw () {
-		return "Texture file not found!";
-	}
+	struct TextureLoadException : public std::exception {
+		TextureLoadException(const std::string& filename, const std::string& path) : filename(filename), path(path) {}
+		const char* what() const throw () {
+			return "Texture file not found!";
+		}
 
-	std::string filename;
-	std::string path;
-};
+		std::string filename;
+		std::string path;
+	};
 
-struct MapIOException : public std::exception {
-	MapIOException() {}
-	const char * what() const throw () {
-		return "Error loading Map/Tileset file!";
-	}
+	struct MapIOException : public std::exception {
+		MapIOException() {}
+		const char* what() const throw () {
+			return "Error loading Map/Tileset file!";
+		}
 
-};
+	};
 
-struct BadInfinityException : public std::exception {
-	BadInfinityException() {}
-	const char * what() const throw () {
-		return "Value cannot be infinity!";
-	}
-};
+	struct BadInfinityException : public std::exception {
+		BadInfinityException() {}
+		const char* what() const throw () {
+			return "Value cannot be infinity!";
+		}
+	};
 #endif
+}

@@ -1,3 +1,4 @@
 #pragma once
-
-enum class TimeStepType { Fixed, Variable };
+namespace ic {
+	enum class TimeStepType { Fixed, Variable };
+}

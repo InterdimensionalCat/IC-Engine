@@ -102,8 +102,8 @@ file(GLOB SRC
 #"${Graphics_C}/*.cpp"
 #"${GUI_H}/*.h"
 #"${GUI_C}/*.cpp"
-#"${Level_H}/*.h"
-#"${Level_C}/*.cpp"
+"${Level_H}/*.h"
+"${Level_C}/*.cpp"
 #"${Physics_H}/*.h"
 #"${Physics_C}/*.cpp"
 #"${State_H}/*.h"
@@ -120,12 +120,6 @@ file(GLOB SRC
 "${PROJECT_SOURCE_DIR}/src/Header_Files/GameEngine2020.h"
 "${PROJECT_SOURCE_DIR}/src/Source_Files/include.cpp"
 "${PROJECT_SOURCE_DIR}/src/Header_Files/include.h"
-
-
-"${State_H}/StateManager.h"
-"${State_C}/StateManager.cpp"
-"${Graphics_H}/Renderer.h"
-"${Graphics_C}/Renderer.cpp"
 )
 
 if(WIN32)
