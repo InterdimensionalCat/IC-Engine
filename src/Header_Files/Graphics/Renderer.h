@@ -10,19 +10,52 @@
 */
 #pragma once
 #include <vector>
+#include <map>
+#include <memory>
+#include <queue>
+#include "SFML\Graphics.hpp"
+#include "Texture.h"
+#include "DrawableObject.h"
 
-class Game;
-struct WindowData;
+namespace ic {
 
-class Renderer
-{
-public:
+	struct RenderEvent;
+	class DrawableObject;
+	class RenderComponent;
 
-	Renderer();
-	~Renderer();
+	class Renderer
+	{
+	public:
 
-	float interpol = 0.0f;
-	std::unique_ptr<sf::RenderWindow> window;
-	sf::RenderStates states = sf::RenderStates::Default;
-};
+		Renderer();
+		~Renderer();
+		void updateInput();
+		void preRender(const float interpol);
+		void render();
+		void postRender();
+		void addEvent(std::unique_ptr<RenderEvent> event);
+
+		void loadTexture(const std::string &texturename);
+		void unloadTexture(const std::string& texturename);
+		void addDrawable(std::unique_ptr<DrawableObject> drawableToAdd);
+		void makeChild(const ActorUID& parentUID, const ActorUID& childUID);
+		void makeIndependent(const ActorUID& childUID);
+		void updateDrawableComponents();
+	private:
+
+		friend class DrawableObject;
+
+		float interpol = 0.0f;
+		sf::RenderStates states = sf::RenderStates::Default;
+		std::unique_ptr<sf::RenderWindow> window;
+		std::map<std::string, std::unique_ptr<ic::Texture>> textures;
+		std::vector<std::unique_ptr<DrawableObject>> drawables;
+
+		std::vector<std::unique_ptr<RenderComponent>> components;
+
+		void handleEvents();
+		bool pollEvent(std::unique_ptr<RenderEvent>& event);
+		std::queue<std::unique_ptr<RenderEvent>> renderEventQueue;
+	};
+}
 

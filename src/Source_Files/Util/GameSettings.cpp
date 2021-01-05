@@ -3,6 +3,8 @@
 #include <variant>
 #include <string>
 
+using namespace ic;
+
 GameSettings::GameSettings() {
 	setSetting("Title", std::string("Game Engine 2020"));
 	setSetting("Width", 1920);

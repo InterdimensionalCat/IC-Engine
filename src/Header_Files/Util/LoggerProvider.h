@@ -1,17 +1,18 @@
 #pragma once
 #include "Logger.h"
 
+namespace ic {
+	class LoggerProvider {
+	public:
+		static void log(const std::string& message, const LogSeverity severity = LogSeverity::Debug, const LogType type = LogType::General) {
+			if (!logger) {
+				logger = std::make_unique<Logger>();
+			}
 
-class LoggerProvider {
-public:
-	static void log(const std::string& message, const LogSeverity severity = LogSeverity::Debug, const LogType type = LogType::General) {
-		if (!logger) {
-			logger = std::make_unique<Logger>();
+			logger->log(message, severity, type);
 		}
 
-		logger->log(message, severity, type);
-	}
-
-private:
-	inline static std::unique_ptr<Logger> logger;
-};
+	private:
+		inline static std::unique_ptr<Logger> logger;
+	};
+}
