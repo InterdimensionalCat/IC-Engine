@@ -1,7 +1,7 @@
 #include "DrawableObject.h"
 #include "SFML\Graphics.hpp"
 #include "Renderer.h"
-#include "ActorUID"
+#include "ActorUID.h"
 
 using namespace ic;
 

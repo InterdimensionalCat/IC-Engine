@@ -1,78 +1,83 @@
 #pragma once
-#include <unordered_map>
+#include <map>
 #include <memory>
+#include <exception>
+#include <vector>
 
 namespace ic {
-	struct ActorUID {
+	class ActorUID {
 
-
+	public:
 		static void registerNewActor(const std::string& actorname) {
-			int actorCount = (int)instanceMap.size();
-			nametoidmap.emplace(actorname, actorCount);
-			instanceMap.emplace(actorCount, std::vector<std::shared_ptr<ActorUID>>(0));
+			auto idnum = nametoidmap.find(actorname);
+			if (idnum != nametoidmap.end()) {
+				//actor already exists
+				throw std::exception();
+			}
+			else {
+				nametoidmap.insert(std::pair<std::string, int>(actorname, idcounter));
+				actorIDs.push_back(std::make_shared<int>(idcounter));
+				instances.push_back(std::vector<std::shared_ptr<int>>());
+				idcounter++;
+			}
 		}
 
 		static void removeActor(const std::string& actorname) {
 			auto actorentry = nametoidmap.find(actorname);
+
 			if (actorentry == nametoidmap.end()) {
-				//log the error
-				throw exception();
+				//log the error: name doesnt exist
+				throw std::exception();
 			}
 			else {
-				return id->second;
-			}
-		}
 
-		static int nameToID(const std::string& actorname) {
-			auto id = nametoidmap.find(actorname);
-			if (id == nametoidmap.end()) {
-				//log the error
-				throw exception();
-			}
-			else {
-				return id->second;
-			}
-		}
+				//remove from id list
+				int actorID = actorentry->second;
+				actorIDs.erase(std::remove_if(actorIDs.begin(), actorIDs.end(), [actorID](std::shared_ptr<int>& id) {
+					return *id == actorID;
+					}), actorIDs.end());
 
-		//creates a new ActorUID number and garuntees that the instancenum for each
-		//actor is unique
-		static std::shared_ptr<ActorUID> makeNewInstance(const int actorID) {
-			auto actorInstances = instanceMap.find(actorID);
-			if (actorInstances == instanceMap.end()) {
-				//log the error
-				throw exception();
-			}
-			else {
-				auto& instancesVec = actorInstances->second;
-				int newinstancenum = instancesVec.size();
-				for (size_t i = 0; i < newinstancenum; i++) {
-					if (instancesVec.at(i).use_count() == 1) {
-						//this instance value is free to use
-						instancesVec.at(i)->actorID = actorID;
-						return instancesVec.at(i);
+				//update actorids
+				for (size_t i = 0; i < actorIDs.size(); i++) {
+					if (*actorIDs.at(i) > actorID) {
+						*actorIDs.at(i) -= 1;
 					}
 				}
 
-				//no existing instance value is free
-				instancesVec.push_back(std::make_shared<ActorUID>(actorID, newinstancenum));
-			}
+				//remove from nametoidmap
+				nametoidmap.erase(actorname);
 
-			auto count = instanceCount.find(actorID);
-			if (count == instanceCount.end()) {
-				instanceCount.insert(std::pair<int, int>(actorID, 0));
-				instanceCount.at(actorID) += 1;
-				return ActorUID(actorID, 0);
+				//update nametoidmap
+				for (auto& nameMapPair : nametoidmap) {
+					if (nameMapPair.second > actorID) {
+						nameMapPair.second--;
+					}
+				}
+
+
+				//remove all instances from the instancemap
+				instances.erase(instances.begin() + actorID);
+		
+
+			}
+		}
+
+
+		//creates a new ActorUID number and garuntees that the instancenum for each
+		//actor is unique
+		//this also removes instances currently being unused
+		static ActorUID createNewInstance(const std::string& actorname) {
+			auto idnum = nametoidmap.find(actorname);
+			if (idnum == nametoidmap.end()) {
+				//actor does not exist/not registered
+				throw std::exception();
 			}
 			else {
-				auto instNum = count->second;
-				count->second++;
-				return ActorUID(actorID, instNum);
+				//else create the instance
+				return createNewInstance(idnum->second);
 			}
 		}
-		static int getInstanceCount(const int actorID) const {
-			auto count = instanceCount.find(actorID);
-			return count == instanceCount.end() ? 0 : count->second + 1;
-		}
+
 		bool operator==(const ActorUID& rhs) const {
 			return compare(rhs) == 0;
 		}
@@ -83,25 +88,47 @@ namespace ic {
 			return compare(rhs) > 0;
 		}
 
+
+
 	private:
-		ActorUID(int actorID, int instancenum) : actorID(actorID), instancenum(instancenum) {}
-		int compare(const ActorUID& rhs) const {
+		ActorUID(std::shared_ptr<int> actorID, std::shared_ptr<int> instancenum) : actorID(actorID), instancenum(instancenum) {}
+
+		int compare(const ActorUID& other) const {
 			if (actorID == other.actorID) {
-				if (instancenum == other.instancenum) return 0;
-				return instancenum > other.instancenum ? 1 : -1;
+				if (*instancenum == *other.instancenum) return 0;
+				return *instancenum > *other.instancenum ? 1 : -1;
 			}
 			else {
-				return actorID > other.actorID ? 1 : -1;
+				return *actorID > *other.actorID ? 1 : -1;
 			}
 		}
-		int actorID;
-		int instancenum;
 
-		//key is actorID, value is the next inscancenum avalible
-		static std::unordered_map<std::string, int> nametoidmap;
-		//static std::unordered_map<int, int> instanceCount;
+		static ActorUID createNewInstance(const int actorID) {
+			auto instancecount = instances.at(actorID).size();
+			auto& actorIDinstances = instances.at(actorID);
+			for (auto i = 0; i < instancecount; i++) {
+				if ((int)actorIDinstances.at(i).use_count() == 1) {
+					//instancenum not in use, can overrite
+					return ActorUID(actorIDs.at(actorID), actorIDinstances.at(i));
+				}
+			}
 
-		//first row is actor id, second row is pointer to instanceNum
-		static std::unordered_map<int, std::vector<std::shared_ptr<ActorUID>>> instanceMap;
+			actorIDinstances.push_back(std::make_shared<int>((int)instancecount));
+			return ActorUID(actorIDs.at(actorID), actorIDinstances.at(instancecount));
+		}
+
+		std::shared_ptr<int> actorID;
+		std::shared_ptr<int> instancenum;
+
+		static inline std::map<std::string, int> nametoidmap;
+
+		//original location of the actorID shared pointer in each ActorUID instance
+		static inline std::vector<std::shared_ptr<int>> actorIDs;
+
+		//original location of the instancenum shared pointer in each ActorUID instance
+		static inline std::vector<std::vector<std::shared_ptr<int>>> instances;
+		
+		//counter that garuntees each actorID being unique
+		static inline int idcounter = 0;
 	};
 }

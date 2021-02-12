@@ -3,9 +3,12 @@
 #include "LoggerProvider.h"
 #include "InputHandle.h"
 #include "AudioHandle.h"
-#include "Renderer.h"
+//#include "Renderer.h"
+
+#include "Scene.h"
 
 using namespace ic;
+
 
 void updateInput(Renderer& renderer) {
 	renderer.updateInput();
@@ -121,7 +124,8 @@ int main(int argc, char *argv[])
 #ifdef __APPLE__
 	LoggerProvider::log("Current OS is: Mac OSX\n");
 #endif
-
-	game();
+	ic::Scene scene;
+	scene.testActorUID();
+	//game();
 	return 0;
 }

@@ -1,4 +1,5 @@
 #pragma once
+#include "SFML/Graphics.hpp"
 
 namespace ic {
 	//class DrawableObject : public sf::Drawable, public sf::Transformable {
