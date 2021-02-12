@@ -1,6 +1,6 @@
 #include "include.h"
 #include "Renderer.h"
-#include "RenderEvent.h"
+//#include "RenderEvent.h"
 #include "RenderComponent.h"
 
 using namespace ic;

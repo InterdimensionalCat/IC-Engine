@@ -16,9 +16,7 @@ namespace ic {
         void move();
         void update(Renderer& renderer);
 
-        std::vector<std::unique_ptr<DrawableObject>> drawables
-        std::vector<std::unique_ptr<RenderComponent>> frontchildren;
-        std::vector<std::unique_ptr<RenderComponent>> backchildren;
+
         ActorUID id;
     };
 }
