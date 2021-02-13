@@ -10,11 +10,10 @@ namespace ic {
 
 		void preRender(const float interpol);
 		void render();
-		void postRender()
+		void postRender();
 
-		draw(Renderer& renderer);
+		std::unique_ptr<DrawableObject> drawable;
 
-		std::vector<std::unique_ptr<DrawableObject>> drawables;
 		std::vector<std::unique_ptr<DrawableObjTree>> frontchildren;
 		std::vector<std::unique_ptr<DrawableObjTree>> backchildren;
 	};
