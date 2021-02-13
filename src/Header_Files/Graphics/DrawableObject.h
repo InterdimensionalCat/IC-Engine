@@ -33,11 +33,13 @@ namespace ic {
     class Renderer;
     class ActorUID;
 
+
+    //textured, transformable, drawable object
     class DrawableObject : public sf::Drawable, public sf::Transformable {
     public:
         DrawableObject(const std::string texture, const std::vector<sf::Vertex>& vertices_0_to_1, const sf::PrimitiveType type, const ActorUID& id);
         ~DrawableObject();
-        void update(const std::vector<sf::Vertex>& vertices_0_to_1);
+        //void update(const std::vector<sf::Vertex>& vertices_0_to_1);
         void updateOrigin(const sf::Vector2f& origin);
         void updatePosition(const sf::Vector2f& position);
         void updateRotation(const float rotation);
@@ -49,7 +51,7 @@ namespace ic {
         float prevRotation;
         sf::Vector2f prevScale;
 
-        sf::VertexArray array;
+        //sf::VertexArray array;
         std::string texturename;
     };
 }
