@@ -3,7 +3,7 @@
 #include "DrawableObject.h"
 
 
-using namespace ic;
+using namespace ic::gfx;
 
 	//LoadTextureEvent::LoadTextureEvent(const std::string& textureName) : textureName(textureName) {
 

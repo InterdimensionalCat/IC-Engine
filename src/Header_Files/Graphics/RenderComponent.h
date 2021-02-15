@@ -5,7 +5,7 @@ class DrawableObject;
 class Renderer;
 
 
-namespace ic {
+namespace ic::gfx {
 
     class RenderComponent {
 

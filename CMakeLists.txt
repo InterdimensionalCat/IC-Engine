@@ -19,7 +19,7 @@ set(PROJECT_NAME "GameEngine2020")
 
 project(${PROJECT_NAME})
 
-set(CMAKE_CXX_STANDARD 17)
+set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
 ## If you want to link SFML statically
@@ -98,8 +98,8 @@ file(GLOB SRC
 #"${Actor_C}/*.cpp"
 #"${Behavior_H}/*.h"
 #"${Behavior_C}/*.cpp"
-#"${Graphics_H}/*.h"
-#"${Graphics_C}/*.cpp"
+"${Graphics_H}/*.h"
+"${Graphics_C}/*.cpp"
 #"${GUI_H}/*.h"
 #"${GUI_C}/*.cpp"
 "${Level_H}/*.h"

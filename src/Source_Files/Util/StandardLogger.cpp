@@ -5,6 +5,7 @@
 #include <ostream>
 #include <string>
 #include <sstream>
+#include <fstream>
 #include <boost/date_time.hpp>
 #include <boost/log/trivial.hpp>
 #include <boost/log/sinks.hpp>
@@ -28,7 +29,6 @@
 #include <boost/log/attributes/scoped_attribute.hpp>
 #include <boost/log/utility/setup/common_attributes.hpp>
 #include <boost/date_time/local_time/local_time.hpp>
-#include <iostream>
 
 
 namespace logging = boost::log;
@@ -72,26 +72,27 @@ StandardLogger::StandardLogger() {
 }
 StandardLogger::~StandardLogger() {}
 void StandardLogger::log(const std::string& message, const LogSeverity severity, const LogType type) {
-    //std::ostringstream oss;
+    std::ostringstream oss;
     //oss << "[" << type << "]: " << message;
+    oss << "[" << logTypeToString(type) << "]: " << message;
     switch (severity) {
     case LogSeverity::Trace:
-        BOOST_LOG_TRIVIAL(trace) << "[" << type << "]: " << message;
+        BOOST_LOG_TRIVIAL(trace) << "[" << logTypeToString(type) << "]: " << message;
         break;
     case LogSeverity::Debug:
-        BOOST_LOG_TRIVIAL(debug) << "[" << type << "]: " << message;
+        BOOST_LOG_TRIVIAL(debug) << "[" << logTypeToString(type) << "]: " << message;
         break;
     case LogSeverity::Info:
-        BOOST_LOG_TRIVIAL(info) << "[" << type << "]: " << message;
+        BOOST_LOG_TRIVIAL(info) << "[" << logTypeToString(type) << "]: " << message;
         break;
     case LogSeverity::Warning:
-        BOOST_LOG_TRIVIAL(warning) << "[" << type << "]: " << message;
+        BOOST_LOG_TRIVIAL(warning) << "[" << logTypeToString(type) << "]: " << message;
         break;
     case LogSeverity::Error:
-        BOOST_LOG_TRIVIAL(error) << "[" << type << "]: " << message;
+        BOOST_LOG_TRIVIAL(error) << "[" << logTypeToString(type) << "]: " << message;
         break;
     case LogSeverity::Fatal:
-        BOOST_LOG_TRIVIAL(fatal) << "[" << type << "]: " << message;
+        BOOST_LOG_TRIVIAL(fatal) << "[" << logTypeToString(type) << "]: " << message;
         break;
     }
 }

@@ -1,7 +1,7 @@
 #pragma once
 #include "SFML/Graphics.hpp"
 
-namespace ic {
+namespace ic::gfx {
 	//class DrawableObject : public sf::Drawable, public sf::Transformable {
 	//public:
 	//	virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const = 0;
@@ -37,21 +37,22 @@ namespace ic {
     //textured, transformable, drawable object
     class DrawableObject : public sf::Drawable, public sf::Transformable {
     public:
-        DrawableObject(const std::string texture, const std::vector<sf::Vertex>& vertices_0_to_1, const sf::PrimitiveType type, const ActorUID& id);
-        ~DrawableObject();
-        //void update(const std::vector<sf::Vertex>& vertices_0_to_1);
+
+        friend class Renderer;
+
+        DrawableObject(const std::string texture);
+        virtual ~DrawableObject();
         void updateOrigin(const sf::Vector2f& origin);
         void updatePosition(const sf::Vector2f& position);
         void updateRotation(const float rotation);
         void updateScale(const sf::Vector2f& scalefactors);
-        void draw(Renderer& renderer, sf::RenderStates states);
+        virtual void draw(Renderer& renderer, sf::RenderStates states) = 0;
 
         sf::Vector2f prevOrigin;
         sf::Vector2f prevPosition;
         float prevRotation;
         sf::Vector2f prevScale;
 
-        //sf::VertexArray array;
         std::string texturename;
     };
 }
