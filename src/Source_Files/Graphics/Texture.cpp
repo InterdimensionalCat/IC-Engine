@@ -2,7 +2,7 @@
 #include "Texture.h"
 #include <stdexcept>
 
-using namespace ic;
+using namespace ic::gfx;
 
 Texture::Texture(const std::string& filename) : filename(filename) {
 	tex = std::make_unique<sf::Texture>();

@@ -3,7 +3,7 @@
 #include <memory>
 #include "SFML\Graphics.hpp"
 
-namespace ic {
+namespace ic::gfx {
 	class Texture {
 	public:
 		Texture(const std::string& filename);

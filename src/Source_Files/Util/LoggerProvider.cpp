@@ -10,3 +10,8 @@ void LoggerProvider::log(const std::string& message, const LogSeverity severity,
 
 	logger->log(message, severity, type);
 }
+
+void LoggerProvider::logAndThrowLogicError(const std::string& message, const LogSeverity severity, const LogType type) {
+	log(message, severity, type);
+	throw std::logic_error(message);
+}

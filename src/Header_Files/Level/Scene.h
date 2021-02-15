@@ -8,7 +8,7 @@
 #include <memory>
 #include "InputHandle.h"
 #include "GameEngine2020.h"
-//#include "Renderer.h"
+#include "Renderer.h"
 #include "AudioHandle.h"
 #include "ActorUID.h"
 
@@ -29,7 +29,7 @@ namespace ic {
 		void updateAI() {}
 		void updatePhysics(const float dt) {}
 		void updateAudio(AudioHandle& audio) {}
-		void draw(Renderer& renderer) {}
+		void draw(gfx::Renderer& renderer) {}
 
 		void testActorUID() {
 			ActorUID::registerNewActor("player");

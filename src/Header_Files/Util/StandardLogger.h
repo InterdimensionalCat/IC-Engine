@@ -1,6 +1,9 @@
 #pragma once
 #include "Logger.h"
 #include <ostream>
+#include <string>
+#include <iostream>
+
 
 namespace ic {
     class StandardLogger : public Logger {
@@ -32,6 +35,31 @@ namespace ic {
             }
 
             return os;
+        }
+
+        std::string logTypeToString(const LogType type) {
+            switch (type) {
+            case(LogType::General):
+                return "General";
+                break;
+            case(LogType::Input):
+                return "Input";
+                break;
+            case(LogType::Physics):
+                return "Physics";
+                break;
+            case(LogType::Ai):
+                return "Ai";
+                break;
+            case(LogType::Rendering):
+                return "Rendering";
+                break;
+            case(LogType::Audio):
+                return "Audio";
+                break;
+            }
+
+            return "General";
         }
     };
 }

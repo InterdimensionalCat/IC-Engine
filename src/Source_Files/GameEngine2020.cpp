@@ -3,15 +3,16 @@
 #include "LoggerProvider.h"
 #include "InputHandle.h"
 #include "AudioHandle.h"
-//#include "Renderer.h"
+#include "Renderer.h"
 
 #include "Scene.h"
 
 using namespace ic;
+using namespace ic::gfx;
 
 
 void updateInput(Renderer& renderer) {
-	renderer.updateInput();
+	//renderer.updateInput();
 }
 
 //Sends input events to everything that needs it
@@ -106,7 +107,7 @@ int main(int argc, char *argv[])
 
 #ifdef debug_mode
 	LoggerProvider::log("Running in debug mode", LogSeverity::Debug);
-	LoggerProvider::log("Current working directory: " + fs::current_path().generic_u8string(), LogSeverity::Info);
+	LoggerProvider::log("Current working directory: " + fs::current_path().generic_string(), LogSeverity::Info);
 #endif
 
 #ifdef _WIN32

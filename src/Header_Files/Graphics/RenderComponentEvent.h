@@ -2,7 +2,7 @@
 #include <string>
 #include <memory>
 
-namespace ic {
+namespace ic::gfx {
 
 	class DrawableObject;
 	class Renderer;
