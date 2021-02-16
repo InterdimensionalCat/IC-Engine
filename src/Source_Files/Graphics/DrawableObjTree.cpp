@@ -3,7 +3,7 @@
 
 using namespace ic::gfx;
 
-DrawableObjTree::DrawableObjTree(std::unique_ptr<DrawableObject> drawable) : drawable(std::move(drawable)) {
+DrawableObjTree::DrawableObjTree(std::unique_ptr<DrawableObject> drawable) : drawable(std::move(drawable)), actor(actor) {
 
 }
 
