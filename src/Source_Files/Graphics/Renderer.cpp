@@ -129,7 +129,15 @@ Texture* Renderer::getTexture(const std::string& texturename) {
 }
 
 void Renderer::createDrawableTree(std::unique_ptr<DrawableObject> baseDrawable) {
+	drawableTrees.push_back(std::make_shared<DrawableObjTree>(std::move(baseDrawable)));
+}
 
+void Renderer::createDrawableObjectFront(std::unique_ptr<DrawableObject> drawable, std::shared_ptr<DrawableObjTree> parent) {
+	parent->addFrontChild(std::make_shared<DrawableObjTree>(drawable));
+}
+
+void Renderer::createDrawableObjectBack(std::unique_ptr<DrawableObject> drawable, std::shared_ptr<DrawableObjTree> parent) {
+	parent->addBackChild(std::make_shared<DrawableObjTree>(drawable));
 }
 
 void Renderer::createDrawableVertices(const std::string texture, const std::vector<sf::Vertex>& vertices_0_to_1, const sf::PrimitiveType type) {

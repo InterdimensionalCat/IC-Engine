@@ -42,6 +42,8 @@ namespace ic::gfx {
 		Texture* getTexture(const std::string& texturename);
 
 		void createDrawableTree(std::unique_ptr<DrawableObject> baseDrawable);
+		void createDrawableObjectFront(std::unique_ptr<DrawableObject> drawable, std::shared_ptr<DrawableObjTree> parent);
+		void createDrawableObjectBack(std::unique_ptr<DrawableObject> drawable, std::shared_ptr<DrawableObjTree> parent);
 		void createDrawableVertices(const std::string texture, const std::vector<sf::Vertex>& vertices_0_to_1, const sf::PrimitiveType type);
 
 		sf::RenderWindow* getWindow();
