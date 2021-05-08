@@ -31,28 +31,29 @@ namespace ic::gfx {
 	//};
 
     class Renderer;
-    class ActorUID;
 
 
     //textured, transformable, drawable object
-    class DrawableObject : public sf::Drawable, public sf::Transformable {
+    class DrawableObject : public sf::Transformable {
     public:
 
         friend class Renderer;
 
-        DrawableObject(const std::string texture);
+        DrawableObject(const std::string& texture);
         virtual ~DrawableObject();
         void updateOrigin(const sf::Vector2f& origin);
         void updatePosition(const sf::Vector2f& position);
         void updateRotation(const float rotation);
         void updateScale(const sf::Vector2f& scalefactors);
-        virtual void draw(Renderer& renderer, sf::RenderStates states) = 0;
+        virtual void draw(Renderer& renderer, sf::RenderStates states) {}
 
         sf::Vector2f prevOrigin;
         sf::Vector2f prevPosition;
         float prevRotation;
         sf::Vector2f prevScale;
 
-        std::string texturename;
+        std texturename;
     };
+
+
 }

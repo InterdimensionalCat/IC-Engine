@@ -6,11 +6,23 @@
 #pragma once
 #include <vector>
 #include <memory>
+#include <fstream>
 #include "InputHandle.h"
 #include "GameEngine2020.h"
 #include "Renderer.h"
 #include "AudioHandle.h"
 #include "ActorUID.h"
+#include "RenderVertices.h"
+#include "RenderComponent.h"
+#include "Component.h"
+#include "ComponentFactory.h"
+
+#include <filesystem>
+#include "json.hpp"
+#include <iostream>
+#include "ActorData.h"
+
+#include "MapParser.h"
 
 namespace ic {
 
@@ -23,7 +35,9 @@ namespace ic {
 	class Scene
 	{
 	public:
-		Scene() {}
+		Scene() {
+
+		}
 
 		void handleInput(InputHandle& input) {}
 		void updateAI() {}
@@ -32,37 +46,41 @@ namespace ic {
 		void draw(gfx::Renderer& renderer) {}
 
 		void testActorUID() {
-			ActorUID::registerNewActor("player");
-			addActor("player");
-			addActor("player");
-			removeActor(actors.at(0));
-			addActor("player");
-			addActor("player");
+
+			MapParser::parseMap("testmap", *this);
+			//auto renderinstance = renderfactory.createNewInstance();
+			//loadActorFromJson("test", "test");
+
+
+			//ActorUID::registerNewActor("player");
+			//addActor("player");
+			//addActor("player");
+			//removeActor(actors.at(0));
+			//addActor("player");
+			//addActor("player");
 
 		}
 
-		//void loadFrom(const std::string& mapname) {}
-		//void addActor(Actor* a) {}
-		//void removeActor(Actor* a) {}
-
-		//std::unique_ptr<PhysicsEngine> engine = std::make_unique<PhysicsEngine>();
-		std::vector<ActorUID> actors;
-		std::vector<ActorShell> actorshells;
-
-		void addActor(const std::string& name) {
-			auto uid = ActorUID::createNewInstance(name);
-			actors.push_back(uid);
-			actorshells.push_back(ActorShell(uid, name));
+		void addActor(std::unique_ptr<nlohmann::json> actormapdata, const std::string& actorname, const std::string& variant = "") {
+			ActorData dat(actorname, variant, std::move(actormapdata));
+			actors.push_back(dat.getActorUID());
+			auto compInstance = renderfactory.createNewInstance(dat);
+			if (compInstance.has_value()) {
+				rendercomponents.push_back(std::move(compInstance.value()));
+			}
 		}
 
 		void removeActor(const ActorUID instanceToRemove) {
 			actors.erase(std::remove(actors.begin(), actors.end(), instanceToRemove), actors.end());
-			actorshells.erase(std::remove_if(actorshells.begin(), actorshells.end(), [instanceToRemove](const ActorShell& a) {
-				return a.id == instanceToRemove;
-				}
-			), actorshells.end());
+			//actorshells.erase(std::remove_if(actorshells.begin(), actorshells.end(), [instanceToRemove](const ActorShell& a) {
+			//	return a.id == instanceToRemove;
+			//	}
+			//), actorshells.end());
 		}
-
+	private:
+		std::vector<ActorUID> actors;
+		RenderComponentFactory renderfactory;
+		std::vector<std::unique_ptr<RenderComponent>> rendercomponents;
 	};
 }
 

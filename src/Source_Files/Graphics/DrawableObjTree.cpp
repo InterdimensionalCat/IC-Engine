@@ -3,33 +3,25 @@
 
 using namespace ic::gfx;
 
-DrawableObjTree::DrawableObjTree(std::unique_ptr<DrawableObject> drawable) : drawable(std::move(drawable)), actor(actor) {
+DrawableObjTree::DrawableObjTree(std::unique_ptr<DrawableObject> drawable, const ic::ActorUID actor) : drawable(std::move(drawable)), actor(actor) {
 
 }
 
-DrawableObjTree::DrawableObjTree(std::unique_ptr<DrawableObject> drawable, std::vector<std::unique_ptr<DrawableObject>> frontchildren, std::vector<std::unique_ptr<DrawableObject>> backchildren)
-    : drawable(std::move(drawable)) {
-
-    for (auto& child : frontchildren) {
-        DrawableObjTree::frontchildren.push_back(std::make_shared<DrawableObjTree>(std::move(child)));
-    }
-
-    for (auto& child : backchildren) {
-        DrawableObjTree::backchildren.push_back(std::make_shared<DrawableObjTree>(std::move(child)));
-    }
-}
 
 void DrawableObjTree::removeChild(std::shared_ptr<DrawableObjTree> childBase) {
 	frontchildren.erase(std::remove(frontchildren.begin(), frontchildren.end(), childBase), frontchildren.end());
 	backchildren.erase(std::remove(backchildren.begin(), backchildren.end(), childBase), backchildren.end());
+    childBase->parent.reset();
 }
 
 void DrawableObjTree::addBackChild(std::shared_ptr<DrawableObjTree> childBase) {
 	backchildren.push_back(childBase);
+    childBase->parent = actor;
 }
 
 void DrawableObjTree::addFrontChild(std::shared_ptr<DrawableObjTree> childBase) {
 	frontchildren.push_back(childBase);
+    childBase->parent = actor;
 }
 
 void DrawableObjTree::draw(Renderer& renderer, sf::RenderStates states) {

@@ -5,7 +5,14 @@
 
 using namespace ic::gfx;
 
-DrawableObject::DrawableObject(const std::string texture) : texturename(texture) {}
+DrawableObject::DrawableObject(const std::string& texture) : texturename(texture) {
+    Transformable::setOrigin(sf::Vector2f(0.5, 0.5));
+
+    prevOrigin = Transformable::getOrigin();
+    prevPosition = Transformable::getPosition();
+    prevRotation = Transformable::getRotation();
+    prevScale = Transformable::getScale();
+}
 
 DrawableObject::~DrawableObject() {}
 

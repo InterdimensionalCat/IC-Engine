@@ -16,7 +16,7 @@ public:
 	virtual void enter() = 0;
 	virtual void run(InputHandle* input) = 0;
 	virtual void exit() = 0;
-	string getName() { return name; };
+	std::string getName() { return name; };
 	virtual void draw(Renderer* renderer) = 0;
 
 	ActionStateMap* parent = nullptr;

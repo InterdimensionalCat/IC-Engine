@@ -1,7 +1,9 @@
 #pragma once
 #include <vector>
 #include <memory>
-#include "DrawableObject.h" 
+#include "DrawableObject.h"
+#include "ActorUID.h"
+#include <optional>
 
 
 //each actor that can be drawn has 1 and only 1 DrawableObjectTree, 
@@ -9,7 +11,7 @@
 namespace ic::gfx {
 	class DrawableObjTree {
 	public:
-		DrawableObjTree(std::unique_ptr<DrawableObject> drawable, const ActorUID &actor);
+		DrawableObjTree(std::unique_ptr<DrawableObject> drawable, const ic::ActorUID actor);
 		DrawableObjTree(std::unique_ptr<DrawableObject> drawable, std::vector<std::unique_ptr<DrawableObject>> frontchildren, std::vector<std::unique_ptr<DrawableObject>> backchildren);
 		void removeChild(std::shared_ptr<DrawableObjTree> childBase);
 		void addBackChild(std::shared_ptr<DrawableObjTree> childBase);
@@ -22,6 +24,7 @@ namespace ic::gfx {
 		std::vector<std::shared_ptr<DrawableObjTree>> frontchildren;
 		std::vector<std::shared_ptr<DrawableObjTree>> backchildren;
 
-		ActorUID actor;
+		ic::ActorUID actor;
+		std::optional<ic::ActorUID> parent;
 	};
 }

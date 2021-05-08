@@ -31,32 +31,48 @@ namespace ic::gfx {
 
 		Renderer();
 		~Renderer();
-		void updateInput();
+
 		void preRender(const float interpol);
 		void render();
 		void postRender();
-		//void addEvent(std::unique_ptr<RenderEvent> event);
+		void updateInput();
+		void addEvent(std::unique_ptr<RenderEvent> event);
+
+	private:
+
+
+		friend struct RenderEvent;
+		friend class DrawableObject;
+		friend class DrawableVertices;
+
+
+		friend struct LoadTextureEvent;
+		friend struct UnloadTextureEvent;
+
+		template <typename T>
+		friend struct CreateDrawableObjectEvent;
+		friend struct AddDrawableTreeChildBackEvent;
+		friend struct AddDrawableTreeChildFrontEvent;
+		friend struct RemoveDrawableTreeChildEvent;
+
 
 		void loadTexture(const std::string& texturename);
 		void unloadTexture(const std::string& texturename);
 		Texture* getTexture(const std::string& texturename);
 
 		void createDrawableTree(std::unique_ptr<DrawableObject> baseDrawable, const ActorUID& actor);
-		std::unique_ptr<DrawableVertices> createDrawableVertices(const std::string texture, const std::vector<sf::Vertex>& vertices_0_to_1, const sf::PrimitiveType type);
+		void addDrawableTreeChildFront(const ActorUID parentID, const ActorUID childID);
+		void addDrawableTreeChildBack(const ActorUID parentID, const ActorUID childID);
+		void removeDrawableTreeChild(const ActorUID childID);
+
 
 		sf::RenderWindow* getWindow();
-
-		//void addDrawable(std::unique_ptr<DrawableObject> drawableToAdd);
-		//void makeChild(const ActorUID& parentUID, const ActorUID& childUID);
-		//void makeIndependent(const ActorUID& childUID);
-		//void updateDrawableComponents();
-	private:
 
 
 		float interpol = 0.0f;
 		sf::RenderStates states = sf::RenderStates::Default;
 		std::unique_ptr<sf::RenderWindow> window;
-		std::map<std::string, std::unique_ptr<Texture>> textures;
+		std::map<std::string, std::shared_ptr<Texture>> textures;
 
 
 		//drawable trees data members
@@ -67,13 +83,11 @@ namespace ic::gfx {
 		//renderer draws all trees sequentially from this vector on render();
 		std::vector<std::shared_ptr<DrawableObjTree>> drawableTrees;
 
-		//std::vector<std::unique_ptr<DrawableObject>> drawables;
+		void handleEvents();
+		bool pollEvent(std::unique_ptr<RenderEvent>& event);
+		std::queue<std::unique_ptr<RenderEvent>> renderEventQueue;
 
-		//std::vector<std::unique_ptr<RenderComponent>> components;
-
-		//void handleEvents();
-		//bool pollEvent(std::unique_ptr<RenderEvent>& event);
-		//std::queue<std::unique_ptr<RenderEvent>> renderEventQueue;
+		void addDrawableTreeChild(const ic::ActorUID parentID, const ic::ActorUID childID, bool front);
 	};
 }
 

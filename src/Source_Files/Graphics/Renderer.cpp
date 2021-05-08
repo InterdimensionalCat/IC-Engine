@@ -1,7 +1,9 @@
 #include "include.h"
 #include "Renderer.h"
-//#include "RenderEvent.h"
+#include "RenderEvent.h"
 //#include "RenderComponent.h"
+#include "DrawableObject.h"
+#include "DrawableVertices.h"
 
 using namespace ic::gfx;
 
@@ -57,7 +59,7 @@ Renderer::~Renderer() {
 
 void Renderer::preRender(const float interpol) {
 	//updateRenderComponents();
-	//handleEvents();
+	handleEvents();
 	Renderer::interpol = interpol;
 	window->clear(sf::Color(255, 255, 255, 255));
 }
@@ -72,39 +74,34 @@ void Renderer::postRender() {
 	window->display();
 }
 
-//void Renderer::addEvent(std::unique_ptr<RenderEvent> event) {
-//	renderEventQueue.push(std::move(event));
-//}
-//
-//void Renderer::handleEvents() {
-//	std::unique_ptr<RenderEvent> event(nullptr);
-//	while (pollEvent(event)) {
-//		//event->excecute(*this);
-//		event->exceuctionFunction(*this);
-//	}
-//}
-//
-//void Renderer::updateRenderComponents() {
-//	for (auto& c : components) {
-//		c->update(this);
-//	}
-//}
-//
-//bool Renderer::pollEvent(std::unique_ptr<RenderEvent>& event) {
-//	if (renderEventQueue.size() == 0) {
-//		return false;
-//	}
-//	else {
-//		event.reset();
-//		event = std::move(renderEventQueue.front());
-//		renderEventQueue.pop();
-//		return true;
-//	}
-//}
+void Renderer::addEvent(std::unique_ptr<RenderEvent> event) {
+	renderEventQueue.push(std::move(event));
+}
+
+void Renderer::handleEvents() {
+	std::unique_ptr<RenderEvent> event(nullptr);
+	while (pollEvent(event)) {
+		event->excecute(*this);
+		//event->exceuctionFunction(*this);
+	}
+}
+
+
+bool Renderer::pollEvent(std::unique_ptr<RenderEvent>& event) {
+	if (renderEventQueue.size() == 0) {
+		return false;
+	}
+	else {
+		event.reset();
+		event = std::move(renderEventQueue.front());
+		renderEventQueue.pop();
+		return true;
+	}
+}
 
 
 void Renderer::loadTexture(const std::string& texturename) {
-	textures.insert(std::pair<std::string, std::unique_ptr<Texture>>(texturename, std::move(std::make_unique<Texture>(texturename))));
+	textures.insert(std::pair<std::string, std::shared_ptr<Texture>>(texturename, std::move(std::make_shared<Texture>(texturename))));
 }
 
 void Renderer::unloadTexture(const std::string& texturename) {
@@ -113,7 +110,8 @@ void Renderer::unloadTexture(const std::string& texturename) {
 		textures.erase(texFound);
 	}
 	else {
-		LoggerProvider::logAndThrowLogicError("texture unload target " + texturename + " is not loaded!\n", LogSeverity::Fatal, LogType::Rendering);
+		LoggerProvider::logAndThrowLogicError(
+			"texture unload target " + texturename + " is not loaded!\n", LogSeverity::Fatal, LogType::Rendering);
 	}
 }
 
@@ -123,17 +121,82 @@ Texture* Renderer::getTexture(const std::string& texturename) {
 		return tex->second.get();
 	}
 	else {
-		LoggerProvider::logAndThrowLogicError("texture unload target " + texturename + " is not loaded!\n", LogSeverity::Fatal, LogType::Rendering);
+		LoggerProvider::logAndThrowLogicError(
+			"texture unload target " + texturename + " is not loaded!\n", LogSeverity::Fatal, LogType::Rendering);
 		return nullptr;
 	}
 }
 
-void Renderer::createDrawableTree(std::unique_ptr<DrawableObject> baseDrawable, const ActorUID& actor) {
-	drawableTrees.push_back(std::make_shared<DrawableObjTree>(std::move(baseDrawable, actor)));
+void Renderer::createDrawableTree(std::unique_ptr<DrawableObject> baseDrawable, const ic::ActorUID& actor) {
+	if (actorToTreeMap.find(actor) != actorToTreeMap.end()) {
+		drawableTrees.push_back(std::make_shared<DrawableObjTree>(std::move(baseDrawable), actor));
+		actorToTreeMap.insert(std::pair(actor, drawableTrees.at(drawableTrees.size() - 1)));
+	}
+	else {
+		LoggerProvider::logAndThrowLogicError(
+			actor.toString() + " bound to more than one DrawableObjTree!\n", LogSeverity::Fatal, LogType::Rendering);
+	}
 }
 
-std::unique_ptr<DrawableVertices> Renderer::createDrawableVertices(const std::string texture, const std::vector<sf::Vertex>& vertices_0_to_1, const sf::PrimitiveType type) {
-	return std::move(std::make_unique<DrawableVertices>(texture, vertices_0_to_1, type));
+void Renderer::addDrawableTreeChildFront(const ic::ActorUID parentID, const ic::ActorUID childID) {
+	addDrawableTreeChild(parentID, childID, true);
+}
+void Renderer::addDrawableTreeChildBack(const ic::ActorUID parentID, const ic::ActorUID childID) {
+	addDrawableTreeChild(parentID, childID, false);
+}
+
+void Renderer::addDrawableTreeChild(const ic::ActorUID parentID, const ic::ActorUID childID, bool front) {
+	auto parentTree = actorToTreeMap.find(parentID);
+	auto childTree = actorToTreeMap.find(childID);
+
+	if (parentTree == actorToTreeMap.end()) {
+		LoggerProvider::logAndThrowLogicError(
+			parentID.toString() + " does not reference a DrawableObjectTree!\n", LogSeverity::Fatal, LogType::Rendering);
+	}
+
+	if (childTree == actorToTreeMap.end()) {
+		LoggerProvider::logAndThrowLogicError(
+			childID.toString() + " does not reference a DrawableObjectTree!\n", LogSeverity::Fatal, LogType::Rendering);
+	}
+
+	if (childTree->second->parent.has_value()) {
+		removeDrawableTreeChild(childID);
+	}
+
+	drawableTrees.erase(std::remove(drawableTrees.begin(), drawableTrees.end(), childTree->second), drawableTrees.end());
+
+	if (front) {
+		parentTree->second->addFrontChild(childTree->second);
+	}
+	else {
+		parentTree->second->addBackChild(childTree->second);
+	}
+
+}
+void Renderer::removeDrawableTreeChild(const ic::ActorUID childID) {
+	auto childTree = actorToTreeMap.find(childID);
+
+	if (childTree == actorToTreeMap.end()) {
+		LoggerProvider::logAndThrowLogicError(
+			childID.toString() + " does not reference a DrawableObjectTree!\n", LogSeverity::Fatal, LogType::Rendering);
+	}
+
+	if (!childTree->second->parent.has_value()) {
+		LoggerProvider::logAndThrowLogicError(
+			childID.toString() + " does not have a parent Tree!\n", LogSeverity::Fatal, LogType::Rendering);
+	}
+
+	ic::ActorUID parentID = childTree->second->parent.value();
+
+	auto parentTree = actorToTreeMap.find(parentID);
+
+	if (parentTree == actorToTreeMap.end()) {
+		LoggerProvider::logAndThrowLogicError(
+			parentID.toString() + " does not reference a DrawableObjectTree!\n", LogSeverity::Fatal, LogType::Rendering);
+	}
+
+	parentTree->second->removeChild(childTree->second);
+	drawableTrees.push_back(childTree->second);
 }
 
 sf::RenderWindow* Renderer::getWindow() {

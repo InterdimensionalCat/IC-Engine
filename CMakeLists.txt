@@ -71,6 +71,9 @@ set(Level_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Level")
 set(Physics_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Physics")
 set(Physics_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Physics")
 
+set(Component_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Component")
+set(Component_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Component")
+
 set(Bodies_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Physics/Bodies")
 set(Bodies_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Physics/Bodies")
 
@@ -86,11 +89,14 @@ set(S2D_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Space2D")
 set(AS_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Behavior/ActionState")
 set(AS_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Behavior/ActionState")
 
+set(MAP_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Map")
+set(MAP_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Map")
+
 include_directories(
 ${SRC_DIR} ${Actor_H} ${Actor_C} ${Behavior_H} ${Behavior_C} ${Graphics_H} 
 ${Graphics_C} ${GUI_H} ${GUI_C} ${Level_H} ${Level_C} ${Physics_H} ${Physics_C} 
 ${State_H} ${State_C} ${Util_H} ${Util_C} ${S2D_H} ${S2D_C} ${Bodies_H} ${Bodies_C}
-${AS_H} ${AS_C}
+${AS_H} ${AS_C} ${Component_H} ${Component_C} ${MAP_H} ${MAP_C}
 )
 
 file(GLOB SRC
@@ -116,6 +122,10 @@ file(GLOB SRC
 #"${Bodies_C}/*.cpp"
 #"${AS_H}/*.h"
 #"${AS_C}/*.cpp"
+"${Component_H}/*.h" 
+"${Component_C}/*.cpp"
+"${MAP_H}/*.h" 
+"${MAP_C}/*.cpp"
 "${PROJECT_SOURCE_DIR}/src/Source_Files/GameEngine2020.cpp"
 "${PROJECT_SOURCE_DIR}/src/Header_Files/GameEngine2020.h"
 "${PROJECT_SOURCE_DIR}/src/Source_Files/include.cpp"
@@ -133,6 +143,8 @@ set(BOOST_LIB_DIR "${PROJECT_SOURCE_DIR}/libraries/Windows/boost_1_74_0/stage/li
 set(SFML_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/libraries/Windows/SFML/include")
 set(BOOST_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/libraries/Windows/boost_1_74_0")
 set(Boost_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/libraries/Windows/boost_1_74_0")
+set(NLOHMANN "${PROJECT_SOURCE_DIR}/libraries/Windows/nlohmann")
+set(TILESON "${PROJECT_SOURCE_DIR}/libraries/Windows/tileson")
 
 file(GLOB COMBINED_DLL_FILES "${PROJECT_SOURCE_DIR}/libraries/Windows/SFML/bin/*.dll")
 
@@ -162,6 +174,8 @@ ENDIF(X11_FOUND)
     set(SFML_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/libraries/Linux/SFML/include")
     set(BOOST_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/libraries/Linux/boost_1_74_0")
     set(Boost_INCLUDE_DIR "${PROJECT_SOURCE_DIR}/libraries/Linux/boost_1_74_0")
+    set(NLOHMANN "${PROJECT_SOURCE_DIR}/libraries/Linux/nlohmann")
+    set(TILESON "${PROJECT_SOURCE_DIR}/libraries/Linux/tileson")
 
     set(CMAKE_CXX_COMPILER /usr/bin/g++-10)
 endif()
@@ -183,6 +197,7 @@ find_package(SFML 2.5 COMPONENTS graphics audio window network system REQUIRED)
    find_package(Boost 1.74.0 COMPONENTS date_time filesystem log system thread chrono atomic regex REQUIRED)
 
    include_directories(${Boost_INCLUDE_DIRS})
+
 
 
 add_executable(${PROJECT_NAME} ${SRC})
@@ -227,10 +242,17 @@ target_link_libraries(${PROJECT_NAME} ${Boost_LIBRARIES})
 
 #target_link_libraries(${PROJECT_NAME} ${SFML_LIBRARIES} ${SFML_DEPENDENCIES})
 
+#set_source_files_properties(
+#  "${TILESON}/*.h"
+#  COMPILE_FLAGS "-w"
+#)
+
 include_directories(${SFML_INCLUDE_DIR})
 include_directories(${BOOST_INCLUDE_DIR})
 target_include_directories(${PROJECT_NAME} PUBLIC ${SFML_INCLUDE_DIR})
 target_include_directories(${PROJECT_NAME} PUBLIC ${BOOST_INCLUDE_DIR})
+target_include_directories(${PROJECT_NAME} PUBLIC ${NLOHMANN})
+target_include_directories(${PROJECT_NAME} PUBLIC ${TILESON})
 target_include_directories(${PROJECT_NAME} PUBLIC ${SOURCE_H})
 
 set(CMAKE_CXX_CLANG_TIDY clang-tidy -checks=-*,readability-*)
