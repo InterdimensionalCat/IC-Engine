@@ -1,0 +1,8 @@
+{
+	"RenderVertices": {
+		"vertex": {
+			"static": true
+		},
+		"statictest": "aaa"
+	}
+}

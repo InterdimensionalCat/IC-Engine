@@ -1,0 +1,23 @@
+{
+	"RenderVertices": {
+		"vertex": {
+			"xcoords": [0, 1, 1, 0],
+			"ycoords": [0, 0, 1, 1]
+		},
+
+		"texture": {
+			"name": "testtex",
+			"texcoordsx": [0, 1, 1, 0],
+			"texcoordsy": [0, 0, 1, 1]
+		},
+
+		"color": {
+			"color_r": [0, 0, 0, 0],
+			"color_g": [0, 0, 0, 0],
+			"color_b": [0, 0, 0, 0],
+			"color_a": [0, 0, 0, 0]
+		},
+
+		"type": "quads"
+	}
+}

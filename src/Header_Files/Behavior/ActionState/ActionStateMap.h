@@ -21,8 +21,8 @@ public:
 
 	void addState(ActionState* state);
 
-	void setState(const string &key, InputHandle* input);
-	void setState(const string &key);
+	void setState(const std::string &key, InputHandle* input);
+	void setState(const std::string &key);
 
 	void tick(InputHandle* input);
 	virtual void draw(Renderer* renderer);

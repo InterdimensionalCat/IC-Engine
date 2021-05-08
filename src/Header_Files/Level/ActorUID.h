@@ -3,6 +3,8 @@
 #include <memory>
 #include <exception>
 #include <vector>
+#include <string>
+#include "LoggerProvider.h"
 
 namespace ic {
 	class ActorUID {
@@ -12,7 +14,8 @@ namespace ic {
 			auto idnum = nametoidmap.find(actorname);
 			if (idnum != nametoidmap.end()) {
 				//actor already exists
-				throw std::exception();
+				LoggerProvider::log("actor " + actorname + " is already loaded!", LogSeverity::Warning, LogType::General);
+				return;
 			}
 			else {
 				nametoidmap.insert(std::pair<std::string, int>(actorname, idcounter));
@@ -27,7 +30,8 @@ namespace ic {
 
 			if (actorentry == nametoidmap.end()) {
 				//log the error: name doesnt exist
-				throw std::exception();
+				LoggerProvider::log("actor " + actorname + " doesnt exist!", LogSeverity::Warning, LogType::General);
+				return;
 			}
 			else {
 
@@ -70,12 +74,18 @@ namespace ic {
 			auto idnum = nametoidmap.find(actorname);
 			if (idnum == nametoidmap.end()) {
 				//actor does not exist/not registered
-				throw std::exception();
+				LoggerProvider::log("actor " + actorname + " is not loaded!", LogSeverity::Warning, LogType::General);
+				registerNewActor(actorname);
+				return createNewInstance(actorname);
 			}
 			else {
 				//else create the instance
 				return createNewInstance(idnum->second);
 			}
+		}
+
+		std::string getActorName() const {
+			return idtonamemap.at(*actorID);
 		}
 
 		bool operator==(const ActorUID& rhs) const {
@@ -88,7 +98,10 @@ namespace ic {
 			return compare(rhs) > 0;
 		}
 
-
+		std::string toString() const {
+			return "ActorUID(ActorID=" + std::to_string(*actorID) +
+				", InstanceID=" + std::to_string(*instancenum) + ")";
+		}
 
 	private:
 		ActorUID(std::shared_ptr<int> actorID, std::shared_ptr<int> instancenum) : actorID(actorID), instancenum(instancenum) {}
@@ -121,6 +134,7 @@ namespace ic {
 		std::shared_ptr<int> instancenum;
 
 		static inline std::map<std::string, int> nametoidmap;
+		static inline std::map<int, std::string> idtonamemap;
 
 		//original location of the actorID shared pointer in each ActorUID instance
 		static inline std::vector<std::shared_ptr<int>> actorIDs;
