@@ -8,11 +8,15 @@
 using namespace ic::gfx;
 
 Renderer::Renderer() {
-		window = std::make_unique<sf::RenderWindow>(
-		sf::VideoMode(SettingsProvider::getSetting<int>("Width"), SettingsProvider::getSetting<int>("Height")), 
-		SettingsProvider::getSetting<std::string>("Title")
-	);
 
+	//creates an SFML window using the width, height, and name specified in the game Settings
+	window = std::make_unique<sf::RenderWindow>(
+		sf::VideoMode(SettingsProvider::getSetting<int>("Width"), SettingsProvider::getSetting<int>("Height")),
+		SettingsProvider::getSetting<std::string>("Title")
+		);
+
+	//enables vsync if set to true in the game settings
+	//otherwise sets the framrate limit to whatever is specified in the game settings
 	if (SettingsProvider::getSetting<bool>("vsync")) {
 		//V-sync doesnt really play nice with animations and I find that SFML can be
 		//somewhat stuttery and I cant tell if V-sync makes it better or worse
@@ -28,6 +32,7 @@ Renderer::Renderer() {
 #endif
 	}
 
+	//causes keypresses to only send one window event
 	window->setKeyRepeatEnabled(false);
 }
 
@@ -35,7 +40,7 @@ Renderer::~Renderer() {
 	window->close();
 }
 
-//void Renderer::updateInput() {
+void Renderer::updateInput() {
 //
 //
 //	//poll an event
@@ -55,7 +60,7 @@ Renderer::~Renderer() {
 //
 //		}
 //	}
-//}
+}
 
 void Renderer::preRender(const float interpol) {
 	//updateRenderComponents();
@@ -110,6 +115,7 @@ void Renderer::unloadTexture(const std::string& texturename) {
 		textures.erase(texFound);
 	}
 	else {
+		//crash if texture was already unloaded
 		LoggerProvider::logAndThrowLogicError(
 			"texture unload target " + texturename + " is not loaded!\n", LogSeverity::Fatal, LogType::Rendering);
 	}
@@ -121,6 +127,7 @@ Texture* Renderer::getTexture(const std::string& texturename) {
 		return tex->second.get();
 	}
 	else {
+		//crash if texture is unloaded
 		LoggerProvider::logAndThrowLogicError(
 			"texture unload target " + texturename + " is not loaded!\n", LogSeverity::Fatal, LogType::Rendering);
 		return nullptr;
@@ -133,6 +140,7 @@ void Renderer::createDrawableTree(std::unique_ptr<DrawableObject> baseDrawable, 
 		actorToTreeMap.insert(std::pair(actor, drawableTrees.at(drawableTrees.size() - 1)));
 	}
 	else {
+		//crash if the supplied ActorUID is already bound to a DrawableTree
 		LoggerProvider::logAndThrowLogicError(
 			actor.toString() + " bound to more than one DrawableObjTree!\n", LogSeverity::Fatal, LogType::Rendering);
 	}
@@ -159,11 +167,12 @@ void Renderer::addDrawableTreeChild(const ic::ActorUID parentID, const ic::Actor
 			childID.toString() + " does not reference a DrawableObjectTree!\n", LogSeverity::Fatal, LogType::Rendering);
 	}
 
+
 	if (childTree->second->parent.has_value()) {
-		removeDrawableTreeChild(childID);
+		LoggerProvider::logAndThrowLogicError(
+			childID.toString() + " is already the child of " + childTree->second->parent->toString() + "\n", LogSeverity::Fatal, LogType::Rendering);
 	}
 
-	drawableTrees.erase(std::remove(drawableTrees.begin(), drawableTrees.end(), childTree->second), drawableTrees.end());
 
 	if (front) {
 		parentTree->second->addFrontChild(childTree->second);

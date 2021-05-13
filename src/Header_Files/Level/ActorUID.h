@@ -6,7 +6,15 @@
 #include <string>
 #include "LoggerProvider.h"
 
+//NEED TO MOVE THIS OUT OF HEADERS HOLY SHIT
+
 namespace ic {
+
+	/**
+	 * @brief                         The ActorUID class is the way that different parts of an
+	 *                                actor reference eachother and know that they belong to the same object,
+	 *                                since different parts are decoupled into different objects this is necessasary
+	*/
 	class ActorUID {
 
 	public:
@@ -66,10 +74,19 @@ namespace ic {
 			}
 		}
 
-
 		//creates a new ActorUID number and garuntees that the instancenum for each
-		//actor is unique
-		//this also removes instances currently being unused
+        //actor is unique
+        //this also removes instances currently being unused
+
+		/**
+		 * @brief                     Creates and returns a new ActorUID instance of the supplied actor
+		 *                            this will register the actor if the supplied actorname has not been
+		 *                            registered before, and will clean up instancenums that are now unused.
+		 *		                      calls an internal version of createNewInstance that takes the id num for
+		 *                            the actor as opposed to the actor name
+		 * @param actorname           Name of the actor to create a new instance of
+		 * @return                    The new ActorUID instance
+		*/
 		static ActorUID createNewInstance(const std::string& actorname) {
 			auto idnum = nametoidmap.find(actorname);
 			if (idnum == nametoidmap.end()) {
@@ -84,10 +101,19 @@ namespace ic {
 			}
 		}
 
+		/**
+		 * @brief                     Get the name of associated actor type
+		 * @return                    The name
+		*/
 		std::string getActorName() const {
 			return idtonamemap.at(*actorID);
 		}
 
+		/**
+		 * @brief                     Comparison operators
+		 * @param rhs 
+		 * @return 
+		*/
 		bool operator==(const ActorUID& rhs) const {
 			return compare(rhs) == 0;
 		}
@@ -98,12 +124,24 @@ namespace ic {
 			return compare(rhs) > 0;
 		}
 
+
+		/**
+		 * @brief                     Converts the information of an ActorUID to a string that reads nicely for printing
+		 * @return                    The printable string in the format:
+		 *                            "ActorUID(ActorID=[ActorName], InstanceID=[InstanceNumber])"
+		*/
 		std::string toString() const {
 			return "ActorUID(ActorID=" + std::to_string(*actorID) +
 				", InstanceID=" + std::to_string(*instancenum) + ")";
 		}
 
 	private:
+
+		/**
+		 * @brief                     ActorUID's cannot be freely created
+		 * @param actorID 
+		 * @param instancenum 
+		*/
 		ActorUID(std::shared_ptr<int> actorID, std::shared_ptr<int> instancenum) : actorID(actorID), instancenum(instancenum) {}
 
 		int compare(const ActorUID& other) const {
