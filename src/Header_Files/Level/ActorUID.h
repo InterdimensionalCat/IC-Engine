@@ -7,6 +7,8 @@
 #include "LoggerProvider.h"
 
 //NEED TO MOVE THIS OUT OF HEADERS HOLY SHIT
+class boost::uuids::uuid;
+using UUID = boost::uuids::uuid;
 
 namespace ic {
 
@@ -18,6 +20,49 @@ namespace ic {
 	class ActorUID {
 
 	public:
+
+		ActorUID(const std::string& actorTypeName) : actorTypeName(actorTypeName) {
+			auto foundActorName = instancesMap.find(actorTypeName);
+			if (foundActorName == instancesMap.end()) {
+				//allcoate space for instances and
+				//create this ActorUID as the first instance if
+				//data for this actorTypeName is not found
+				instancesMap.insert(actorTypeName, 
+					std::vector<std::shared_ptr<int>>(1, std::make_unique<int>(1))
+				);
+			}
+			else {
+
+				//add a new instance off the end of the array that is one larger
+				auto& actorNameInstances = foundActorName->second;
+				int newInstanceNum = (int)actorNameInstances.size();
+				actorNameInstances.push_back(
+					std::make_unique_unique<int>(newInstanceNum)
+						);
+			}
+		}
+
+		//copy works in the way we want, no need to redefine
+
+		~ActorUID() {
+			try {
+				auto foundActorName = instancesMap.find(actorTypeName);
+				if (foundActorName == instancesMap.end()) {
+
+				}
+				else {
+					//check if the shared instanceNum is going to be the last one out
+					//and if it is remove from the instancesmap
+					//then if no more instances for this actorTypeName are in the instancesmap
+					//then remove the whole actorTypeName entry from the instancemap
+				}
+			}
+			catch (exception e) {
+				//log this cus we in some bad shit
+			}
+		}
+
+
 		static void registerNewActor(const std::string& actorname) {
 			auto idnum = nametoidmap.find(actorname);
 			if (idnum != nametoidmap.end()) {
@@ -142,45 +187,51 @@ namespace ic {
 		 * @param actorID 
 		 * @param instancenum 
 		*/
-		ActorUID(std::shared_ptr<int> actorID, std::shared_ptr<int> instancenum) : actorID(actorID), instancenum(instancenum) {}
+		//ActorUID(std::shared_ptr<int> actorID, std::shared_ptr<int> instancenum) : actorID(actorID), instancenum(instancenum) {}
 
 		int compare(const ActorUID& other) const {
-			if (actorID == other.actorID) {
-				if (*instancenum == *other.instancenum) return 0;
-				return *instancenum > *other.instancenum ? 1 : -1;
+			if (actorTypeName == other.actorTypeName) {
+				if (*instanceNum == *other.instanceNum) return 0;
+				return *instanceNum > *other.instanceNum ? 1 : -1;
 			}
 			else {
-				return *actorID > *other.actorID ? 1 : -1;
+				return actorTypeName > other.actorTypeName ? 1 : -1;
 			}
 		}
 
-		static ActorUID createNewInstance(const int actorID) {
-			auto instancecount = instances.at(actorID).size();
-			auto& actorIDinstances = instances.at(actorID);
-			for (auto i = 0; i < instancecount; i++) {
-				if ((int)actorIDinstances.at(i).use_count() == 1) {
-					//instancenum not in use, can overrite
-					return ActorUID(actorIDs.at(actorID), actorIDinstances.at(i));
-				}
-			}
+		//static ActorUID createNewInstance(const int actorID) {
+		//	auto instancecount = instances.at(actorID).size();
+		//	auto& actorIDinstances = instances.at(actorID);
+		//	for (auto i = 0; i < instancecount; i++) {
+		//		if ((int)actorIDinstances.at(i).use_count() == 1) {
+		//			//instancenum not in use, can overrite
+		//			return ActorUID(actorIDs.at(actorID), actorIDinstances.at(i));
+		//		}
+		//	}
 
-			actorIDinstances.push_back(std::make_shared<int>((int)instancecount));
-			return ActorUID(actorIDs.at(actorID), actorIDinstances.at(instancecount));
-		}
+		//	actorIDinstances.push_back(std::make_shared<int>((int)instancecount));
+		//	return ActorUID(actorIDs.at(actorID), actorIDinstances.at(instancecount));
+		//}
 
-		std::shared_ptr<int> actorID;
-		std::shared_ptr<int> instancenum;
+		//std::shared_ptr<int> actorID;
+		//std::shared_ptr<int> instancenum;
 
-		static inline std::map<std::string, int> nametoidmap;
-		static inline std::map<int, std::string> idtonamemap;
+		//static inline std::map<std::string, int> nametoidmap;
+		//static inline std::map<int, std::string> idtonamemap;
 
 		//original location of the actorID shared pointer in each ActorUID instance
-		static inline std::vector<std::shared_ptr<int>> actorIDs;
+		//static inline std::vector<std::shared_ptr<int>> actorIDs;
 
 		//original location of the instancenum shared pointer in each ActorUID instance
-		static inline std::vector<std::vector<std::shared_ptr<int>>> instances;
+		//static inline std::vector<std::vector<std::shared_ptr<int>>> instances;
 		
 		//counter that garuntees each actorID being unique
-		static inline int idcounter = 0;
+		//static inline int idcounter = 0;
+
+		static inline std::map<std::string, std::vector<std::shared_ptr<int>>> instancesMap;
+
+		std::string actorTypeName;
+		//std::shared_ptr<int> instanceNum;
+		std::shared_ptr<UUID> instanceNum;
 	};
 }
