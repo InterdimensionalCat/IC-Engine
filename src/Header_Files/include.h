@@ -16,7 +16,7 @@ and a few game related includes that almost every file uses
 #include <memory>
 #include <string>
 #include <filesystem>
-#include "json.hpp"
+#include "nlohmann/json.hpp"
 
 namespace fs = std::filesystem;
 using json = nlohmann::json;
