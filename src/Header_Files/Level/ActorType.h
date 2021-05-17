@@ -11,6 +11,9 @@ namespace ic {
 	class ActorType {
 	public:
 
+		ActorType();
+		const std::string& getType() const;
+
 	private:
 
 		/**
