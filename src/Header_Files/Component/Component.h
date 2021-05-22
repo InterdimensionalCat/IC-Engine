@@ -1,6 +1,6 @@
 #pragma once
 #include "ActorUID.h"
-#include "json.hpp"
+#include <nlohmann\json.hpp>
 #include <map>
 #include <optional>
 #include "ActorData.h"

@@ -1,5 +1,5 @@
 #include "DrawableObjTree.h"
-
+#include "LoggerProvider.h"
 
 using namespace ic::gfx;
 

@@ -2,7 +2,7 @@
 #include <memory>
 #include <optional>
 #include "LoggerProvider.h"
-#include "json.hpp"
+#include <nlohmann\json.hpp>
 #include "ActorUID.h"
 #include <filesystem>
 #include <fstream>
@@ -14,7 +14,7 @@ namespace ic {
 	class ActorData {
 	public:
         ActorData(const std::string& actorname, const std::string& variantname = "", std::unique_ptr<json> mapdata = std::make_unique<json>())
-			: actorname(actorname), mapCharacteristics(std::move(mapdata)), actor(ActorUID::createNewInstance(actorname)) {
+			: actorname(actorname), mapCharacteristics(std::move(mapdata)), actor(ActorUID(actorname, variantname)) {
 
 
 			std::filesystem::path staticJson(std::filesystem::current_path());

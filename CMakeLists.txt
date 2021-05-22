@@ -27,20 +27,93 @@ set(RESOURCE_DIR "${PROJECT_SOURCE_DIR}/resources")
 #adds resource files to the build
 FILE(COPY ${RESOURCE_DIR} DESTINATION "${CMAKE_BINARY_DIR}")
 
+
+
 set(SRC_DIR "${PROJECT_SOURCE_DIR}/src")
 
-MACRO(HEADER_DIRECTORIES return_list)
-    FILE(GLOB_RECURSE new_list ${SRC_DIR}/*.h)
-    SET(dir_list "")
-    FOREACH(file_path ${new_list})
-        GET_FILENAME_COMPONENT(dir_path ${file_path} PATH)
-        SET(dir_list ${dir_list} ${dir_path})
-    ENDFOREACH()
-    LIST(REMOVE_DUPLICATES dir_list)
-    SET(${return_list} ${dir_list})
-ENDMACRO()
+set(SOURCE_H "${PROJECT_SOURCE_DIR}/src/Header_Files")
+set(SOURCE_C "${PROJECT_SOURCE_DIR}/src/Source_Files")
 
-file(GLOB_RECURSE SRC ${SRC_DIR}/*.cpp)
+set(Actor_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Actor")
+set(Actor_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Actor")
+
+set(Behavior_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Behavior")
+set(Behavior_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Behavior")
+
+set(Graphics_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Graphics")
+set(Graphics_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Graphics")
+
+set(GUI_H "${PROJECT_SOURCE_DIR}/src/Header_Files/GUI")
+set(GUI_C "${PROJECT_SOURCE_DIR}/src/Source_Files/GUI")
+
+set(Level_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Level")
+set(Level_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Level")
+
+set(Physics_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Physics")
+set(Physics_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Physics")
+
+set(Component_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Component")
+set(Component_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Component")
+
+set(Bodies_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Physics/Bodies")
+set(Bodies_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Physics/Bodies")
+
+set(State_H "${PROJECT_SOURCE_DIR}/src/Header_Files/State")
+set(State_C "${PROJECT_SOURCE_DIR}/src/Source_Files/State")
+
+set(Util_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Util")
+set(Util_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Util")
+
+set(S2D_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Space2D")
+set(S2D_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Space2D")
+
+set(AS_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Behavior/ActionState")
+set(AS_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Behavior/ActionState")
+
+set(MAP_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Map")
+set(MAP_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Map")
+
+include_directories(
+${SRC_DIR} ${SOURCE_H} ${Actor_H} ${Behavior_H} ${Graphics_H} 
+${GUI_H} ${Level_H} ${Physics_H} ${State_H} ${Util_H} 
+${S2D_H} ${Bodies_H} ${AS_H} ${Component_H} ${MAP_H}
+)
+
+file(GLOB SRC
+#"${Actor_C}/*.cpp"
+#"${Behavior_C}/*.cpp"
+"${Graphics_C}/*.cpp"
+#"${GUI_C}/*.cpp"
+"${Level_C}/*.cpp"
+#"${Physics_C}/*.cpp"
+#"${State_C}/*.cpp"
+"${Util_C}/*.cpp"
+#"${S2D_C}/*.cpp"
+#"${Bodies_C}/*.cpp"
+#"${AS_C}/*.cpp" 
+"${Component_C}/*.cpp"
+"${MAP_C}/*.cpp"
+"${SOURCE_C}/*.cpp"
+#"${PROJECT_SOURCE_DIR}/src/Source_Files/GameEngine2020.cpp"
+#"${PROJECT_SOURCE_DIR}/src/Source_Files/include.cpp"
+)
+
+
+
+#set(SRC_DIR "${PROJECT_SOURCE_DIR}/src")
+
+#MACRO(HEADER_DIRECTORIES return_list)
+#    FILE(GLOB_RECURSE new_list ${SRC_DIR}/*.h)
+#    SET(dir_list "")
+#    FOREACH(file_path ${new_list})
+#        GET_FILENAME_COMPONENT(dir_path ${file_path} PATH)
+#        SET(dir_list ${dir_list} ${dir_path})
+#    ENDFOREACH()
+#    LIST(REMOVE_DUPLICATES dir_list)
+#    SET(${return_list} ${dir_list})
+#ENDMACRO()
+
+#file(GLOB_RECURSE SRC ${SRC_DIR}/*.cpp)
 
 if(WIN32)
 
@@ -136,15 +209,15 @@ target_link_libraries(${PROJECT_NAME} PRIVATE ${Boost_LIBRARIES})
 #target_include_directories(${PROJECT_NAME} PUBLIC ${SOURCE_H})
 
 
-HEADER_DIRECTORIES(header_dir_list)
+#HEADER_DIRECTORIES(header_dir_list)
 
-list(LENGTH header_dir_list header_dir_list_count)
-message(STATUS "[INFO] Found ${header_dir_list_count} header directories.")
+#list(LENGTH header_dir_list header_dir_list_count)
+#message(STATUS "[INFO] Found ${header_dir_list_count} header directories.")
 
-target_include_directories(
-    ${PROJECT_NAME}
-    PUBLIC
-    ${header_dir_list} # Recursive
-)
+#target_include_directories(
+#    ${PROJECT_NAME}
+#    PUBLIC
+#    ${header_dir_list} # Recursive
+#)
 
 set(CMAKE_CXX_CLANG_TIDY clang-tidy -checks=-*,readability-*)
