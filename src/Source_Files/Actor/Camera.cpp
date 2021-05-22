@@ -28,9 +28,9 @@ void Camera::draw(Renderer* renderer) {
 
 	View newview = target->getDefaultView();
 
-	newview.setCenter(lerp(prevpos.toSFMLVec<float>(), pos.toSFMLVec<float>(), renderer->interpol));
-	newview.setRotation(lerp((float)prevrotation.get(), (float)rotation.get(), renderer->interpol));
-	newview.zoom(lerp(prevscale, scale, renderer->interpol));
+	newview.setCenter(glerp(prevpos.toSFMLVec<float>(), pos.toSFMLVec<float>(), renderer->interpol));
+	newview.setRotation(glerp((float)prevrotation.get(), (float)rotation.get(), renderer->interpol));
+	newview.zoom(glerp(prevscale, scale, renderer->interpol));
 
 	target->setView(newview);
 

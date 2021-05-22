@@ -34,11 +34,11 @@ void SweepAndPrune::updateBody(PhysicsBody* body, const size_t& polyInd) {
 
 #ifdef _DEBUG
 			if (interval.min == numeric_limits<float>().infinity()) {
-				throw BadInfinityException();
+				//throw BadInfinityException();
 			}
 
 			if (interval.max == -numeric_limits<float>().infinity()) {
-				throw BadInfinityException();
+				//throw BadInfinityException();
 			}
 #endif
 
@@ -75,11 +75,11 @@ void SweepAndPrune::addBody(PhysicsBody* body, const size_t& polyInd) {
 	}
 #ifdef _DEBUG
 	if (interval.min == numeric_limits<float>().infinity()) {
-		throw BadInfinityException();
+		//throw BadInfinityException();
 	}
 
 	if (interval.max == -numeric_limits<float>().infinity()) {
-		throw BadInfinityException();
+		//throw BadInfinityException();
 	}
 #endif
 }

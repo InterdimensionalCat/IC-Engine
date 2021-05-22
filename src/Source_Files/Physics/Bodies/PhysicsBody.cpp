@@ -178,7 +178,7 @@ Point PhysicsBody::getMinBound() const {
 #ifdef _DEBUG
 	if (minBound.x == numeric_limits<float>::infinity() ||
 		minBound.y == numeric_limits<float>::infinity()) {
-		throw BadInfinityException();
+		//throw BadInfinityException();
 	}
 #endif
 	return minBound;
@@ -194,7 +194,7 @@ Point PhysicsBody::getMaxBound() const {
 #ifdef _DEBUG
 	if (maxBound.x == -numeric_limits<float>::infinity() ||
 		maxBound.y == -numeric_limits<float>::infinity()) {
-		throw BadInfinityException();
+		//throw BadInfinityException();
 	}
 #endif
 	return maxBound;

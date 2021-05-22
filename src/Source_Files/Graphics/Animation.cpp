@@ -17,7 +17,7 @@ frameDim(frameDim), targetDim(targetDim.toSFMLVec<float>()), name(filename), num
 
 	if (!tex.loadFromFile(filepath.string())) {
 #ifdef _DEBUG
-		throw TextureLoadException(filename, filepath.string());
+		//throw TextureLoadException(filename, filepath.string());
 #endif
 	}
 
@@ -74,7 +74,7 @@ void Animation::draw(Renderer* renderer) {
 	//frame.setOrigin(lerp(parent->transform->getPrevPos().toSFMLVec<float>() - targetDim / 2.0f, 
 	//	parent->transform->getPos().toSFMLVec<float>() - targetDim / 2.0f, renderer->interpol));
 
-	frame.setPosition(lerp(parent->transform->getPrevPos().toSFMLVec<float>() - targetDim / 2.0f + offset,
+	frame.setPosition(glerp(parent->transform->getPrevPos().toSFMLVec<float>() - targetDim / 2.0f + offset,
 		parent->transform->getPos().toSFMLVec<float>() - targetDim / 2.0f + offset, renderer->interpol));
 
 	target->draw(frame, states);
