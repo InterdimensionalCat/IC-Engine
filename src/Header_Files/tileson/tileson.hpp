@@ -56,6 +56,21 @@
  * THE SOFTWARE.
  */
 
+//NOTE: FILE HAS BEEN EDITED FROM THE ORIGINAL SOURCE////////////////////////////
+
+#if defined(__clang__)
+//idk what to do for clang
+#elif defined(__GNUC__) || defined(__GNUG__)
+#pragma GCC diagnostic push
+//it will be something like this for gcc but idk what the warnings are called
+//#pragma GCC diagnostic ignored "-Wunused-parameter"
+#elif defined(_MSC_VER)
+#pragma warning( push )
+#pragma warning( disable : 4018 )
+#pragma warning( disable : 4267 )
+#endif
+
+
 #pragma once
 
 #include <string>
@@ -7256,7 +7271,7 @@ namespace tson
 				m_subFolders.emplace_back(entry.path());//.loadData(); - loadData() is called in the constructor, so don't call again.
 			else if (fs::is_regular_file(entry.path()))
 			{
-				if(m_hasWorldFile && m_world.contains(entry.path().filename().u8string()))
+				if(m_hasWorldFile && m_world.contains(entry.path().filename().generic_string()))
 					m_files.emplace_back(entry.path());
 				else if(!m_hasWorldFile)
 					m_files.emplace_back(entry.path());
@@ -7498,7 +7513,7 @@ std::unique_ptr<tson::Map> tson::Tileson::parse(const fs::path &path, std::uniqu
 	}
 
 	std::string msg = "File not found: ";
-	msg += std::string(path.u8string());
+	msg += std::string(path.generic_string());
 	return std::make_unique<tson::Map>(tson::ParseStatus::FileNotFound, msg);
 }
 
@@ -7734,3 +7749,11 @@ int tson::World::loadMaps(tson::Tileson *parser)
 
 #endif //TILESON_TILESON_H
 
+
+#if defined(__clang__)
+//idk what to do for clang
+#elif defined(__GNUC__) || defined(__GNUG__)
+#pragma GCC diagnostic pop
+#elif defined(_MSC_VER)
+#pragma warning( pop )
+#endif
