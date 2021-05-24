@@ -1,20 +1,11 @@
 #pragma once
 #include <memory>
-#include "ActorType.h"
-
-namespace boost {
-	namespace uuids {
-		struct uuid;
-		class random_generator_pure;
-		typedef random_generator_pure random_generator;
-	}
-}
+#include <string>
 
 namespace ic {
 
 
-	class ic::ActorType;
-	using UUID = boost::uuids::uuid;
+	class ActorType;
 
 	/**
 	 * @brief                         The ActorUID class is the way that different parts of an
@@ -50,13 +41,19 @@ namespace ic {
 		 * @brief                     Get the name of associated actor type
 		 * @return                    The name
 		*/
-		const ActorType& getActorType() const;
+		ActorType getActorType() const;
 
 		/**
 		 * @brief                     Comparison operator(spaceship ftw)
 		 * @return 
 		*/
-		auto operator<=>(const ActorUID&) const = default;
+		//auto operator<=>(const ActorUID&) const = default;
+		bool operator==(const ActorUID& rhs) const;
+		bool operator!=(const ActorUID& rhs) const;
+		bool operator<(const ActorUID& rhs) const;
+		bool operator>(const ActorUID& rhs) const;
+		bool operator<=(const ActorUID& rhs) const;
+		bool operator>=(const ActorUID& rhs) const;
 
 		/**
 		 * @brief                     Converts the ActorUID into a printable
@@ -68,7 +65,6 @@ namespace ic {
 	private:
 
 
-		ActorType type;
-		std::shared_ptr<UUID> instanceNum;
+		std::shared_ptr<ActorType> type;
 	};
 }

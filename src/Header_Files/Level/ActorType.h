@@ -1,5 +1,6 @@
 #pragma once
 #include <string>
+#include <compare>
 
 namespace ic {
 
@@ -49,7 +50,13 @@ namespace ic {
 		 *                            you are dealing with a map
 		 * @return 
 		*/
-		auto operator<=>(const ActorType&) const = default;
+		//auto operator<=>(const ActorType&) const = default;
+		bool operator==(const ActorType& rhs) const;
+		bool operator!=(const ActorType& rhs) const;
+		bool operator<(const ActorType& rhs) const;
+		bool operator>(const ActorType& rhs) const;
+		bool operator<=(const ActorType& rhs) const;
+		bool operator>=(const ActorType& rhs) const;
 
 		/**
 		 * @brief                     Converts the ActorType to a readable string value
