@@ -6,7 +6,9 @@
 #ccmake[-Wno-dev]
 # set minimum version required for CMake
 
-cmake_minimum_required (VERSION 3.8)
+cmake_minimum_required (VERSION 3.16)
+
+#SET(SFML_DLL_DIR "not found" CACHE STRING)
 
 set(PROJECT_NAME "GameEngine2020")
 
@@ -77,19 +79,23 @@ file(GLOB SRC
 #"${Actor_C}/*.cpp"
 #"${Behavior_C}/*.cpp"
 "${Graphics_C}/*.cpp"
+"${Graphics_H}/*.h"
 #"${GUI_C}/*.cpp"
 "${Level_C}/*.cpp"
+"${Level_H}/*.h"
 #"${Physics_C}/*.cpp"
 #"${State_C}/*.cpp"
 "${Util_C}/*.cpp"
+"${Util_H}/*.h"
 #"${S2D_C}/*.cpp"
 #"${Bodies_C}/*.cpp"
 #"${AS_C}/*.cpp" 
 "${Component_C}/*.cpp"
+"${Component_H}/*.h"
 "${MAP_C}/*.cpp"
+"${MAP_H}/*.h"
 "${SOURCE_C}/*.cpp"
-#"${PROJECT_SOURCE_DIR}/src/Source_Files/GameEngine2020.cpp"
-#"${PROJECT_SOURCE_DIR}/src/Source_Files/include.cpp"
+"${SOURCE_H}/*.h"
 )
 
 
@@ -121,30 +127,33 @@ if(CMAKE_BUILD_TYPE MATCHES Debug)
     add_compile_definitions(debug_mode)
 endif()
 
-add_definitions( -DBOOST_ALL_NO_LIB )
-add_definitions( -DBOOST_ALL_DYN_LINK )
-
-set(Boost_USE_STATIC_LIBS       OFF)
-set(Boost_USE_MULTITHREADED      ON)
-set(Boost_USE_STATIC_RUNTIME    OFF)
 
 set(SFML_STATIC_LIBRARIES FALSE)
 
 find_package(SFML COMPONENTS system window graphics CONFIG REQUIRED)
-find_package(nlohmann_json CONFIG REQUIRED)
-find_package(Boost REQUIRED COMPONENTS thread system filesystem log)
 
 
 
 include_directories(${SFML_INCLUDE_DIR})
-include_directories(${Boost_INCLUDE_DIR})
-
 
 
 add_executable(${PROJECT_NAME} ${SRC})
 
+
 target_link_libraries(${PROJECT_NAME} PRIVATE sfml-system sfml-network sfml-graphics sfml-window)
-target_link_libraries(${PROJECT_NAME} PRIVATE nlohmann_json nlohmann_json::nlohmann_json)
-target_link_libraries(${PROJECT_NAME} PRIVATE ${Boost_LIBRARIES})
+
+
+target_precompile_headers(${PROJECT_NAME} PUBLIC [["include.h"]])
+
+if(MSVC) 
+foreach(source IN LISTS SRC)
+    get_filename_component(source_path "${source}" PATH)
+    string(REPLACE ${PROJECT_SOURCE_DIR}/src/ "" source_rel ${source_path})
+    message(${source_rel})
+    string(REPLACE "/" "\\" source_path_msvc "${source_rel}")
+    source_group("${source_path_msvc}" FILES "${source}")
+endforeach()
+endif()
+
 
 set(CMAKE_CXX_CLANG_TIDY clang-tidy -checks=-*,readability-*)

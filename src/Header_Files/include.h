@@ -7,6 +7,7 @@ and a few game related includes that almost every file uses
 
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <SFML/Audio.hpp>
 #include <iostream>
 #include <fstream>
 #include <sstream>
@@ -16,7 +17,13 @@ and a few game related includes that almost every file uses
 #include <memory>
 #include <string>
 #include <filesystem>
-#include "nlohmann/json.hpp"
+#include <variant>
+#include <map>
+#include <vector>
+#include <array>
+#include <functional>
+#include <queue>
+#include <nlohmann\json.hpp>
 
 namespace fs = std::filesystem;
 using json = nlohmann::json;
@@ -64,31 +71,3 @@ using json = nlohmann::json;
 #include "LoggerProvider.h"
 #include "SettingsProvider.h"
 
-namespace ic {
-#ifdef debug_mode
-	struct TextureLoadException : public std::exception {
-		TextureLoadException(const std::string& filename, const std::string& path) : filename(filename), path(path) {}
-		const char* what() const throw () {
-			return "Texture file not found!";
-		}
-
-		std::string filename;
-		std::string path;
-	};
-
-	struct MapIOException : public std::exception {
-		MapIOException() {}
-		const char* what() const throw () {
-			return "Error loading Map/Tileset file!";
-		}
-
-	};
-
-	struct BadInfinityException : public std::exception {
-		BadInfinityException() {}
-		const char* what() const throw () {
-			return "Value cannot be infinity!";
-		}
-	};
-#endif
-}

@@ -8,7 +8,14 @@
       "buildRoot": "${projectDir}\\out\\build\\${name}",
       "installRoot": "${projectDir}\\out\\install\\${name}",
       "buildCommandArgs": "",
-      "ctestCommandArgs": ""
+      "ctestCommandArgs": "",
+      "variables": [
+        {
+          "name": "SFML_DIR",
+          "value": "F:/SFML/Build/SFML-2.5.1-x64VS2019",
+          "type": "PATH"
+        }
+      ]
     },
     {
       "name": "x64-Release",
