@@ -20,14 +20,16 @@ GameSettings::GameSettings() {
 
 SettingType GameSettings::getSetting(const std::string& settingname) const {
 #ifndef debug_mode
-	cout << "setting " << settingname " accessed with value " << settingsmap[settingname] << "\n";
+	//cout << "setting " << settingname " accessed with value " << settingsmap[settingname] << "\n";
+	//LoggerProvider::log("setting " + settingname + " accessed with value " + settingsmap[settingname] + "\n");
 #endif
 	return settingsmap.at(settingname);
 }
 
 void GameSettings::setSetting(const std::string& settingName, const SettingType settingVal) {
 #ifndef debug_mode
-	cout << "setting " << settingname " created with value " << settingVal << "\n";
+	//cout << "setting " << settingname " created with value " << settingVal << "\n";
+	//LoggerProvider::log("setting " + settingname + " created with value " + settingVal  + "\n");
 #endif
 	settingsmap.insert_or_assign(settingName, settingVal);
 }
