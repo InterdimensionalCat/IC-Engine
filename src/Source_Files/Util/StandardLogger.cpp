@@ -15,5 +15,5 @@ StandardLogger::StandardLogger() {
 StandardLogger::~StandardLogger() {}
 
 void StandardLogger::log(const std::string& message, const LogSeverity severity, const LogType type) {
-
+	std::cout << message;
 }
