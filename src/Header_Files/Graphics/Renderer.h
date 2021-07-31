@@ -70,6 +70,8 @@ namespace ic::gfx {
 
 	private:
 
+		friend class GfxTest;
+
 
 		friend struct RenderEvent;
 		friend class DrawableObject;

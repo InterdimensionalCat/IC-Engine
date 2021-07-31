@@ -4,19 +4,21 @@
 #include "InputHandle.h"
 #include "AudioHandle.h"
 #include "Renderer.h"
-
-#include "Scene.h"
+#include "GfxTest.h"
 
 using namespace ic;
 using namespace ic::gfx;
 
+static std::shared_ptr<GfxTest> test;
 
 void updateInput(Renderer& renderer) {
 	//renderer.updateInput();
 }
 
 //Sends input events to everything that needs it
-void handleInput(InputHandle& input) {}
+void handleInput(InputHandle& input) {
+	test->update(input);
+}
 
 //updates all non-input-non-physics game logic
 void updateAI() {}
@@ -29,6 +31,9 @@ void updateAudio(AudioHandle& audio) {}
 //renders game
 void draw(float interpol, Renderer& renderer) {
 	renderer.preRender(interpol);
+
+	test->draw(renderer);
+
 	renderer.postRender();
 }
 
@@ -48,6 +53,8 @@ void game() {
 	double accumulator = 0;
 
 	auto input = std::make_unique<InputHandle>();
+
+	test = std::make_shared<GfxTest>();
 
 	//main game loop
 	while (SettingsProvider::getSetting<bool>("running"))
@@ -125,8 +132,8 @@ int main(int argc, char *argv[])
 #ifdef __APPLE__
 	LoggerProvider::log("Current OS is: Mac OSX\n");
 #endif
-	ic::Scene scene;
-	scene.testActorUID();
-	//game();
+	//ic::Scene scene;
+	//scene.testActorUID();
+	game();
 	return 0;
 }
