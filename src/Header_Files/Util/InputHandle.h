@@ -20,7 +20,9 @@ namespace ic {
 		//only parse input is the window has focus
 
 		//determine if a key is held down
-		//bool isDown(sf::Keyboard::Key key) const;
+		bool isDown(sf::Keyboard::Key key) const {
+			return sf::Keyboard::isKeyPressed(key);
+		}
 
 		//determine if a mouse button is held down
 		//bool isDown(sf::Mouse::Button key) const;
