@@ -1,29 +1,24 @@
 #pragma once
+#include "AngularType.h"
 #include "SFML/Graphics.hpp"
 #include "S2DIterator.h"
 
 namespace Space2D {
 
     template<typename T>
-    class Vec2;
-    template<typename T>
-    class NormVec2;
-    template<typename T>
-    class Dim2;
-
-    template<typename T>
-    class Point2
+    class NormVec2
     {
     public:
 
-        constexpr Point2() noexcept : x(), y() {}
-        constexpr explicit Point2(const T& x, const T& y) noexcept : x(x), y(y) {}
-        constexpr explicit Point2(const Vec2<T>& other) noexcept : x(other.x), y(other.y) {}
-        constexpr explicit Point2(const Point2& base, const Vec2<T>& offset) noexcept : Point2(base.x + offset.x, base.y + offset.y) {}
-        constexpr explicit Point2(const Point2& base, const NormVec2<T>& offset) noexcept : Point2(base.x + offset.x, base.y + offset.y) {}
+        constexpr explicit NormVec2(const T& x, const T& y) : x(x / std::sqrt(x * x + y * y)), y(y / std::sqrt(x * x + y * y)) {}
 
-        auto operator<=>(const Point2<T>&) const noexcept = default;
-        bool operator== (const Point2<T>& other) const noexcept {
+        //constructor from radian angle value
+        constexpr explicit NormVec2(const Radians radians) noexcept : 
+            x(std::cos(radians.get())), 
+            y(std::sin(radians.get())) {}
+
+        auto operator<=>(const NormVec2&) const noexcept = default;
+        bool operator== (const NormVec2& other) const noexcept {
             return std::abs(x - other.x) < 1e-6 && std::abs(y - other.y) < 1e-6;
         }
 
@@ -39,15 +34,22 @@ namespace Space2D {
             return 2;
         }
 
-        S2D_ITR_DEF(Point2)
+        S2D_ITR_DEF(NormVec2)
 
-        //convert the point to an sf::Vector2<T> (T defaults to float)
+        NormVec2 operator-() const noexcept {
+            return NormalizedVec2(-x, -y);
+        }
+
+        Radians angle() const noexcept {
+            return Radians(std::acos(x));
+        }
+
         template <typename SFMLType = float>
         sf::Vector2<SFMLType> toSFMLVec() const noexcept {
             return sf::Vector2<SFMLType>(static_cast<SFMLType>(this->x), static_cast<SFMLType>(this->y));
         }
 
-        friend std::ostream& operator << (std::ostream& os, const Point2<T>& it) {
+        friend std::ostream& operator << (std::ostream& os, const NormVec2<T>& it) {
             std::string typname = typeid(T).name();
             std::string::size_type i = typname.find("struct");
             if (i != std::string::npos) {
@@ -57,7 +59,7 @@ namespace Space2D {
             if (i != std::string::npos) {
                 typname.erase(i, 6);
             }
-            os << "Point2<" << typname << ">(" << it.x << ", " << it.y << ")";
+            os << "NormVec2<" << typname << ">(" << it.x << ", " << it.y << ")";
             return os;
         }
 

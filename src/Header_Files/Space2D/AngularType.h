@@ -15,141 +15,170 @@
   however, 1.0 percent will print as "100%" for clarity
 */
 
-template<typename T, typename Tag, typename Ratio>
-class AngularType
+namespace Space2D {
+	static inline long double Pi = 3.1415926535897932;
+	static inline long double epsilon = 1e-6;
 
-{
-public:
-	AngularType() noexcept : value(0) {}
-	explicit AngularType(const T& value) noexcept : value(value) {}
-	explicit AngularType(const long double& value) noexcept : value(static_cast<T>(value)) {}
-	T& get() noexcept { return value; }
-	const T& get() const noexcept { return value; }
+	template<typename T, typename Tag, typename Ratio>
+	class AngularType
+
+	{
+	public:
+
+		using Angular = AngularType<T, Tag, Ratio>;
+
+		constexpr AngularType() noexcept : value(0) {}
+		constexpr explicit AngularType(const T& value) noexcept : value(value) {}
+		constexpr explicit AngularType(const Angular& other) noexcept 
+			: value(other.value) {}
+		constexpr explicit AngularType(const long double& value) noexcept 
+			: value(static_cast<T>(value)) {}
+
+		T& get() noexcept { return value; }
+		const T& get() const noexcept { return value; }
+
+		template <typename OtherRatio>
+		operator AngularType<T, Tag, OtherRatio>() const {
+			return  AngularType<T, Tag, OtherRatio>(get() * Ratio::num / Ratio::den * OtherRatio::den / OtherRatio::num);
+		}
+
+		auto operator<=>(const Angular&) const noexcept = default;
+		bool operator== (const Angular& other) const noexcept {
+			return std::abs(value - other.value) < epsilon;
+		}
+
+		explicit operator T() const {
+			return value;
+		}
+
+#ifndef S2D_ANGULAR_OPERATOR
+#define S2D_ANGULAR_OPERATOR(op) \
+    constexpr inline Angular& operator##op##=(const Angular& rhs) noexcept {\
+        value op##= (T)rhs;\
+        return *this;\
+	}\
+	constexpr inline Angular operator##op(const Angular& rhs) const noexcept { \
+	    return Angular(value op (T)rhs);\
+	}\
+	constexpr inline Angular& operator##op##=(const T& rhs) noexcept {\
+        value op##= (T)rhs;\
+        return *this;\
+	}\
+	constexpr inline Angular& operator##op(const T& rhs) const noexcept { \
+	    return Angular(value op (T)rhs);\
+	}\
+    constexpr inline friend Angular& operator##op(const T& lhs, const Angular& rhs) noexcept { \
+		return Angular(lhs op rhs.value);\
+	}
+#endif
+
+		S2D_ANGULAR_OPERATOR(-)
+		S2D_ANGULAR_OPERATOR(+)
+		S2D_ANGULAR_OPERATOR(*)
+		S2D_ANGULAR_OPERATOR(/)
+		S2D_ANGULAR_OPERATOR(%)
 
 
-	template <typename OtherRatio>
-	operator AngularType<T, Tag, OtherRatio>() const {
+		constexpr Angular operator-() const noexcept {
+			return Angular(-value);
+		}
 
-		return  AngularType<T, Tag, OtherRatio>(get() * Ratio::num / Ratio::den * OtherRatio::den / OtherRatio::num);
+		constexpr Angular operator+() const noexcept {
+			return Angular(+value);
+		}
+
+	private:
+		T value;
+	};
+
+	template<typename Ratio>
+	using AngType = AngularType<float, struct Ang, Ratio>;
+
+	using Radians = AngType<std::ratio<1, 1>>;
+
+	//pi radians = 180 degrees
+	using Degrees = AngType<std::ratio<31415926535897932, 1800000000000000000>>;
+
+	//2pi radians = 100%
+	using Percent = AngType<std::ratio<31415926535897932, 5000000000000000>>;
+
+	inline Radians operator"" _rad(const long double d) noexcept {
+		return Radians(d);
 	}
 
-	using Angular = AngularType<T, Tag, Ratio>;
-
-	bool operator==(const Angular& other) const noexcept {
-		return abs(value - other.get()) < 1e-6;
+	inline Radians operator"" _pirad(const long double d) noexcept {
+		return Radians(d * 3.1415926535897932);
 	}
 
-	bool operator!= (const Angular& other) const noexcept {
-		return !(operator==(other));
+	inline Degrees operator"" _deg(const long double d) noexcept {
+		return Degrees(d);
+	}
+	inline Percent operator"" _pcent(const long double d) noexcept {
+		return Percent(static_cast<long double>(d / 100.0));
 	}
 
-
-
-	Angular& operator-=(const Angular& rhs) noexcept {
-		value -= rhs.get();
-		return *this;
+	inline Radians operator"" _rad(const unsigned long long d) noexcept {
+		return Radians(static_cast<long double>(d));
 	}
 
-	Angular operator-(const Angular& rhs) const noexcept {
-		return Angular(value - rhs.get());
+	inline Radians operator"" _pirad(const unsigned long long d) noexcept {
+		return Radians(static_cast<long double>(d) * 3.1415926535897932);
 	}
 
-
-	Angular& operator+=(const Angular& rhs) noexcept {
-		value += rhs.get();
-		return *this;
+	inline Degrees operator"" _deg(const unsigned long long d) noexcept {
+		return Degrees(static_cast<long double>(d));
 	}
 
-	Angular operator+(const Angular& rhs) const noexcept {
-		return Angular(value + rhs.get());
+	inline Percent operator"" _pcent(const unsigned long long d) noexcept {
+		return Percent(static_cast<long double>(d / 100.0));
 	}
 
+	inline std::ostream& operator << (std::ostream& os, const Radians& it) {
+		double pie_ratio = (it / 180_deg).get();
+		if (pie_ratio == 1) {
+			os << "pi radians";
+			return os;
+		}
 
-	Angular& operator*=(const Angular& rhs) noexcept {
-		value *= rhs.get();
-		return *this;
+		if (pie_ratio == 0) {
+			os << "0 radians";
+			return os;
+		}
+
+		long precisison = 1000;
+
+		long gcdnum = std::gcd((long)round(pie_ratio * precisison), precisison);
+
+		double numerator = (pie_ratio * precisison) / (double)gcdnum;
+		long denominator = precisison / gcdnum;
+
+		if (abs(numerator - 1) < 1e-6) {
+			os << "pi" << "/" << denominator << " radians";
+			return os;
+		}
+
+		if (denominator == 1) {
+			os << numerator << "pi radians";
+			return os;
+		}
+
+		if (gcdnum == 1) {
+			os << pie_ratio << "pi radians";
+			return os;
+		}
+
+		os << numerator << "pi/" << denominator << " radians";
+		return os;
 	}
 
-	Angular& operator*=(const T& rhs) noexcept {
-		value *= rhs;
-		return *this;
+	inline std::ostream& operator << (std::ostream& os, const Degrees& it) {
+		os << it.get() << " degrees";
+		return os;
 	}
 
-
-	Angular operator*(const Angular& rhs) const noexcept {
-		return Angular(value * rhs.get());
+	inline std::ostream& operator << (std::ostream& os, const Percent& it) {
+		os << it.get() * 100.0 << "%";
+		return os;
 	}
 
-	Angular operator*(const T& rhs) const noexcept {
-		return Angular(value * rhs);
-	}
-
-	Angular& operator/=(const Angular& rhs) noexcept {
-		value /= rhs.get();
-		return *this;
-	}
-
-	Angular& operator/=(const T& rhs) noexcept {
-		value /= rhs;
-		return *this;
-	}
-
-
-	Angular operator/(const Angular& rhs) const noexcept {
-		return Angular(value / rhs.get());
-	}
-
-	Angular operator/(const T& rhs) const noexcept {
-		return Angular(value / rhs);
-	}
-
-	Angular operator-() const noexcept {
-		return Angular(-value);
-	}
-
-	Angular operator+() const noexcept {
-		return Angular(+value);
-	}
-
-	Angular operator%(const Angular& rhs) const noexcept {
-		return Angular(value % rhs.get());
-	}
-
-	Angular& operator%=(const Angular& rhs) const noexcept {
-		value %= rhs.get();
-		return *this;
-	}
-
-private:
-	T value;
-};
-
-template<typename Ratio>
-using AngType = AngularType<float, struct Ang, Ratio>;
-
-using Radians = AngType<std::ratio<1, 1>>;
-using Degrees = AngType<std::ratio<31415926535897932, 1800000000000000000>>;
-using Percent = AngType<std::ratio<31415926535897932, 5000000000000000>>;
-
-Radians operator"" _rad(const long double d) noexcept;
-
-Radians operator"" _pi_rad(const long double d) noexcept;
-
-Degrees operator"" _deg(const long double d) noexcept;
-
-Percent operator"" _percent(const long double d) noexcept;
-
-Radians operator"" _rad(const unsigned long long d) noexcept;
-
-Radians operator"" _pi_rad(const unsigned long long d) noexcept;
-
-Degrees operator"" _deg(const unsigned long long d) noexcept;
-
-Percent operator"" _percent(const unsigned long long d) noexcept;
-
-std::ostream& operator << (std::ostream& os, const Radians& it);
-
-std::ostream& operator << (std::ostream& os, const Degrees& it);
-
-std::ostream& operator << (std::ostream& os, const Percent& it);
-
+}
