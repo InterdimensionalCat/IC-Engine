@@ -23,7 +23,16 @@ and a few game related includes that almost every file uses
 #include <array>
 #include <functional>
 #include <queue>
+#include <optional>
+#include <bitset>
+#include <limits>
 #include <nlohmann\json.hpp>
+#include <initializer_list>
+
+//#include <tmxlite/Map.hpp>
+//#include <tmxlite/Layer.hpp>
+//#include <tmxlite/TileLayer.hpp>
+//#include <tmxlite/ObjectGroup.hpp>
 
 namespace fs = std::filesystem;
 using json = nlohmann::json;
@@ -43,9 +52,9 @@ using json = nlohmann::json;
  not super helpful anymore
 */
 //#ifdef _DEBUG
-//#define new new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
+//#define DBG_NEW new ( _CLIENT_BLOCK , __FILE__ , __LINE__ )
 //#else
-//#define new new
+//#define DBG_NEW new 
 //#endif
 
 ///////////////////////////////////////////////////////////
@@ -62,6 +71,8 @@ using json = nlohmann::json;
 
 #endif
 
+
+#include <SFML\Graphics.hpp>
 
 #include "Space2D.h"
 #include "SFMLHelpers.h"

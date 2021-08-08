@@ -1,30 +1,46 @@
 #pragma once
 #include "SFML/Graphics.hpp"
+#include "AngularType.h"
+#include "S2DIterator.h"
 
 
 namespace Space2D {
 
-    class Dimension2;
-    class Vec2;
-    class Point2;
-    class Poly2;
-    class NormalizedVec2;
-    class Rect2;
+    enum class RectFace {
+        Up,
+        Down,
+        Left,
+        Right
+    };
 
-    class Rect2 final
+
+    template<typename T>
+    class Vec2;
+    template<typename T>
+    class NormVec2;
+    template<typename T>
+    class Dim2;
+    template<typename T>
+    class Point2;
+
+    template<typename T>
+    class Rect2 
     {
 
     public:
 
         //constructs a rect with points (0,0) and (0,0)
-        Rect2() noexcept;
+        Rect2() noexcept {}
 
-        explicit Rect2(const float& x0, const float& y0, const float& x1, const float& y1) noexcept;
+        constexpr explicit Rect2(const T& x0, const T& y0, const T& x1, const T& y1) noexcept
+            : min(Point2<T>(x0, y0)), max(Point2<T>(x1, y1)) {}
 
-        explicit Rect2(const Point2& min, const Point2& max) noexcept;
+        constexpr explicit Rect2(const Point2<T>& min, const Point2<T>& max) noexcept
+            : min(min), max(max) {}
 
         //define a rect like an sfml rectangle(min_point + dimensions)
-        explicit Rect2(const Point2& min, const Dimension2 dim) noexcept;
+        constexpr explicit Rect2(const Point2<T>& min, const Dim2<T>& dim) noexcept
+            : min(min), max(Point2<T>(min.x + dim.x, min.y + dim.y)) {}
 
         //define a rectangle as a sub area of a smaller rectangle such that
         //     _____________
@@ -35,59 +51,118 @@ namespace Space2D {
         //    |_____________|
         //where (x0, x1) is base_rect.min + min_offset
         //and (x1, y1) is base_rect.max - max_offset
-        explicit Rect2(const Rect2& base_rect, const Vec2& min_offset, const Vec2& max_offset);
+        constexpr explicit Rect2(const Rect2& baseRect,
+            const Vec2<T>& minOffset, const Vec2<T>& maxOffset) noexcept
+            : min(baseRect.min + minOffset), max(baseRect.max - maxOffset) {}
 
         //same constructor as above but as a ratio of the rectangle size
-        explicit Rect2(const Rect2& base_rect, const Percent& min_offset_X, const Percent& min_offset_Y, const Percent& max_offset_X, const Percent& max_offset_Y);
+        constexpr explicit Rect2(const Rect2<T>& baseRect, 
+            const Dim2<Percent>& minOffset, const Dim2<Percent>& maxOffset) noexcept :
+            min(baseRect.min + baseRect.size() * ((Dim2<T>)minOffset)),
+            max(baseRect.max - baseRect.size() * ((Dim2<T>)maxOffset))
+        {}
 
-        bool operator==(const Rect2& other) const noexcept;
+        auto operator<=>(const Rect2&) const noexcept = default;
+        bool operator==(const Rect2& other) const noexcept {
+            return min == other.min && max == other.max;
+        }
 
-        bool operator!=(const Rect2& other) const noexcept;
+        const T& operator[] (const size_t i) const noexcept {
+            if (i < 2) {
+                return min[i];
+            }
+            else {
+                return max[i - 2];
+            }
+        }
+        T& operator[] (const size_t i) noexcept {
+            if (i < 2) {
+                return min[i];
+            }
+            else {
+                return max[i - 2];
+            }
+        }
 
-        Rect2& operator-=(const Vec& rhs) noexcept;
+        const size_t numVals() const {
+            return 4;
+        }
 
-        Rect2& operator-=(const NormalizedVec2& rhs) noexcept;
+        S2D_ITR_DEF(Rect2)
 
-        Rect2 operator-(const Vec2& rhs) const noexcept;
+        T area() const noexcept {
+            return width() * height();
+        }
 
-        Rect2 operator-(const NormalizedVec2& rhs) const noexcept;
+        Point2<T> center() const noexcept {
+            return Point2<T>((max.x + min.x) * 50_pcent, (max.y + min.y) * 50_pcent);
+        }
 
-        Rect2& operator+=(const Vec2& rhs) noexcept;
+        bool contains(const Point2<T>& query) const noexcept {
+            return (query.x > min.x) &&
+                (query.x < max.x) &&
+                (query.y > min.y) &&
+                (query.y < max.y);
+        }
 
-        Rect2& operator+=(const NormalizedVec2& rhs) noexcept;
+        Dim2<T> size() const noexcept {
+            return Dim2<T>(min, max);
+        }
 
-        Rect2 operator+(const Vec2& rhs) const noexcept;
+        T width() const noexcept {
+            return max.x - min.x;
+        }
 
-        Rect2 operator+(const NormalizedVec2& rhs) const noexcept;
+        T height() const noexcept {
+            return max.y - min.y;
+        }
 
-        float area() const noexcept;
+        void moveMinTo(const Point2<T>& newMin) noexcept {
+            auto size = Rect2::size();
+            min = newMin;
+            max = newMin + Vec(size.x, size.y);
+        }
 
-        Point center() const noexcept;
+        void moveCenterTo(const Point2<T>& newCenter) noexcept {
+            auto size = Rect2::size();
+            min = newCenter - (size / 2.0f);
+            max = newCenter + (size / 2.0f);
+        }
 
-        bool contains(const Point2& query) const noexcept;
+        NormVec2<T> getNormal(const RectFace type) {
+            switch (type) {
+            case RectFace::Up:
+                return getNormal_0_neg1();
+            case RectFace::Down:
+                return getNormal_0_1();
+            case RectFace::Left:
+                return getNormal_neg1_0();
+            case RectFace::Right:
+                return getNormal_1_0();
+            }
 
-        Dimension getSize() const noexcept;
+        }
 
-        float getWidth() const noexcept;
+        NormVec2<T> getNormal_1_0() {
+            return NormVec2<T>(static_cast<T>(1), static_cast<T>(0));
+        }
 
-        float getHeight() const noexcept;
+        NormVec2<T> getNormal_neg1_0() {
+            return NormVec2<T>(static_cast<T>(-1), static_cast<T>(0));
+        }
 
-        void moveMinTo(const Point2& new_min) noexcept;
+        NormVec2<T> getNormal_0_1() {
+            return NormVec2<T>(static_cast<T>(0), static_cast<T>(1));
+        }
 
-        void moveCenterTo(const Point2& new_center) noexcept;
-
-        NormalVec getNormal_1_0();
-
-        NormalVec getNormal_neg1_0();
-
-        NormalVec getNormal_0_1();
-
-        NormalVec getNormal_0_neg1();
+        NormVec2<T> getNormal_0_neg1() {
+            return NormVec2<T>(static_cast<T>(0), static_cast<T>(-1));
+        }
 
         template <typename SFMLType = float>
         sf::Rect<SFMLType> toSFMLRect() const noexcept {
             sf::Vector2<SFMLType> v1 = sf::Vector2<SFMLType>(static_cast<SFMLType>(min.x), static_cast<SFMLType>(min.y));
-            sf::Vector2<SFMLType> v2 = sf::Vector2<SFMLType>(static_cast<SFMLType>(getWidth()), static_cast<SFMLType>(getHeight()));
+            sf::Vector2<SFMLType> v2 = sf::Vector2<SFMLType>(static_cast<SFMLType>(width()), static_cast<SFMLType>(height()));
             return sf::Rect<SFMLType>(v1, v2);
         }
         
@@ -99,20 +174,31 @@ namespace Space2D {
             newshape.setOutlineColor(border_color);
             newshape.setFillColor(interior_color);
             sf::Vector2f v1 = sf::Vector2f(static_cast<float>(min.x), static_cast<float>(min.y));
-            sf::Vector2f v2 = sf::Vector2f(static_cast<float>(getWidth()), static_cast<float>(getHeight()));
+            sf::Vector2f v2 = sf::Vector2f(static_cast<float>(width()), static_cast<float>(height()));
             newshape.setPosition(v1);
             newshape.setSize(v2);
             return newshape;
         }
 
-        friend std::ostream& operator << (std::ostream& os, const Rect2& it) {
-            os  << "Rect ( Min: " << it.min << ", Max: " << it.max << ")";
+        friend std::ostream& operator<<(std::ostream& os, const Rect2<T>& it) {
+
+            std::string typname = typeid(T).name();
+            std::string::size_type i = typname.find("struct");
+            if (i != std::string::npos) {
+                typname.erase(i, 7);
+            }
+            i = typname.find("class");
+            if (i != std::string::npos) {
+                typname.erase(i, 6);
+            }
+
+            os  << "Rect<" << typname << ">(Min: " << it.min << ", Max : " << it.max << ")";
             return os;
         }
 
 
-        Point2 min;
-        Point2 max;
+        Point2<T> min;
+        Point2<T> max;
     };
 }
 

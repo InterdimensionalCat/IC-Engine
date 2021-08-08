@@ -1,38 +1,46 @@
 #pragma once
 
 #include "AngularType.h"
+#include "LinearType.h"
+
+#include "Point2.h"
+#include "Vec2.h"
+#include "Dim2.h"
+#include "NormVec2.h"
+#include "Rect2.h"
+#include "Poly2.h"
+#include "Mat3.h"
+#include "S2DMacros.h"
+#include "S2DMath.h"
 
 namespace Space2D {
+    using Point2f = Point2<float>;
+    using Vec2f = Vec2<float>;
+    using Dim2f = Dim2<float>;
+    using NormVec2f = NormVec2<float>;
+    using Rect2f = Rect2<float>;
+    using Poly2f = Poly2<float>;
+    using Mat3f = Mat3<float>;
 
-    class Point2;
-    class Vec2;
-    class NormalizedVec2;
-    class Rect2;
-    class AffineMatrix;
-    class Dimension2;
-    class Poly2;
+    using Point2p = Point2<Pixels>;
+    using Vec2p = Vec2<Pixels>;
+    using Dim2p = Dim2<Pixels>;
+    using NormVec2p = NormVec2<Pixels>;
+    using Rect2p = Rect2<Pixels>;
+    using Poly2p = Poly2<Pixels>;
+    using Mat3p = Mat3<Pixels>;
 
-
-    using Point = Point2;
-    using Vec = Vec2;
-    using NormalVec = NormalizedVec2;
-    using Rectangle = Rect2;
-    using Poly = Poly2;
-    using Matrix = AffineMatrix;
-    using Dimension = Dimension2;
+    using Point2m = Point2<Meters>;
+    using Vec2m = Vec2<Meters>;
+    using Dim2m = Dim2<Meters>;
+    using NormVec2m = NormVec2<Meters>;
+    using Rect2m = Rect2<Meters>;
+    using Poly2m = Poly2<Meters>;
+    using Mat3m = Mat3<Meters>;
 }
 
 //alias for Space2D
 namespace s2d {
     using namespace Space2D;
 }
-
-#include "AngularType.h"
-#include "AffineMatrix.h"
-#include "Point2.h"
-#include "Vec2.h"
-#include "Dimension2.h"
-#include "NormalizedVec2.h"
-#include "Rect2.h"
-#include "Poly2.h"
 
