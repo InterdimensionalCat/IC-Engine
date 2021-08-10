@@ -1,8 +1,7 @@
 #include "include.h"
 #include "Texture.h"
-#include <stdexcept>
 
-using namespace ic::gfx;
+using namespace ic;
 
 Texture::Texture(const std::string& filename) : filename(filename) {
 
@@ -12,27 +11,25 @@ Texture::Texture(const std::string& filename) : filename(filename) {
 	//set up the file path of the texture
 	fs::path filepath(fs::current_path());
 	filepath /= "resources";
-	filepath /= "animations";
+	filepath /= "textures";
 	filepath /= filename;
 	filepath += ".png";
 
-	LoggerProvider::log("loading texture " + filename + "\n", LogSeverity::Debug);
-
 	if (!tex->loadFromFile(filepath.string())) {
-
-		//this isnt consistant, need to change (BAD)
-
-		LoggerProvider::log("file " + filename + " at path " + filepath.string() + " does not exist!\n", LogSeverity::Error);
-#ifdef debug_mode
-		throw std::logic_error("file " + filename + " at path " + filepath.string() + " does not exist!");
+#ifdef _DEBUG
+		throw std::exception();
 #endif
 	}
 }
 
-Texture::~Texture() {
-	LoggerProvider::log("unloading texture " + filename + "\n", LogSeverity::Debug);
+sf::Texture& Texture::getTexture() {
+	return *tex;
 }
 
-sf::Texture* Texture::getTexturePtr() {
-	return tex.get();
+const sf::Texture& Texture::getTexture() const {
+	return *tex;
+}
+
+std::string Texture::getName() const { 
+	return filename; 
 }

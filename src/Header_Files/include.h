@@ -6,13 +6,9 @@ and a few game related includes that almost every file uses
 */
 
 #pragma once
-#include <SFML/Graphics.hpp>
-#include <SFML/Audio.hpp>
-#include <iostream>
 #include <fstream>
 #include <sstream>
 #include <algorithm>
-#include <cassert>
 #include <exception>
 #include <memory>
 #include <string>
@@ -71,14 +67,15 @@ using json = nlohmann::json;
 
 #endif
 
+#include <tmxlite\Map.hpp>
+#include <tmxlite\Layer.hpp>
+#include <tmxlite\TileLayer.hpp>
+#include <tmxlite\ObjectGroup.hpp>
 
 #include <SFML\Graphics.hpp>
+#include <SFML\Audio.hpp>
+#include <Space2D.h>
 
-#include "Space2D.h"
-#include "SFMLHelpers.h"
-#include "GameEngine2020.h"
-#include "InputHandle.h"
-//#include "Renderer.h"
-#include "LoggerProvider.h"
-#include "SettingsProvider.h"
+#include "Logger.h"
+#include "GameSettings.h"
 

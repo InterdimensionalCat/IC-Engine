@@ -14,6 +14,31 @@
           "name": "SFML_DIR",
           "value": "F:/SFML/Build/SFML-2.5.1-x64VS2019",
           "type": "PATH"
+        },
+        {
+          "name": "Space2D_DIR",
+          "value": "F:/Space2D/Build/Space2D-x64VS2019",
+          "type": "PATH"
+        },
+        {
+          "name": "tmxlite_DIR",
+          "value": "F:/tmxlite/tmxlite-master/tmxlite",
+          "type": "PATH"
+        },
+        {
+          "name": "TMXLITE_LIBRARIES",
+          "value": "F:/tmxlite/build/VS2019-x64/Debug/tmxlite-d.lib",
+          "type": "FILEPATH"
+        },
+        {
+          "name": "TMXLITE_INCLUDE_DIR",
+          "value": "F:/tmxlite/tmxlite-master/tmxlite/include/tmxlite",
+          "type": "PATH"
+        },
+        {
+          "name": "spdlog_DIR",
+          "value": "F:/spdlog/Build/spdlog-x64VS2019",
+          "type": "PATH"
         }
       ]
     },
