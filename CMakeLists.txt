@@ -6,7 +6,7 @@
 #ccmake[-Wno-dev]
 # set minimum version required for CMake
 
-cmake_minimum_required (VERSION 3.16)
+cmake_minimum_required (VERSION 3.20)
 
 #SET(SFML_DLL_DIR "not found" CACHE STRING)
 
@@ -33,67 +33,65 @@ set(SOURCE_C "${PROJECT_SOURCE_DIR}/src/Source_Files")
 set(Actor_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Actor")
 set(Actor_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Actor")
 
-set(Behavior_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Behavior")
-set(Behavior_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Behavior")
+set(Audio_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Audio")
+set(Audio_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Audio")
 
-set(Graphics_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Graphics")
-set(Graphics_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Graphics")
-
-set(GUI_H "${PROJECT_SOURCE_DIR}/src/Header_Files/GUI")
-set(GUI_C "${PROJECT_SOURCE_DIR}/src/Source_Files/GUI")
+set(Ai_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Ai")
+set(Ai_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Ai")
 
 set(Level_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Level")
 set(Level_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Level")
 
-set(Physics_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Physics")
-set(Physics_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Physics")
+set(Graphics_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Graphics")
+set(Graphics_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Graphics")
 
-set(Component_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Component")
-set(Component_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Component")
+set(Tmap_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Tilemap")
+set(Tmap_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Tilemap")
 
-set(Bodies_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Physics/Bodies")
-set(Bodies_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Physics/Bodies")
-
-set(State_H "${PROJECT_SOURCE_DIR}/src/Header_Files/State")
-set(State_C "${PROJECT_SOURCE_DIR}/src/Source_Files/State")
+set(Comp_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Component")
+set(Comp_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Component")
 
 set(Util_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Util")
 set(Util_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Util")
 
-set(S2D_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Space2D")
-set(S2D_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Space2D")
+set(Scene_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Scene")
+set(Scene_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Scene")
 
-set(AS_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Behavior/ActionState")
-set(AS_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Behavior/ActionState")
+set(Wind_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Window")
+set(Wind_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Window")
 
-set(MAP_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Map")
-set(MAP_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Map")
+set(Sys_H "${PROJECT_SOURCE_DIR}/src/Header_Files/System")
+set(Sys_C "${PROJECT_SOURCE_DIR}/src/Source_Files/System")
 
 include_directories(
-${SRC_DIR} ${SOURCE_H} ${Actor_H} ${Behavior_H} ${Graphics_H} 
-${GUI_H} ${Level_H} ${Physics_H} ${State_H} ${Util_H} 
-${S2D_H} ${Bodies_H} ${AS_H} ${Component_H} ${MAP_H}
+${SRC_DIR} ${SOURCE_H} ${Graphics_H} ${Util_H} 
+${Comp_H} ${Scene_H} ${Wind_H} ${Audio_H} 
+${Ai_H} ${Tmap_H} ${Sys_H} ${Actor_H} ${Level_H}
 )
 
 file(GLOB SRC
-#"${Actor_C}/*.cpp"
-#"${Behavior_C}/*.cpp"
-#"${Graphics_C}/*.cpp"
-#"${Graphics_H}/*.h"
-#"${GUI_C}/*.cpp"
-#"${Level_C}/*.cpp"
-#"${Level_H}/*.h"
-#"${Physics_C}/*.cpp"
-#"${State_C}/*.cpp"
+"${Actor_C}/*.cpp"
+"${Actor_H}/*.h"
+"${Audio_C}/*.cpp"
+"${Audio_H}/*.h"
+"${Ai_C}/*.cpp"
+"${Ai_H}/*.h"
+"${Level_C}/*.cpp"
+"${Level_H}/*.h"
+"${Tmap_H}/*.h"
+"${Tmap_C}/*.cpp"
+"${Graphics_C}/*.cpp"
+"${Graphics_H}/*.h"
 "${Util_C}/*.cpp"
 "${Util_H}/*.h"
-#"${S2D_C}/*.cpp"
-#"${Bodies_C}/*.cpp"
-#"${AS_C}/*.cpp" 
-#"${Component_C}/*.cpp"
-#"${Component_H}/*.h"
-#"${MAP_C}/*.cpp"
-#"${MAP_H}/*.h"
+"${Scene_C}/*.cpp"
+"${Scene_H}/*.h"
+"${Sys_H}/*.h"
+"${Sys_C}/*.cpp"
+"${Wind_H}/*.h"
+"${Wind_C}/*.cpp"
+"${Comp_H}/*.h"
+"${Comp_C}/*.cpp"
 "${SOURCE_C}/*.cpp"
 "${SOURCE_H}/*.h"
 )
@@ -130,17 +128,41 @@ endif()
 
 set(SFML_STATIC_LIBRARIES FALSE)
 
-find_package(SFML COMPONENTS system window graphics CONFIG REQUIRED)
+find_package(SFML COMPONENTS system window graphics audio CONFIG REQUIRED)
+#set(${CMAKE_MODULE_PATH} APPEND Findtmxlite.cmake)
+list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
+find_package(tmxlite REQUIRED)
+find_package(Space2D REQUIRED)
+find_package(spdlog REQUIRED)
+
+cmake_path(SET TMXLITE_INCLUDE NORMALIZE "${TMXLITE_INCLUDE_DIR}/../")
+cmake_path(SET SPDLOG_INCLUDE_DIR NORMALIZE "${spdlog_DIR}/include/")
 
-
-
+include_directories(${TMXLITE_INCLUDE})
 include_directories(${SFML_INCLUDE_DIR})
-
+include_directories(${Space2D_INCLUDE_DIR})
+include_directories(${SPDLOG_INCLUDE_DIR})
 
 add_executable(${PROJECT_NAME} ${SRC})
 
+target_link_libraries(${PROJECT_NAME} PRIVATE sfml-system sfml-network sfml-graphics sfml-window sfml-audio)
+target_link_libraries(${PROJECT_NAME} PRIVATE ${TMXLITE_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PRIVATE ${spdlog_LIBRARIES})
+#target_link_libraries(${PROJECT_NAME} PRIVATE Space2D)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE sfml-system sfml-network sfml-graphics sfml-window)
+if(CMAKE_BUILD_TYPE MATCHES Debug)
+file(GLOB SFML_DLL ${SFML_DIR}/lib/Debug/*.dll)
+cmake_path(SET TMXLITE_DLL NORMALIZE "${TMXLITE_LIBRARIES}/../tmxlite-d.dll")
+MESSAGE(${TMXLITE_DLL})
+FILE(COPY ${SFML_DLL} DESTINATION "${CMAKE_BINARY_DIR}")
+FILE(COPY ${TMXLITE_DLL} DESTINATION "${CMAKE_BINARY_DIR}")
+else()
+file(GLOB SFML_DLL ${SFML_DIR}/lib/Release/*.dll)
+cmake_path(SET TMXLITE_DLL NORMALIZE "${TMXLITE_LIBRARIES}/../tmxlite.dll")
+MESSAGE(${TMXLITE_DLL})
+FILE(COPY ${SFML_DLL} DESTINATION "${CMAKE_BINARY_DIR}")
+FILE(COPY ${TMXLITE_DLL} DESTINATION "${CMAKE_BINARY_DIR}")
+endif()
 
 
 target_precompile_headers(${PROJECT_NAME} PUBLIC [["include.h"]])
