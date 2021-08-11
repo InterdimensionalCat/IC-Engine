@@ -406,3 +406,5 @@ OpenCover/
 #additional:
 
 /CmakeBuild
+/html
+CMakeSettings.json

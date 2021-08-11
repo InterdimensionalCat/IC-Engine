@@ -18,14 +18,11 @@
 using namespace ic;
 
 Scene::Scene() {
-	//init();
 
 	registerComponentsFunction();
 
 	RegisterTiles();
 	RegisterAudio();
-
-	input = std::make_shared<KeyboardHandle>();
 
 	window = std::make_shared<Window>();
 
@@ -63,27 +60,16 @@ void Scene::update() {
 }
 
 void Scene::draw(const float interpol) {
-
-	//StateAnimationDriver(this).excecute();
-	//UpdateSpritePos(this).excecute();
-
 	sysManager->runSystemsInRange(SystemType::PreGraphics, SystemType::Graphics);
-
 	window->preRender(interpol);
-
 	levels->draw(interpol);
 
-	for (auto& shape : debugShapes) {
+	//for (auto& shape : debugShapes) {
 		//window->window->draw(shape);
-	}
+	//}
 
-	debugShapes.clear();
-
+	//debugShapes.clear();
 	sysManager->runSystemsInRange(SystemType::Graphics, SystemType::Count);
-
-	//DrawAnimations(this).excecute();
-	//DrawSprites(this).excecute();
-
 	window->postRender();
 }
 

@@ -3,13 +3,36 @@
 
 using namespace ic;
 
+/**
+ * @brief update function for the game engine
+ * @details update function for the game engine,
+ * all game logic gets updated during this function call
+ * @param scene the scene for the engine
+*/
 void update(Scene& scene) {
 	scene.update();
 }
+
+/**
+ * @brief draw function for the game engine
+ * @details draw function for the game engine,
+ * everything gets drawn to the screen during this function call
+ * @param interpol the calculated interpolation value for the frame,
+ * since draw calls are not expected to land on a perfect frame boundry,
+ * this allows for measures to be taken such that gameplay remains smooth
+ * @param scene the scene for the engine
+*/
 void draw(const float interpol, Scene& scene) {
 	scene.draw(interpol);
 }
 
+/**
+ * @brief main game loop function, 
+ * @details main game loop function,
+ * initalizes various timing variables to time step properly
+ * and creates the Scene object, the central object that manages
+ * the game
+*/
 void game() {
 
 	std::unique_ptr<sf::Clock> timer = std::make_unique<sf::Clock>();
@@ -45,15 +68,18 @@ void game() {
 		//draw
 		draw((float)accumulator / targetDT, *scene);
 	}
-}
 
-void stop() {
-#ifdef _DEBUG
 	Logger::info("Game Closing.");
-#endif
-	Settings::setRunning(false);
 }
 
+/**
+ * @brief Primary entry point to the game engine,
+ * @details Primary entry point to the game engine, 
+ * starts up the logger and intializes settings
+ * @param argc number of args passed in from the command line
+ * @param argv the args passed in by the command line
+ * @return exit code, almost always 0
+*/
 int main(int argc, char* argv[])
 {
 

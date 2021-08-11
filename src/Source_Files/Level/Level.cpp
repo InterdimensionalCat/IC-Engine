@@ -7,6 +7,7 @@
 #include "Components.h"
 #include "Camera.h"
 #include "Parallax.h"
+#include "StdoutRedirect.h"
 
 using namespace ic;
 
@@ -40,9 +41,26 @@ void Level::loadLevel(const std::string& levelname) {
 
 	float widthPixels = 0;
 	float heightPixels = 0;
-
 	tmx::Map map;
-	if (map.load(mappath.string())) {
+
+
+	StdoutRedirect::redirectCout();
+	bool loaded = false;
+
+	try {
+		loaded = map.load(mappath.string());
+		if (!loaded) {
+			throw std::exception();
+		}
+	}
+	catch (std::exception e) {
+		Logger::error("TMX map with name {}.tmx  at path {} failed to load!",
+			levelname, mappath.string());
+	}
+
+	StdoutRedirect::restoreCout();
+
+	if (loaded) {
 
 
 		widthPixels = (float)(s2d::toPixels((float)map.getLayers().at(0)->getSize().x));

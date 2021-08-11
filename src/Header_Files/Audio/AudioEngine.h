@@ -3,6 +3,11 @@
 
 namespace ic {
 
+	/**
+	 * @brief central audio engine class
+	 * @todo audio needs to be more fleshed out in
+	 * general before proper documentation is advantageous
+	*/
 	class AudioEngine {
 
 	public:
@@ -15,7 +20,6 @@ namespace ic {
 
 
 		std::shared_ptr<sf::Music> currentSong = std::shared_ptr<sf::Music>(nullptr);
-		//std::vector<Sound> currentSounds = std::vector<Sound>();
 		std::map<std::string, Sound> currentSounds = std::map<std::string, Sound>();
 	};
 

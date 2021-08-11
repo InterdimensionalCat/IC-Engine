@@ -12,8 +12,9 @@ namespace ic {
 	public:
 		UpdatePositions(Scene* scene) : SystemTrivial(scene) {}
 		void excecutionFunction(std::shared_ptr<ActorEntry> entry) override {
-			auto trans = scene->compManager->getComponent<Transform>(entry);
-			auto vel = scene->compManager->getComponent<Velocity>(entry);
+			Transform* trans = nullptr;
+			Velocity* vel = nullptr;
+			scene->compManager->getComponents(entry, trans, vel);
 
 			trans->x += vel->x;
 			trans->y += vel->y;
@@ -592,7 +593,7 @@ namespace ic {
 			shape.setFillColor(sf::Color(0, 0, 0, 0));
 			shape.setOutlineColor(sf::Color::Red);
 
-			scene->debugShapes.push_back(shape);
+			//scene->debugShapes.push_back(shape);
 		}
 
 		std::vector<std::shared_ptr<ActorEntry>> collidableactors;
