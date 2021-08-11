@@ -1,8 +1,11 @@
 #pragma once
-#include "ActorEntry.h"
-#include "Scene.h"
 
 namespace ic {
+
+	class ActorEntry;
+	class Scene;
+
+
 	template<typename... ComponentTypes>
 	class SceneView {
 	public:
@@ -17,26 +20,26 @@ namespace ic {
 				: scene(scene), index(index), viewComponents(viewComponents), all(all) {}
 
 			std::shared_ptr<ActorEntry> operator*() const {
-				return scene->actorPool->actors.at(index);
+				return scene->actorPool->getActor(index);
 			}
 
 			std::shared_ptr<ActorEntry> operator*() {
-				return scene->actorPool->actors.at(index);
+				return scene->actorPool->getActor(index);
 			}
 
 			bool operator==(const Iterator& other) const {
-				return index == other.index || index == scene->actorPool->actors.size();
+				return index == other.index || index == scene->actorPool->size();
 			}
 			bool operator!=(const Iterator& other) const {
-				return index != other.index && index != scene->actorPool->actors.size();
+				return index != other.index && index != scene->actorPool->size();
 			}
 
 			bool ValidIndex() {
-				bool valid = scene->actorPool->actors.at(index)->isIdValid() && scene->actorPool->actors.at(index)->isActive();
+				bool valid = scene->actorPool->getActor(index)->isIdValid() && scene->actorPool->getActor(index)->isActive();
 				if (!valid) return valid;
 				if (all && valid) return valid;
 				for (size_t i = 0; i < viewComponents.size(); i++) {
-					if (!scene->actorPool->actors.at(index)->hasComponent(viewComponents.at(i))) {
+					if (!scene->actorPool->getActor(index)->hasComponent(viewComponents.at(i))) {
 						valid = false;
 						break;
 					}
@@ -46,7 +49,7 @@ namespace ic {
 
 			Iterator& operator++() {
 				index++;
-				while (index < scene->actorPool->actors.size() && !ValidIndex()) {
+				while (index < scene->actorPool->size() && !ValidIndex()) {
 					index++;
 				}
 				return *this;
@@ -62,16 +65,16 @@ namespace ic {
 		const Iterator begin() const {
 			if (all) return Iterator(scene, 0, viewComponents, all);
 			int index = 0;
-			while (index < scene->actorPool->actors.size()) {
+			while (index < scene->actorPool->size()) {
 
-				if (!scene->actorPool->actors.at(index)->isIdValid() || !scene->actorPool->actors.at(index)->isActive()) {
+				if (!scene->actorPool->getActor(index)->isIdValid() || !scene->actorPool->getActor(index)->isActive()) {
 					index++;
 					continue;
 				}
 
 				bool validFirst = true;
 				for (size_t i = 0; i < viewComponents.size(); i++) {
-					if (!scene->actorPool->actors.at(index)->hasComponent(viewComponents.at(i))) {
+					if (!scene->actorPool->getActor(index)->hasComponent(viewComponents.at(i))) {
 						validFirst = false;
 						break;
 					}
@@ -89,7 +92,7 @@ namespace ic {
 
 		const Iterator end() const
 		{
-			return Iterator(scene, scene->actorPool->actors.size(), viewComponents, all);
+			return Iterator(scene, scene->actorPool->size(), viewComponents, all);
 		}
 
 		std::vector<int> viewComponents;

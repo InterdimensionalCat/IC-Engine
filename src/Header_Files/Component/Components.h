@@ -17,6 +17,8 @@ namespace ic {
 
 	typedef std::function<void(ic::Scene*, std::shared_ptr<ic::ActorEntry>, std::shared_ptr<json>)> Func;
 
+#ifndef IC_COMP_OVERHEAD
+#define IC_COMP_OVERHEAD
 	void registerComponentsFunction();
 
 	extern std::vector<Func> generateJsonFunctions;
@@ -170,6 +172,7 @@ inline static bool added = false;
 		OOBTop,
 		OOBBot
 	};
+#endif
 
 	struct PlayerFlag {
 		bool pflag = true;

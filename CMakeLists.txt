@@ -134,7 +134,8 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 find_package(tmxlite REQUIRED)
 find_package(Space2D REQUIRED)
 find_package(spdlog REQUIRED)
-
+
+
 cmake_path(SET TMXLITE_INCLUDE NORMALIZE "${TMXLITE_INCLUDE_DIR}/../")
 cmake_path(SET SPDLOG_INCLUDE_DIR NORMALIZE "${spdlog_DIR}/include/")
 

@@ -4,6 +4,12 @@ namespace ic {
 
 	class ActorEntry;
 
+	/**
+	 * @brief classification level identification information for actors
+	 * @details contains the variant name and actor type name of the actor,
+	 * can also represent an invalid actor when an ActorEntry is empty or expired
+	 * exclusively managed by the ActorEntry class
+	*/
 	class ActorID
 	{
 	public:

@@ -2,14 +2,26 @@
 
 namespace ic {
 
+    /**
+     * @brief the container that stores all the components of a certain type
+     * @details each component pool stores all components of a certain type,
+     * and the indexs into the pool are indexes for a sparse set corrosponding to
+     * an actor entry's index value, the sparse set then points to packed data that
+     * contains all active components of that type
+    */
     class ComponentPool
     {
     public:
         virtual ~ComponentPool() {}
+
         virtual void resize(const size_t newsize) = 0;
+
         virtual void* at(const size_t index) = 0;
+
         virtual size_t size() const = 0;
+
         virtual void removeComponent(const size_t index) = 0;
+
     };
 
     template<typename T>

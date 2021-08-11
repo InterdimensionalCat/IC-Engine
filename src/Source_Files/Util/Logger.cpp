@@ -6,17 +6,6 @@ using namespace ic;
 
 std::shared_ptr<StandardLogger> Logger::logger;
 
-//#ifndef IC_LOGGER_LEVEL
-//#define IC_LOGGER_LEVEL(level) \
-//template<typename... Args>\
-//void Logger::##level(auto fmt, Args&&... args) {\
-//    logger->loggerbackend.level(fmt, args...);\
-//}\
-//void Logger::##level(auto fmt) {\
-//    logger->loggerbackend.level(fmt);\
-//}
-//#endif
-
 void Logger::start() {
     auto console_sink = std::make_shared<spdlog::sinks::stdout_color_sink_mt>();
     console_sink->set_level(spdlog::level::trace);

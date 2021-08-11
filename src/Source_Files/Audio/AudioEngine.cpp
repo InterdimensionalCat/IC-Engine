@@ -6,12 +6,6 @@
 using namespace ic;
 
 void AudioEngine::update() {
-
-	//currentSounds.erase(std::remove_if(currentSounds.begin(), currentSounds.end(),
-	//	[](auto& elt) {
-	//		return elt.getStatus() != sf::SoundSource::Status::Playing;
-	//	}), currentSounds.end());
-
 	std::erase_if(currentSounds, [](const auto& elt) {
 		auto const& [key, value] = elt;
 		return value.getStatus() != sf::SoundSource::Status::Playing;

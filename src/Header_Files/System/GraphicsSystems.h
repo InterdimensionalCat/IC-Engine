@@ -63,7 +63,7 @@ namespace ic {
 			//change anim based on state
 			if (statemap->prevstate != state->state) {
 				statemap->prevstate = state->state;
-				bool prevflip = anim->animation->flip;
+				bool prevflip = anim->animation->isFlipped();
 				anim->animation = std::make_shared<Animation>(statemap->animations->at(state->state), prevflip);
 			}
 
@@ -72,20 +72,20 @@ namespace ic {
 
 				if (state->state == ActionState::GroundStill) {
 					auto input = scene->compManager->getComponent<InputController>(entry);
-					if (input->input->isDown(InputButton::LEFT) && !anim->animation->flip) {
+					if (input->input->isDown(InputButton::LEFT) && !anim->animation->isFlipped()) {
 						anim->animation->setFlipped(true);
 					}
 
-					if (input->input->isDown(InputButton::RIGHT) && anim->animation->flip) {
+					if (input->input->isDown(InputButton::RIGHT) && anim->animation->isFlipped()) {
 						anim->animation->setFlipped(false);
 					}
 				}
 
-				if (anim->animation->flip && vel->x > 0) {
+				if (anim->animation->isFlipped() && vel->x > 0) {
 					anim->animation->setFlipped(false);
 				}
 
-				if (!anim->animation->flip && vel->x < 0) {
+				if (!anim->animation->isFlipped() && vel->x < 0) {
 					anim->animation->setFlipped(true);
 				}
 			}
@@ -96,8 +96,8 @@ namespace ic {
 			hitbox.top += trans->y;
 			hitbox.left += trans->x;
 
-			auto width = s2d::toMeters(anim->animation->targetDim.x);
-			auto height = s2d::toMeters(anim->animation->targetDim.y);
+			auto width = s2d::toMeters(anim->animation->getDimensions().x);
+			auto height = s2d::toMeters(anim->animation->getDimensions().y);
 			auto center = sf::Vector2f(hitbox.left + hitbox.width / 2.0f, hitbox.top + hitbox.height / 2.0f);
 			anim->animation->setPosition(sf::Vector2f(s2d::toPixels(center.x - width / 2.0f), s2d::toPixels(hitbox.top + hitbox.height - height)));
 			anim->animation->update();
