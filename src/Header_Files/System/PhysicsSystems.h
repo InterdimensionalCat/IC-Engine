@@ -6,6 +6,7 @@
 #include "ComponentManager.h"
 #include "Level.h"
 #include "SceneEvent.h"
+#include "PhysicsSystems.h"
 
 namespace ic {
 	class UpdatePositions : public SystemTrivial<Transform, Velocity> {
@@ -297,6 +298,9 @@ namespace ic {
 		ActorCollision(Scene* scene) : System(scene) {}
 
 		virtual void excecute() {
+
+			BenchmarkLogger::get()->beginBenchmark(this->getName());
+
 			//keep track of the actors in a seperate vector in this system
 			//use sweep and prune to reduce calculations
 
@@ -337,6 +341,8 @@ namespace ic {
 					}
 				}
 			}
+
+			BenchmarkLogger::get()->endBenchmark(this->getName());
 		}
 
 		std::string toString() const override {

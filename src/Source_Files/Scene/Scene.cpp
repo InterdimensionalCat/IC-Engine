@@ -15,6 +15,8 @@
 #include "AudioEngine.h"
 #include "System.h"
 
+#include "BenchmarkLogger.h"
+
 using namespace ic;
 
 Scene::Scene() {
@@ -44,7 +46,7 @@ Scene::~Scene() {
 }
 
 void Scene::update() {
-
+	BenchmarkLogger::get()->beginBenchmark("SceneUpdate");
 	if (!window->updateInput()) {
 		Settings::setRunning(false);
 		return;
@@ -57,9 +59,11 @@ void Scene::update() {
 	levels->update();
 
 	sceneEvents->handlePostEvents();
+	BenchmarkLogger::get()->endBenchmark("SceneUpdate");
 }
 
 void Scene::draw(const float interpol) {
+	BenchmarkLogger::get()->beginBenchmark("SceneDraw");
 	sysManager->runSystemsInRange(SystemType::PreGraphics, SystemType::Graphics);
 	window->preRender(interpol);
 	levels->draw(interpol);
@@ -70,6 +74,7 @@ void Scene::draw(const float interpol) {
 
 	//debugShapes.clear();
 	sysManager->runSystemsInRange(SystemType::Graphics, SystemType::Count);
+	BenchmarkLogger::get()->endBenchmark("SceneDraw");
 	window->postRender();
 }
 
