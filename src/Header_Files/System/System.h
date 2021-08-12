@@ -2,6 +2,7 @@
 #include "Scene.h"
 #include "Components.h"
 #include "SceneView.h"
+#include "BenchmarkLogger.h"
 
 namespace ic {
 
@@ -109,9 +110,11 @@ inline static StartupObj startup;
 			view(std::make_shared<SceneView<ComponentTypes...>>(scene)) {}
 
 		virtual void excecute() {
+			BenchmarkLogger::get()->beginBenchmark(this->getName());
 			for (auto actor : *view) {
 				excecutionFunction(actor);
 			}
+			BenchmarkLogger::get()->endBenchmark(this->getName());
 		}
 	protected:
 		SystemTrivial() {}

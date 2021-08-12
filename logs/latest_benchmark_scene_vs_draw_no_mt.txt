@@ -1,0 +1,14 @@
+[2021-08-10 : 22:52:00][Benchmark-debug] Benchmark Dump:
+[2021-08-10 : 22:52:00][Benchmark-debug] **************************************************
+[2021-08-10 : 22:52:00][Benchmark-debug] Benchmark Game: 
+[2021-08-10 : 22:52:00][Benchmark-debug] Total time: 25254087 microseconds (100.00% of benchmark runtime)
+[2021-08-10 : 22:52:00][Benchmark-debug] Average time: 25254087 microseconds (1 iterations)
+[2021-08-10 : 22:52:00][Benchmark-debug] **************************************************
+[2021-08-10 : 22:52:00][Benchmark-debug] Benchmark SceneDraw: 
+[2021-08-10 : 22:52:00][Benchmark-debug] Total time: 564455 microseconds (2.24% of benchmark runtime)
+[2021-08-10 : 22:52:00][Benchmark-debug] Average time: 390 microseconds (1447 iterations)
+[2021-08-10 : 22:52:00][Benchmark-debug] **************************************************
+[2021-08-10 : 22:52:00][Benchmark-debug] Benchmark SceneUpdate: 
+[2021-08-10 : 22:52:00][Benchmark-debug] Total time: 699091 microseconds (2.77% of benchmark runtime)
+[2021-08-10 : 22:52:00][Benchmark-debug] Average time: 462 microseconds (1510 iterations)
+[2021-08-10 : 22:52:00][Benchmark-debug] **************************************************

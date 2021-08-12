@@ -1,6 +1,8 @@
 #include "include.h"
 #include "Scene.h"
 
+#include "BenchmarkLogger.h"
+
 using namespace ic;
 
 /**
@@ -112,9 +114,23 @@ int main(int argc, char* argv[])
 	//	<< "Windows debug version will check for memory leaks\n";
 #endif
 
+
+	///***TODO***///
+	//MAKE EVERYTHING USE
+	//METERS, PIXELS, AND PERCENTS
+	//SO THAT VALUES IN THE LEVEL EDITOR
+	//CAN BE IN PIXELS
+
+	//OR CHECK OUT IMGUI
+
+	//CREATE AN ACTOR JSON FILE EDITOR
+
+	BenchmarkLogger::get()->beginBenchmark("Game");
 	game();
+	BenchmarkLogger::get()->endBenchmark("Game");
 
 	Settings::stop();
+	BenchmarkLogger::shutdown();
 	Logger::stop();
 	return 0;
 }
