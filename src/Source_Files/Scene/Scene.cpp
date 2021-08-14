@@ -17,6 +17,8 @@
 
 #include "BenchmarkLogger.h"
 
+#include "MtSystem.h"
+
 using namespace ic;
 
 Scene::Scene() {

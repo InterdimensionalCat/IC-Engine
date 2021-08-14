@@ -1,4 +1,5 @@
 ﻿{
+  "cmakeExecutable": "C:\\Program Files\\CMake\\bin\\cmake.exe",
   "configurations": [
     {
       "name": "x64-Debug",
@@ -7,40 +8,32 @@
       "inheritEnvironments": [ "msvc_x64_x64" ],
       "buildRoot": "${projectDir}\\out\\build\\${name}",
       "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeCommandArgs": "",
       "buildCommandArgs": "",
       "ctestCommandArgs": "",
       "variables": [
         {
           "name": "SFML_DIR",
-          "value": "F:/SFML/Build/SFML-2.5.1-x64VS2019",
+          "value": "C:/SFML/Build/x64VS2019",
           "type": "PATH"
         },
         {
-          "name": "Space2D_DIR",
-          "value": "F:/Space2D/Build/Space2D-x64VS2019",
-          "type": "PATH"
-        },
-        {
-          "name": "tmxlite_DIR",
-          "value": "F:/tmxlite/tmxlite-master/tmxlite",
+          "name": "TMXLITE_INCLUDE_DIR",
+          "value": "C:/tmxlite/tmxlite-master/tmxlite/include",
           "type": "PATH"
         },
         {
           "name": "TMXLITE_LIBRARIES",
-          "value": "F:/tmxlite/build/VS2019-x64/Debug/tmxlite-d.lib",
+          "value": "C:/tmxlite/Build/x64VS2019/Debug",
           "type": "FILEPATH"
         },
         {
-          "name": "TMXLITE_INCLUDE_DIR",
-          "value": "F:/tmxlite/tmxlite-master/tmxlite/include/tmxlite",
-          "type": "PATH"
-        },
-        {
           "name": "spdlog_DIR",
-          "value": "F:/spdlog/Build/spdlog-x64VS2019",
+          "value": "C:/spdlog/Build/x64VS2019-debug",
           "type": "PATH"
         }
-      ]
+      ],
+      "cmakeExecutable": "C:\\Program Files\\CMake\\bin\\cmake.exe"
     },
     {
       "name": "x64-Release",
@@ -48,55 +41,32 @@
       "configurationType": "RelWithDebInfo",
       "buildRoot": "${projectDir}\\out\\build\\${name}",
       "installRoot": "${projectDir}\\out\\install\\${name}",
+      "cmakeCommandArgs": "",
       "buildCommandArgs": "",
       "ctestCommandArgs": "",
       "inheritEnvironments": [ "msvc_x64_x64" ],
-	   "variables": [
+      "variables": [
         {
           "name": "SFML_DIR",
-          "value": "F:/SFML/Build/SFML-2.5.1-x64VS2019",
-          "type": "PATH"
-        },
-        {
-          "name": "Space2D_DIR",
-          "value": "F:/Space2D/Build/Space2D-x64VS2019",
-          "type": "PATH"
-        },
-        {
-          "name": "tmxlite_DIR",
-          "value": "F:/tmxlite/tmxlite-master/tmxlite",
+          "value": "C:/SFML/Build/x64VS2019",
           "type": "PATH"
         },
         {
           "name": "TMXLITE_LIBRARIES",
-          "value": "F:/tmxlite/build/VS2019-x64/Release/tmxlite.lib",
+          "value": "C:/tmxlite/Build/x64VS2019/Release",
           "type": "FILEPATH"
         },
         {
           "name": "TMXLITE_INCLUDE_DIR",
-          "value": "F:/tmxlite/tmxlite-master/tmxlite/include/tmxlite",
+          "value": "C:/tmxlite/tmxlite-master/tmxlite/include",
           "type": "PATH"
         },
         {
           "name": "spdlog_DIR",
-          "value": "F:/spdlog/Build/spdlog-x64VS2019",
+          "value": "C:/spdlog/Build/x64VS2019-release",
           "type": "PATH"
         }
       ]
-    },
-    {
-      "name": "WSL-GCC-Debug",
-      "generator": "Ninja",
-      "configurationType": "Debug",
-      "buildRoot": "${projectDir}\\out\\build\\${name}",
-      "installRoot": "${projectDir}\\out\\install\\${name}",
-      "cmakeExecutable": "cmake",
-      "cmakeCommandArgs": "",
-      "buildCommandArgs": "",
-      "ctestCommandArgs": "",
-      "inheritEnvironments": [ "linux_x64" ],
-      "wslPath": "${defaultWSLPath}",
-      "addressSanitizerRuntimeFlags": "detect_leaks=0"
     }
   ]
 }

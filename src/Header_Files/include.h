@@ -74,8 +74,33 @@ using json = nlohmann::json;
 
 #include <SFML\Graphics.hpp>
 #include <SFML\Audio.hpp>
-#include <Space2D.h>
+//#include <Space2D.h>
 
 #include "Logger.h"
 #include "GameSettings.h"
+
+#include <vector>
+#include <queue>
+#include <memory>
+#include <thread>
+#include <mutex>
+#include <condition_variable>
+#include <future>
+#include <functional>
+#include <stdexcept>
+
+namespace s2d {
+
+#ifndef _METER_TO_PIXEL
+#define _METER_TO_PIXEL 64
+#endif
+
+	inline float toMeters(const float pixels) {
+		return pixels / _METER_TO_PIXEL;
+	}
+
+	inline float toPixels(const float meters) {
+		return meters * _METER_TO_PIXEL;
+	}
+}
 

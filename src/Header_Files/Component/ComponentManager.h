@@ -127,6 +127,11 @@ namespace ic {
 			(void)_;
 		}
 
+		template<typename... Comps>
+		std::tuple<Comps*...> getComponents(const std::shared_ptr<ActorEntry> entry) {
+			return std::forward_as_tuple(std::forward<Comps*>(getComponent<Comps>(entry))...);
+		}
+
 		/**
 		 * @brief removes the specified component from the supplied actor
 		 * @tparam T the type of the component to remove

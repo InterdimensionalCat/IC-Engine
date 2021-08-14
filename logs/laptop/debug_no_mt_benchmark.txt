@@ -1,0 +1,102 @@
+[2021-08-13 : 20:50:17][Benchmark-debug] Benchmark Dump:
+[2021-08-13 : 20:50:17][Benchmark-debug] **************************************************
+[2021-08-13 : 20:50:17][Benchmark-debug] Benchmark Game: 
+[2021-08-13 : 20:50:17][Benchmark-debug] Total time: 24978668 microseconds (100.00% of benchmark runtime)
+[2021-08-13 : 20:50:17][Benchmark-debug] Average time: 24978668 microseconds (1 iterations)
+[2021-08-13 : 20:50:17][Benchmark-debug] **************************************************
+[2021-08-13 : 20:50:17][Benchmark-debug] Benchmark SceneUpdate: 
+[2021-08-13 : 20:50:17][Benchmark-debug] Total time: 13707101 microseconds (54.88% of benchmark runtime)
+[2021-08-13 : 20:50:17][Benchmark-debug] Average time: 9199 microseconds (1490 iterations)
+[2021-08-13 : 20:50:17][Benchmark-debug] **************************************************
+[2021-08-13 : 20:50:17][Benchmark-debug] Benchmark ActorCollision: 
+[2021-08-13 : 20:50:17][Benchmark-debug] Total time: 11668094 microseconds (46.71% of benchmark runtime)
+[2021-08-13 : 20:50:17][Benchmark-debug] Average time: 7830 microseconds (1490 iterations)
+[2021-08-13 : 20:50:17][Benchmark-debug] **************************************************
+[2021-08-13 : 20:50:17][Benchmark-debug] Benchmark SceneDraw: 
+[2021-08-13 : 20:50:17][Benchmark-debug] Total time: 1518943 microseconds (6.08% of benchmark runtime)
+[2021-08-13 : 20:50:17][Benchmark-debug] Average time: 1235 microseconds (1229 iterations)
+[2021-08-13 : 20:50:17][Benchmark-debug] **************************************************
+[2021-08-13 : 20:50:17][Benchmark-debug] Benchmark StateAnimationDriver: 
+[2021-08-13 : 20:50:17][Benchmark-debug] Total time: 349363 microseconds (1.40% of benchmark runtime)
+[2021-08-13 : 20:50:17][Benchmark-debug] Average time: 284 microseconds (1229 iterations)
+[2021-08-13 : 20:50:17][Benchmark-debug] **************************************************
+[2021-08-13 : 20:50:17][Benchmark-debug] Benchmark TilemapCollision: 
+[2021-08-13 : 20:50:17][Benchmark-debug] Total time: 321249 microseconds (1.29% of benchmark runtime)
+[2021-08-13 : 20:50:17][Benchmark-debug] Average time: 215 microseconds (1490 iterations)
+[2021-08-13 : 20:50:17][Benchmark-debug] **************************************************
+[2021-08-13 : 20:50:17][Benchmark-debug] Benchmark DrawSprites: 
+[2021-08-13 : 20:50:17][Benchmark-debug] Total time: 165370 microseconds (0.66% of benchmark runtime)
+[2021-08-13 : 20:50:17][Benchmark-debug] Average time: 134 microseconds (1229 iterations)
+[2021-08-13 : 20:50:17][Benchmark-debug] **************************************************
+[2021-08-13 : 20:50:17][Benchmark-debug] Benchmark CircularMovableUpdate: 
+[2021-08-13 : 20:50:17][Benchmark-debug] Total time: 131998 microseconds (0.53% of benchmark runtime)
+[2021-08-13 : 20:50:17][Benchmark-debug] Average time: 88 microseconds (1490 iterations)
+[2021-08-13 : 20:50:17][Benchmark-debug] **************************************************
+[2021-08-13 : 20:50:17][Benchmark-debug] Benchmark BoopAiUpdate: 
+[2021-08-13 : 20:50:17][Benchmark-debug] Total time: 119803 microseconds (0.48% of benchmark runtime)
+[2021-08-13 : 20:50:17][Benchmark-debug] Average time: 80 microseconds (1490 iterations)
+[2021-08-13 : 20:50:17][Benchmark-debug] **************************************************
+[2021-08-13 : 20:50:17][Benchmark-debug] Benchmark PlatformUpdate: 
+[2021-08-13 : 20:50:17][Benchmark-debug] Total time: 105180 microseconds (0.42% of benchmark runtime)
+[2021-08-13 : 20:50:17][Benchmark-debug] Average time: 70 microseconds (1490 iterations)
+[2021-08-13 : 20:50:17][Benchmark-debug] **************************************************
+[2021-08-13 : 20:50:17][Benchmark-debug] Benchmark GenericStateDriver: 
+[2021-08-13 : 20:50:17][Benchmark-debug] Total time: 103331 microseconds (0.41% of benchmark runtime)
+[2021-08-13 : 20:50:17][Benchmark-debug] Average time: 69 microseconds (1490 iterations)
+[2021-08-13 : 20:50:17][Benchmark-debug] **************************************************
+[2021-08-13 : 20:50:17][Benchmark-debug] Benchmark DrawAnimations: 
+[2021-08-13 : 20:50:17][Benchmark-debug] Total time: 99484 microseconds (0.40% of benchmark runtime)
+[2021-08-13 : 20:50:17][Benchmark-debug] Average time: 80 microseconds (1229 iterations)
+[2021-08-13 : 20:50:17][Benchmark-debug] **************************************************
+[2021-08-13 : 20:50:17][Benchmark-debug] Benchmark BindMovement: 
+[2021-08-13 : 20:50:17][Benchmark-debug] Total time: 78192 microseconds (0.31% of benchmark runtime)
+[2021-08-13 : 20:50:17][Benchmark-debug] Average time: 52 microseconds (1490 iterations)
+[2021-08-13 : 20:50:17][Benchmark-debug] **************************************************
+[2021-08-13 : 20:50:17][Benchmark-debug] Benchmark UpdatePositions: 
+[2021-08-13 : 20:50:17][Benchmark-debug] Total time: 70512 microseconds (0.28% of benchmark runtime)
+[2021-08-13 : 20:50:17][Benchmark-debug] Average time: 47 microseconds (1490 iterations)
+[2021-08-13 : 20:50:17][Benchmark-debug] **************************************************
+[2021-08-13 : 20:50:17][Benchmark-debug] Benchmark HorzMove: 
+[2021-08-13 : 20:50:17][Benchmark-debug] Total time: 69121 microseconds (0.28% of benchmark runtime)
+[2021-08-13 : 20:50:17][Benchmark-debug] Average time: 46 microseconds (1490 iterations)
+[2021-08-13 : 20:50:17][Benchmark-debug] **************************************************
+[2021-08-13 : 20:50:17][Benchmark-debug] Benchmark ApplyFriction: 
+[2021-08-13 : 20:50:17][Benchmark-debug] Total time: 56850 microseconds (0.23% of benchmark runtime)
+[2021-08-13 : 20:50:17][Benchmark-debug] Average time: 38 microseconds (1490 iterations)
+[2021-08-13 : 20:50:17][Benchmark-debug] **************************************************
+[2021-08-13 : 20:50:17][Benchmark-debug] Benchmark BindPositionByMapBounds: 
+[2021-08-13 : 20:50:17][Benchmark-debug] Total time: 56335 microseconds (0.23% of benchmark runtime)
+[2021-08-13 : 20:50:18][Benchmark-debug] Average time: 37 microseconds (1490 iterations)
+[2021-08-13 : 20:50:18][Benchmark-debug] **************************************************
+[2021-08-13 : 20:50:18][Benchmark-debug] Benchmark JumpInput: 
+[2021-08-13 : 20:50:18][Benchmark-debug] Total time: 55188 microseconds (0.22% of benchmark runtime)
+[2021-08-13 : 20:50:18][Benchmark-debug] Average time: 37 microseconds (1490 iterations)
+[2021-08-13 : 20:50:18][Benchmark-debug] **************************************************
+[2021-08-13 : 20:50:18][Benchmark-debug] Benchmark ConstrainMovement: 
+[2021-08-13 : 20:50:18][Benchmark-debug] Total time: 51197 microseconds (0.20% of benchmark runtime)
+[2021-08-13 : 20:50:18][Benchmark-debug] Average time: 34 microseconds (1490 iterations)
+[2021-08-13 : 20:50:18][Benchmark-debug] **************************************************
+[2021-08-13 : 20:50:18][Benchmark-debug] Benchmark UpdateAccelByState: 
+[2021-08-13 : 20:50:18][Benchmark-debug] Total time: 50983 microseconds (0.20% of benchmark runtime)
+[2021-08-13 : 20:50:18][Benchmark-debug] Average time: 34 microseconds (1490 iterations)
+[2021-08-13 : 20:50:18][Benchmark-debug] **************************************************
+[2021-08-13 : 20:50:18][Benchmark-debug] Benchmark PlatformDespawn: 
+[2021-08-13 : 20:50:18][Benchmark-debug] Total time: 50297 microseconds (0.20% of benchmark runtime)
+[2021-08-13 : 20:50:18][Benchmark-debug] Average time: 33 microseconds (1490 iterations)
+[2021-08-13 : 20:50:18][Benchmark-debug] **************************************************
+[2021-08-13 : 20:50:18][Benchmark-debug] Benchmark UpdateFrcByState: 
+[2021-08-13 : 20:50:18][Benchmark-debug] Total time: 50269 microseconds (0.20% of benchmark runtime)
+[2021-08-13 : 20:50:18][Benchmark-debug] Average time: 33 microseconds (1490 iterations)
+[2021-08-13 : 20:50:18][Benchmark-debug] **************************************************
+[2021-08-13 : 20:50:18][Benchmark-debug] Benchmark UpdateSpritePos: 
+[2021-08-13 : 20:50:18][Benchmark-debug] Total time: 49008 microseconds (0.20% of benchmark runtime)
+[2021-08-13 : 20:50:18][Benchmark-debug] Average time: 39 microseconds (1229 iterations)
+[2021-08-13 : 20:50:18][Benchmark-debug] **************************************************
+[2021-08-13 : 20:50:18][Benchmark-debug] Benchmark ApplyGravity: 
+[2021-08-13 : 20:50:18][Benchmark-debug] Total time: 35683 microseconds (0.14% of benchmark runtime)
+[2021-08-13 : 20:50:18][Benchmark-debug] Average time: 23 microseconds (1490 iterations)
+[2021-08-13 : 20:50:18][Benchmark-debug] **************************************************
+[2021-08-13 : 20:50:18][Benchmark-debug] Benchmark CheckPlayerFallOffMap: 
+[2021-08-13 : 20:50:18][Benchmark-debug] Total time: 32452 microseconds (0.13% of benchmark runtime)
+[2021-08-13 : 20:50:18][Benchmark-debug] Average time: 21 microseconds (1490 iterations)
+[2021-08-13 : 20:50:18][Benchmark-debug] **************************************************

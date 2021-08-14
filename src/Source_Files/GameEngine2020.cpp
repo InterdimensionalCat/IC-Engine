@@ -1,5 +1,6 @@
 #include "include.h"
 #include "Scene.h"
+#include <iostream>
 
 #include "BenchmarkLogger.h"
 

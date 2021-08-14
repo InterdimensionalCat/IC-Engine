@@ -7,15 +7,16 @@
 #include "Level.h"
 #include "SceneEvent.h"
 #include "PhysicsSystems.h"
+#include "MtSystem.h"
+
 
 namespace ic {
-	class UpdatePositions : public SystemTrivial<Transform, Velocity> {
+	class UpdatePositions : public MtSystem<Transform, Velocity> {
 	public:
-		UpdatePositions(Scene* scene) : SystemTrivial(scene) {}
-		void excecutionFunction(std::shared_ptr<ActorEntry> entry) override {
-			Transform* trans = nullptr;
-			Velocity* vel = nullptr;
-			scene->compManager->getComponents(entry, trans, vel);
+		UpdatePositions(Scene* scene) : MtSystem(scene) {}
+		void excecutionFunction(std::shared_ptr<ActorEntry> entry, std::tuple<Transform* ,Velocity*> comps) override {
+			auto trans = std::get<Transform*>(comps);
+			auto vel = std::get<Velocity*>(comps);
 
 			trans->x += vel->x;
 			trans->y += vel->y;

@@ -3,6 +3,7 @@
 #include "SFML/Graphics.hpp"
 #include "Animation.h"
 #include "Window.h"
+#include "MtSystem.h"
 
 namespace ic {
 	class DrawSprites : public SystemTrivial<SpriteDrawable> {
@@ -49,16 +50,23 @@ namespace ic {
 		_System(DrawAnimations, SystemType::Graphics);
 	};
 
-	class StateAnimationDriver : public SystemTrivial<Animatable, Transform, StateController, Velocity, AnimStateMap, Hitbox, InputController> {
+	class StateAnimationDriver : public MtSystem<Animatable, Transform, StateController, Velocity, AnimStateMap, Hitbox, InputController> {
 	public:
-		StateAnimationDriver(Scene* scene) : SystemTrivial(scene) {}
 
-		void excecutionFunction(std::shared_ptr<ActorEntry> entry) override {
-			auto anim = scene->compManager->getComponent<Animatable>(entry);
-			auto trans = scene->compManager->getComponent<Transform>(entry);
-			auto vel = scene->compManager->getComponent<Velocity>(entry);
-			auto state = scene->compManager->getComponent<StateController>(entry);
-			auto statemap = scene->compManager->getComponent<AnimStateMap>(entry);
+		using compTypesTuple = std::tuple<Animatable*, Transform*, 
+			StateController*, Velocity*, AnimStateMap*, Hitbox*, InputController*>;
+
+		StateAnimationDriver(Scene* scene) : MtSystem(scene) {}
+
+		void excecutionFunction(std::shared_ptr<ActorEntry> entry, compTypesTuple comps) override {
+			auto anim = std::get<Animatable*>(comps);
+			auto trans = std::get<Transform*>(comps);
+			auto vel = std::get<Velocity*>(comps);
+			auto state = std::get<StateController*>(comps);
+			auto statemap = std::get<AnimStateMap*>(comps);
+
+			auto hitbox = std::get<Hitbox*>(comps)->rect;
+			auto input = std::get<InputController*>(comps);
 
 			//change anim based on state
 			if (statemap->prevstate != state->state) {
@@ -71,7 +79,6 @@ namespace ic {
 			if (state->state == ActionState::GroundMove || state->state == ActionState::GroundTurn || state->state == ActionState::GroundStill) {
 
 				if (state->state == ActionState::GroundStill) {
-					auto input = scene->compManager->getComponent<InputController>(entry);
 					if (input->input->isDown(InputButton::LEFT) && !anim->animation->isFlipped()) {
 						anim->animation->setFlipped(true);
 					}
@@ -91,7 +98,6 @@ namespace ic {
 			}
 
 			//update animation position
-			auto hitbox = scene->compManager->getComponent<Hitbox>(entry)->rect;
 
 			hitbox.top += trans->y;
 			hitbox.left += trans->x;
