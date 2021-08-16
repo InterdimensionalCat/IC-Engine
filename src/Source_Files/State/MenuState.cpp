@@ -12,9 +12,9 @@ MenuState::MenuState(StateManager* p) : State(p) {
 	filepath /= "terminat";
 	filepath += ".ttf";
 
-	if (!titleFont.loadFromFile(filepath.generic_u8string())) {
+	if (!titleFont.loadFromFile(filepath.generic_string())) {
 #ifdef _DEBUG
-		throw TextureLoadException("terminat", filepath.generic_u8string());
+		//throw TextureLoadException("terminat", filepath.generic_string());
 #endif
 	}
 	title = Text(parent->instance->TITLE, titleFont);

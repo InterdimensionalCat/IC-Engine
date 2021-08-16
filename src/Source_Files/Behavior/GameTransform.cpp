@@ -51,7 +51,7 @@ void GameTransform::draw(Renderer* renderer) {
 		shape.setRadius(3);
 		shape.setFillColor(Color::Cyan);
 		shape.setOutlineColor(Color::Cyan);
-		shape.setPosition(lerp(prevpos.toSFMLVec<float>() - Vector2f(1.5f, 1.5f), pos.toSFMLVec<float>() - Vector2f(1.5f, 1.5f), renderer->interpol));
+		shape.setPosition(glerp(prevpos.toSFMLVec<float>() - Vector2f(1.5f, 1.5f), pos.toSFMLVec<float>() - Vector2f(1.5f, 1.5f), renderer->interpol));
 		target->draw(shape, states);
 	}
 }

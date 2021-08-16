@@ -28,13 +28,13 @@ Projection projectShape(const Poly shape, const s2d::NormalVec& angleAxis) {
 
 	if (proj.min == numeric_limits<float>::infinity()) {
 #ifdef _DEBUG
-		throw BadInfinityException();
+		//throw BadInfinityException();
 #endif
 	}
 
 	if (proj.max == -numeric_limits<float>::infinity()) {
 #ifdef _DEBUG
-		throw BadInfinityException();
+		//throw BadInfinityException();
 #endif
 	}
 

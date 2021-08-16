@@ -230,7 +230,7 @@ bool RigidPairSAT(ColPair &pair) {
 
 #ifdef _DEBUG
 	if (leastPen == numeric_limits<float>::infinity()) {
-		throw BadInfinityException();
+		//throw BadInfinityException();
 	}
 #endif
 	pair.normal = bestAxis.unitNormal();
@@ -345,7 +345,7 @@ bool RigidStaticSAT(ColPair &pair) {
 
 	if (leastPen == numeric_limits<float>::infinity()) {
 #ifdef _DEBUG
-		throw BadInfinityException();
+		//throw BadInfinityException();
 #endif
 	}
 	pair.normal = bestAxis.unitNormal();
@@ -452,7 +452,7 @@ bool RigidOneWaySAT(ColPair &pair) {
 
 	if (leastPen == numeric_limits<float>::infinity()) {
 #ifdef _DEBUG
-		throw BadInfinityException();
+		//throw BadInfinityException();
 #endif
 	}
 

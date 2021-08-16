@@ -13,9 +13,9 @@ MenuButton::MenuButton(const Point& center, const string& text, const string& fo
 	filepath += ".ttf";
 
 
-	if (!buttonFont.loadFromFile(filepath.generic_u8string())) {
+	if (!buttonFont.loadFromFile(filepath.generic_string())) {
 #ifdef _DEBUG
-		throw TextureLoadException(font, filepath.generic_u8string());
+		//throw TextureLoadException(font, filepath.generic_u8string());
 #endif
 	}
 	option = Text(text, buttonFont);
