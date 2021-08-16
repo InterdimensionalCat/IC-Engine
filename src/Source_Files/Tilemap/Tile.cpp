@@ -27,11 +27,11 @@ const uint32_t TileBase::getTilesetY() const {
 	return tilesetY;
 }
 
-Tile::Tile() : base(std::make_shared<TileBase>()), pos(sf::Vector2f(0, 0)), activeSides({ true, true, true, true }) {}
+Tile::Tile() : base(std::make_shared<TileBase>()), pos(s2d::Point2m(0, 0)), activeSides({ true, true, true, true }) {}
 
-Tile::Tile(std::shared_ptr<TileBase> base, const float posX, const float posY) :
+Tile::Tile(std::shared_ptr<TileBase> base, const s2d::Meters posX, const s2d::Meters posY) :
 	base(base),
-	pos(sf::Vector2f(posX, posY)),
+	pos(s2d::Point2m(posX, posY)),
 	activeSides({ true, true, true, true }) {}
 
 bool Tile::isLeftActive() const {
@@ -66,10 +66,14 @@ uint32_t Tile::getTilesetY() const {
 	return base->tilesetY;
 }
 
-float Tile::getPosX() const {
+s2d::Meters Tile::getPosX() const {
 	return pos.x;
 }
 
-float Tile::getPosY() const {
+s2d::Meters Tile::getPosY() const {
 	return pos.y;
+}
+
+s2d::Point2m Tile::getPos() const {
+	return pos;
 }

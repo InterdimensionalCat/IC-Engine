@@ -51,7 +51,7 @@ namespace ic {
 	private:
 
 		void wallCollision(Transform* trans, Velocity* vel,
-			const std::vector<Tile>& tiles, const sf::FloatRect& hitbox,
+			const std::vector<Tile>& tiles, const s2d::Rect2m& hitbox,
 			const Hitbox* originalhitbox, std::shared_ptr<ActorEntry> entry) {
 			if (vel->x == 0) {
 				return;
@@ -59,10 +59,10 @@ namespace ic {
 
 			for (auto& tile : tiles) {
 
-				if (hitbox.top + hitbox.height * 0.2f < tile.getPosY() && tile.isTopActive()) continue;
-				if (hitbox.top + hitbox.height * 0.8f > tile.getPosY() + 1.0f && tile.isBotActive()) continue;
+				if (hitbox.min.y + hitbox.height() * 0.2f < tile.getPosY() && tile.isTopActive()) continue;
+				if (hitbox.min.y + hitbox.height() * 0.8f > tile.getPosY() + 1.0f && tile.isBotActive()) continue;
 
-				if (hitbox.intersects(sf::FloatRect(tile.getPosX(), tile.getPosY(), 1.0f, 1.0f))) {
+				if (hitbox.intersects(s2d::Rect2m(tile.getPos(), s2d::Dim2m(1, 1)))) {
 					if (vel->x > 0) {
 						if (!tile.isLeftActive()) {
 							continue;
@@ -74,7 +74,7 @@ namespace ic {
 						}
 
 						// -> |
-						trans->x = tile.getPosX() - originalhitbox->rect.width;
+						trans->x = tile.getPosX() - originalhitbox->rect.width();
 					}
 					else {
 						if (!tile.isRightActive()) {
@@ -107,7 +107,7 @@ namespace ic {
 				if (hitbox.top > tile.getPosY() + 0.2f) continue;
 				if (hitbox.top + hitbox.height > tile.getPosY() + 0.8f) continue;
 
-				if (hitbox.intersects(sf::FloatRect(tile.getPosX(), tile.getPosY(), 1.0f, 1.0f))) {
+				if (hitbox.intersects(s2d::Rect2m(tile.getPos(), s2d::Dim2m(1, 1)))) {
 					if (!tile.isTopActive()) {
 						continue;
 					}
@@ -117,7 +117,7 @@ namespace ic {
 						listener->events->push_back(TileCollisionEvent{ tile, CollisionFace::Floor });
 					}
 
-					trans->y = tile.getPosY() - originalhitbox->rect.height;
+					trans->y = tile.getPosY() - originalhitbox->rect.height();
 					vel->y = 0.0f;
 				}
 			}
@@ -136,7 +136,7 @@ namespace ic {
 				if (hitbox.top < tile.getPosY() + 0.2f) continue;
 				if (hitbox.top + hitbox.height < tile.getPosY() + 0.8f) continue;
 
-				if (hitbox.intersects(sf::FloatRect(tile.getPosX(), tile.getPosY(), 1.0f, 1.0f))) {
+				if (hitbox.intersects(s2d::Rect2m(tile.getPos(), s2d::Dim2m(1, 1)))) {
 
 					if (!tile.isBotActive()) {
 						continue;
@@ -154,15 +154,14 @@ namespace ic {
 			}
 		}
 
-		sf::FloatRect getPosSpeedAdjustedHitbox(std::shared_ptr<ActorEntry> entry) {
+		s2d::Rect2m getPosSpeedAdjustedHitbox(std::shared_ptr<ActorEntry> entry) {
 			auto aabbcomp = scene->compManager->getComponent<Hitbox>(entry);
 			auto trans = scene->compManager->getComponent<Transform>(entry);
 			auto vel = scene->compManager->getComponent<Velocity>(entry);
 
 			auto aabb = aabbcomp->rect;
 
-			aabb.left += trans->x + vel->x;
-			aabb.top += trans->y + vel->y;
+			aabb += s2d::Vec2m(trans->x, trans->y) + s2d::Vec2m(vel->x, vel->y);
 
 			return aabb;
 		}
@@ -203,7 +202,7 @@ namespace ic {
 			}
 
 
-			vel->x *= frc;
+			vel->x *= (float)frc;
 			if (abs(vel->x) < s2d::toMeters(0.2f)) {
 				vel->x = 0;
 			}
@@ -250,7 +249,7 @@ namespace ic {
 			auto vel = scene->compManager->getComponent<Velocity>(entry);
 
 			if (mapBounds->boundUp) {
-				transform->y = std::max(transform->y, scene->levels->getUpperBound());
+				transform->y = (s2d::Meters)std::max((float)transform->y, scene->levels->getUpperBound());
 				if (transform->y == scene->levels->getUpperBound() && eventlistener != nullptr) {
 					eventlistener->events->push_back(MapBoundCollisionEvent::HitUp);
 					if (vel != nullptr) {
@@ -260,7 +259,7 @@ namespace ic {
 			}
 
 			if (mapBounds->boundDown) {
-				transform->y = std::min(transform->y, scene->levels->getLowerBound());
+				transform->y = (s2d::Meters)std::min((float)transform->y, scene->levels->getLowerBound());
 				if (transform->y == scene->levels->getLowerBound() && eventlistener != nullptr) {
 					eventlistener->events->push_back(MapBoundCollisionEvent::HitDown);
 					if (vel != nullptr) {
@@ -270,7 +269,7 @@ namespace ic {
 			}
 
 			if (mapBounds->boundLeft) {
-				transform->x = std::max(transform->x, scene->levels->getLeftBound());
+				transform->x = (s2d::Meters)std::max((float)transform->x, scene->levels->getLeftBound());
 				if (transform->x == scene->levels->getLeftBound() && eventlistener != nullptr) {
 					eventlistener->events->push_back(MapBoundCollisionEvent::HitLeft);
 					if (vel != nullptr) {
@@ -280,7 +279,7 @@ namespace ic {
 			}
 
 			if (mapBounds->boundRight) {
-				transform->x = std::min(transform->x, scene->levels->getRightBound());
+				transform->x = (s2d::Meters)std::min((float)transform->x, scene->levels->getRightBound());
 				if (transform->x == scene->levels->getRightBound() && eventlistener != nullptr) {
 					eventlistener->events->push_back(MapBoundCollisionEvent::HitRight);
 					if (vel != nullptr) {
@@ -396,7 +395,7 @@ namespace ic {
 			auto playerYHigh = ptrans->y;
 			auto enemyYHigh = etrans->y;
 
-			if (enemyYHigh - playerYHigh > ehitbox.height * jumpondata->jumpTolerencePercent) {
+			if (enemyYHigh - playerYHigh > ehitbox.height() * (float)jumpondata->jumpTolerencePercent) {
 				//kill enemy
 
 				jumpdata->jumpedflag = false;
@@ -405,7 +404,7 @@ namespace ic {
 				if (playervely > 0) {
 					playervely *= -1.0f;
 				}
-				auto jumpforce = std::min(playervely * jumpondata->jumpVelMod, -jumpondata->jumpMin);
+				auto jumpforce = (s2d::Meters)std::min((float)playervely * (float)jumpondata->jumpVelMod, -(float)jumpondata->jumpMin);
 				pvel->y = jumpforce;
 
 				scene->sceneEvents->pushEvent<DespawnActorEvent>(enemy);
@@ -432,15 +431,14 @@ namespace ic {
 			auto chitbox = getPosSpeedAdjustedHitbox(scene, creature);
 			auto phitbox = getPosSpeedAdjustedHitboxNoExtension(scene, platform);
 
-			auto cBottomCorner = chitbox.top + chitbox.height;
-			auto pTopCorner = phitbox.top;
+			auto cBottomCorner = chitbox.max.y;
+			auto pTopCorner = phitbox.min.y;
 
 			if (cstate == ActionState::Airborne) {
 				auto caabb = scene->compManager->getComponent<Hitbox>(creature)->rect;
 				auto trans = scene->compManager->getComponent<Transform>(creature);
 
-				caabb.left += trans->x;
-				caabb.top += trans->y;
+				caabb += s2d::Vec2m(trans->x, trans->y);
 				auto cbighitbox = getBoundingBoxOfBoxes(caabb, chitbox);
 				//auto cbighitbox = chitbox;
 				if (!cbighitbox.intersects(phitbox)) {
@@ -448,7 +446,7 @@ namespace ic {
 				}
 			}
 			else {
-				if (chitbox.top > phitbox.top) return;
+				if (chitbox.min.x > phitbox.min.x) return;
 			}
 
 			auto ptolerence = scene->compManager->getComponent<PlatformTolerence>(platform);
@@ -456,7 +454,7 @@ namespace ic {
 				auto ctrans = scene->compManager->getComponent<Transform>(creature);
 				auto pvel = scene->compManager->getComponent<Velocity>(platform);
 				auto ptype = scene->compManager->getComponent<PlatformTypeable>(platform)->type;
-				ctrans->y = phitbox.top - chitbox.height;
+				ctrans->y = phitbox.max.y;;
 
 				auto velsignbit = pvel->y < 0 ? -1 : 1;
 
@@ -535,69 +533,56 @@ namespace ic {
 			scene->sceneEvents->pushEvent<ResetLevelEvent>();
 		}
 
-		static sf::FloatRect getPosSpeedAdjustedHitboxNoExtension(Scene* scene, std::shared_ptr<ActorEntry> entry) {
+		static s2d::Rect2m getPosSpeedAdjustedHitboxNoExtension(Scene* scene, std::shared_ptr<ActorEntry> entry) {
 			auto aabbcomp = scene->compManager->getComponent<Hitbox>(entry);
 			auto trans = scene->compManager->getComponent<Transform>(entry);
 			auto vel = scene->compManager->getComponent<Velocity>(entry);
 
 			auto aabb = aabbcomp->rect;
 
-			auto veldispx = 0.0f;
-			auto veldispy = 0.0f;
+
+			auto veldisp = s2d::Vec2m();
 
 			if (vel != nullptr) {
-				veldispx = vel->x;
-				veldispy = vel->y;
+				veldisp = s2d::Vec2m(vel->x, vel->y);
 			}
 
-			aabb.left += trans->x + veldispx;
-			aabb.top += trans->y + veldispy;
+			aabb += s2d::Vec2m(trans->x, trans->y) + veldisp;
 
 			drawHitbox(scene, aabb);
 
 			return aabb;
 		}
 
-		static sf::FloatRect getPosSpeedAdjustedHitbox(Scene* scene, std::shared_ptr<ActorEntry> entry) {
+		static s2d::Rect2m getPosSpeedAdjustedHitbox(Scene* scene, std::shared_ptr<ActorEntry> entry) {
 			auto aabbcomp = scene->compManager->getComponent<Hitbox>(entry);
 			auto trans = scene->compManager->getComponent<Transform>(entry);
 			auto vel = scene->compManager->getComponent<Velocity>(entry);
 
-			sf::FloatRect aabb = aabbcomp->rect;
-			auto displacementvec = sf::Vector2f(0, 0);
+			auto aabb = aabbcomp->rect;
+			auto displacementvec = s2d::Vec2m();
 			auto aabbcompbig = scene->compManager->getComponent<HitboxExtension>(entry);
 			if (aabbcompbig != nullptr) {
 				aabb = aabbcompbig->rect;
 
-				displacementvec = sf::Vector2f(
-					aabb.left + aabb.width / 2.0f - aabbcomp->rect.left - aabbcomp->rect.width / 2.0f,
-					aabb.top + aabb.height / 2.0f - aabbcomp->rect.top - aabbcomp->rect.height / 2.0f);
+				displacementvec = s2d::Vec2m(aabb.center() - aabbcomp->rect.center());
+
 			}
 
-			auto veldispx = 0.0f;
-			auto veldispy = 0.0f;
+			auto veldisp = s2d::Vec2m();
 
 			if (vel != nullptr) {
-				veldispx = vel->x;
-				veldispy = vel->y;
+				veldisp = s2d::Vec2m(vel->x, vel->y);
 			}
-
-
-			aabb.left += trans->x + veldispx - displacementvec.x;
-			aabb.top += trans->y + veldispy - displacementvec.y;
+			aabb += s2d::Vec2m(trans->x, trans->y) + veldisp - displacementvec;
 
 			drawHitbox(scene, aabb);
 
 			return aabb;
 		}
 
-		static void drawHitbox(Scene* scene, const sf::FloatRect& rect) {
-			sf::RectangleShape shape;
-			shape.setPosition(s2d::toPixels(rect.left), s2d::toPixels(rect.top));
-			shape.setSize(sf::Vector2f(s2d::toPixels(rect.width), s2d::toPixels(rect.height)));
-			shape.setOutlineThickness(3.0f);
-			shape.setFillColor(sf::Color(0, 0, 0, 0));
-			shape.setOutlineColor(sf::Color::Red);
+		static void drawHitbox(Scene* scene, const s2d::Rect2m& rect) {
+			sf::RectangleShape shape = rect.makeDrawableSFMLRect(3.0f, sf::Color(0,0,0,0), sf::Color::Red);
 
 			//scene->debugShapes.push_back(shape);
 		}

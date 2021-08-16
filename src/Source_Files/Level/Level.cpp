@@ -13,7 +13,7 @@ using namespace ic;
 
 Level::Level(Scene* scene) : scene(scene) {
 	tilemap = std::make_shared<Tilemap>();
-	loadLevel("newLevel_1");
+	loadLevel("newLevel_1-px");
 }
 
 void Level::update() {
@@ -84,6 +84,8 @@ void Level::loadLevel(const std::string& levelname) {
 					if (variantNameItr != obj.getProperties().end()) {
 						variantname = variantNameItr->getStringValue();
 					}
+
+					if (actorname != "Player") continue;
 
 					//spawnActor(actorname, variantname);
 

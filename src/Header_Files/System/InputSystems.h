@@ -316,16 +316,16 @@ namespace ic {
 				if (jump->jumpedflag) {
 					if (!input->isDown(InputButton::JUMP)) {
 						if (vel->y < 0) {
-							vel->y *= jump->jumpReleaseMod;
+							vel->y *= (float)jump->jumpReleaseMod;
 						}
 					}
 					else {
 						if (vel->y > s2d::toMeters(0.5f) && vel->y < s2d::toMeters(3.0f)) {
-							vel->y -= properties->gravity * jump->jumpFloat;
+							vel->y -= properties->gravity * (float)jump->jumpFloat;
 						}
 
 						if (vel->y < -s2d::toMeters(0.5f) && vel->y > -s2d::toMeters(3.0f)) {
-							vel->y -= properties->gravity * jump->jumpFloat;
+							vel->y -= properties->gravity * (float)jump->jumpFloat;
 						}
 					}
 				}
@@ -397,40 +397,38 @@ namespace ic {
 		ConstrainMovement(Scene* scene) : SystemTrivial(scene) {}
 		void excecutionFunction(std::shared_ptr<ActorEntry> entry) override {
 			auto trans = scene->compManager->getComponent<Transform>(entry);
-			auto centerX = trans->x;
-			auto centerY = trans->y;
+			auto center = s2d::Point2m(trans->x, trans->y);
 			auto hitbox = scene->compManager->getComponent<Hitbox>(entry);
 			if (hitbox != nullptr) {
-				centerX = trans->x + hitbox->rect.width / 2.0f;
-				centerY = trans->y + hitbox->rect.height / 2.0f;
+				center = hitbox->rect.center();
 			}
 			auto constrainedmvmt = scene->compManager->getComponent<ConstrainedMovement>(entry);
 
 			if (!(constrainedmvmt->maxDisplacementLeft == 0.0f && constrainedmvmt->maxDisplacementRight == 0.0f)) {
-				if (centerX < constrainedmvmt->originX) {
+				if (center.x < constrainedmvmt->originX) {
 					if (constrainedmvmt->maxDisplacementLeft >= 0.0f
-						&& abs(centerX - constrainedmvmt->originX) > constrainedmvmt->maxDisplacementLeft) {
+						&& abs(center.x - constrainedmvmt->originX) > constrainedmvmt->maxDisplacementLeft) {
 						constrainedmvmt->events->push(ConstrainedMovementEvent::OOBLeft);
 					}
 				}
 				else {
 					if (constrainedmvmt->maxDisplacementRight >= 0.0f
-						&& abs(centerX - constrainedmvmt->originX) > constrainedmvmt->maxDisplacementRight) {
+						&& abs(center.x - constrainedmvmt->originX) > constrainedmvmt->maxDisplacementRight) {
 						constrainedmvmt->events->push(ConstrainedMovementEvent::OOBRight);
 					}
 				}
 			}
 
 			if (!(constrainedmvmt->maxDisplacementUp == constrainedmvmt->maxDisplacementDown == 0.0f)) {
-				if (centerY < constrainedmvmt->originY) {
+				if (center.y < constrainedmvmt->originY) {
 					if (constrainedmvmt->maxDisplacementUp >= 0.0f
-						&& abs(centerY - constrainedmvmt->originY) > constrainedmvmt->maxDisplacementUp) {
+						&& abs(center.y - constrainedmvmt->originY) > constrainedmvmt->maxDisplacementUp) {
 						constrainedmvmt->events->push(ConstrainedMovementEvent::OOBTop);
 					}
 				}
 				else {
 					if (constrainedmvmt->maxDisplacementDown >= 0.0f
-						&& abs(centerY - constrainedmvmt->originY) > constrainedmvmt->maxDisplacementDown) {
+						&& abs(center.y - constrainedmvmt->originY) > constrainedmvmt->maxDisplacementDown) {
 						constrainedmvmt->events->push(ConstrainedMovementEvent::OOBBot);
 					}
 				}
@@ -505,14 +503,19 @@ namespace ic {
 			auto trans = scene->compManager->getComponent<Transform>(entry);
 			auto events = scene->compManager->getComponent<ConstrainedMovementEventListener>(entry)->events;
 
-			vel->x += cmove->accel * cmove->angleX;
-			vel->y += cmove->accel * cmove->angleY;
+			vel->x += cmove->accel * cmove->angle.x;
+			vel->y += cmove->accel * cmove->angle.y;
 
 			auto nposx = trans->x + vel->x;
 			auto nposy = trans->y + vel->y;
 
+			s2d::Vec2m distvec = s2d::Vec2m(
+				s2d::Point2m(nposx, nposy),
+				s2d::Point2m(cmvmt->originX, cmvmt->originY)
+			);
+
 			if (cmvmt->radius >= 0.0f) {
-				if (dist(nposx, cmvmt->originX, nposy, cmvmt->originY) >= cmvmt->radius) {
+				if (distvec.mag() >= cmvmt->radius) {
 					//auto nposx1 = cmvmt->originX + cmvmt->radius * cmove->angleX;
 					//auto nposy1 = cmvmt->originY + cmvmt->radius * cmove->angleY;
 
@@ -551,10 +554,6 @@ namespace ic {
 
 		}
 
-		inline float dist(const float x1, const float x2, const float y1, const float y2) const {
-			return sqrt((x2 - x1) * (x2 - x1) + (y2 - y1) * (y2 - y1));
-		}
-
 		_System(CircularMovableUpdate, SystemType::PrePhysics);
 	};
 
@@ -585,7 +584,7 @@ namespace ic {
 			auto cmove = scene->compManager->getComponent<CircularMovable>(entry);
 			auto events = scene->compManager->getComponent<ConstrainedMovementEventListener>(entry)->events;
 			if (!events->empty()) {
-				cmove->angleY *= -1;
+				cmove->angle.y *= -1;
 			}
 
 			while (!events->empty()) {
@@ -597,7 +596,7 @@ namespace ic {
 			auto cmove = scene->compManager->getComponent<CircularMovable>(entry);
 			auto events = scene->compManager->getComponent<ConstrainedMovementEventListener>(entry)->events;
 			if (!events->empty()) {
-				cmove->angleX *= -1;
+				cmove->angle.x *= -1;
 			}
 
 			while (!events->empty()) {
@@ -610,13 +609,11 @@ namespace ic {
 			auto cmove = scene->compManager->getComponent<CircularMovable>(entry);
 			if (falling->falling) {
 				cmove->accel = falling->grv;
-				cmove->angleX = 0.0f;
-				cmove->angleY = 1.0f;
+				cmove->angle = s2d::NormVec2m(0, 1);
 			}
 			else {
 				cmove->accel = 0.0f;
-				cmove->angleX = 0.0f;
-				cmove->angleY = 1.0f;
+				cmove->angle = s2d::NormVec2m(0, 1);
 			}
 		}
 
