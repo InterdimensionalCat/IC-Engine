@@ -29,7 +29,8 @@ namespace ic {
 			auto sprite = scene->compManager->getComponent<SpriteDrawable>(entry);
 			auto trans = scene->compManager->getComponent<Transform>(entry);
 			sf::Sprite& spr = *sprite->spr;
-			spr.setPosition(s2d::toPixels(trans->x), s2d::toPixels(trans->y));
+			spr.setPosition(s2d::Point2p(trans->x, trans->y).toSFMLVec());
+			//spr.setPosition(s2d::toPixels(trans->x), s2d::toPixels(trans->y));
 		}
 
 		_System(UpdateSpritePos, SystemType::PreGraphics);
@@ -92,14 +93,20 @@ namespace ic {
 
 			//update animation position
 			auto hitbox = scene->compManager->getComponent<Hitbox>(entry)->rect;
+			
+			hitbox += s2d::Vec2m(trans->x, trans->y);
+			//hitbox.top += trans->y;
+			//hitbox.left += trans->x;
 
-			hitbox.top += trans->y;
-			hitbox.left += trans->x;
-
-			auto width = s2d::toMeters(anim->animation->getDimensions().x);
-			auto height = s2d::toMeters(anim->animation->getDimensions().y);
-			auto center = sf::Vector2f(hitbox.left + hitbox.width / 2.0f, hitbox.top + hitbox.height / 2.0f);
-			anim->animation->setPosition(sf::Vector2f(s2d::toPixels(center.x - width / 2.0f), s2d::toPixels(hitbox.top + hitbox.height - height)));
+			auto width = anim->animation->getDimensions().x;
+			auto height = anim->animation->getDimensions().y;
+			auto center = sf::Vector2f(s2d::Point2p(hitbox.center()).toSFMLVec());
+			center -= sf::Vector2f(width / 2.0f, height / 2.0f);
+			//anim->animation->setPosition(sf::Vector2f(s2d::toPixels(center.x - width / 2.0f), s2d::toPixels(hitbox.top + hitbox.height - height)));
+			anim->animation->setPosition(
+				sf::Vector2f(center.x, 
+					(float)s2d::Pixels(hitbox.max.y) - height)
+			);
 			anim->animation->update();
 		}
 

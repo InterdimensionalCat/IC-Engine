@@ -10,6 +10,8 @@
 #include "Input.h"
 #include "ActorEntry.h"
 
+#include <type_traits>
+
 namespace ic {
 
 	class Input;
@@ -29,7 +31,6 @@ namespace ic {
 		inline static std::vector<std::function<void()>> registerComponents;
 	};
 
-
 	template<typename T>
 	void inline createJsonOf(Scene* scene, std::shared_ptr<ActorEntry> entry, std::shared_ptr<json> file) {
 		auto comp = scene->compManager->getComponent<T>(entry);
@@ -48,12 +49,37 @@ namespace ic {
 
 	template<typename T>
 	void inline writeJsonArg(std::shared_ptr<json>& file, const std::string& name, const std::string& argname, const T& arg) {
-		(*file)[name][argname] = arg;
+		
+
+		if constexpr (std::is_same<s2d::Percent, T>::value) {
+			(*file)[name][argname] = (float)arg;
+		}
+
+		if constexpr (std::is_same<s2d::Meters, T>::value) {
+			(*file)[name][argname] = (float)s2d::Pixels(arg);
+		}
+
+		if constexpr (!std::is_same<s2d::Percent, T>::value && !std::is_same<s2d::Meters, T>::value) {
+			(*file)[name][argname] = arg;
+		}
 	}
 
 	template<typename T>
 	void inline readJsonArg(const std::shared_ptr<json>& file, const std::string& name, const std::string& argname, T& arg) {
-		arg = (*file)[name][argname];
+
+		if constexpr (std::is_same<s2d::Meters, T>::value) {
+			float argRaw = (*file)[name][argname];
+			arg = (s2d::Meters)s2d::Pixels(argRaw);
+		}
+		
+		if constexpr (std::is_same<s2d::Percent, T>::value) {
+			float argRaw = (*file)[name][argname];
+			arg = (T)argRaw;
+		}
+
+		if constexpr (!std::is_same<s2d::Percent, T>::value && !std::is_same<s2d::Meters, T>::value) {
+			arg = (*file)[name][argname];
+		}
 	}
 
 	template<typename... Args>
@@ -264,44 +290,63 @@ inline static bool added = false;
 	};
 
 	struct Transform {
-		float x;
-		float y;
+		//float x;
+		//float y;
+
+		s2d::Meters x;
+		s2d::Meters y;
 
 		_Component_Trivial(Transform, x, y)
 	};
 
 	struct Velocity {
-		float x;
-		float y;
+		//float x;
+		//float y;
+
+		s2d::Meters x;
+		s2d::Meters y;
 
 		_Component_Trivial(Velocity, x, y)
 	};
 
 	struct BoundedVelocity {
-		float maxVelX;
-		float maxVelY;
+		//float maxVelX;
+		//float maxVelY;
+
+		s2d::Meters maxVelX;
+		s2d::Meters maxVelY;
 
 		_Component_Trivial(BoundedVelocity, maxVelX, maxVelY)
 	};
 
 	struct PhysicsProperties {
-		float friction;
-		float gravity;
+		//float friction;
+		//float gravity;
+
+		s2d::Percent friction;
+		s2d::Meters gravity;
 
 		_Component_Trivial(PhysicsProperties, friction, gravity)
 	};
 
 	struct Jumpable {
-		float jumpForce;
-		float jumpReleaseMod;
-		float jumpFloat;
-		bool  jumpedflag = false;
+		//float jumpForce;
+		//float jumpReleaseMod;
+		//float jumpFloat;
+
+		s2d::Meters jumpForce;
+		s2d::Percent jumpReleaseMod;
+		s2d::Percent jumpFloat;
+
+		bool jumpedflag = false;
 
 		_Component_Trivial(Jumpable, jumpForce, jumpReleaseMod, jumpFloat)
 	};
 
 	struct Turnable {
-		float turnThreshold;
+		//float turnThreshold;
+
+		s2d::Meters turnThreshold;
 
 		_Component_Trivial(Turnable, turnThreshold)
 	};
@@ -314,26 +359,33 @@ inline static bool added = false;
 	};
 
 	struct HorzMovable {
-		float accelX;
+		//float accelX;
+
+		s2d::Meters accelX;
 
 		_Component_Trivial(HorzMovable, accelX)
 	};
 
 	struct CircularMovable {
-		float accel;
-		float angleX;
-		float angleY;
+		//float accel;
+		//float angleX;
+		//float angleY;
+
+		s2d::Meters accel;
+		s2d::NormVec2m angle;
 
 		void toJson(std::shared_ptr<json> file) const {
-			(*file)[getName()]["accel"] = accel;
-			(*file)[getName()]["angleX"] = angleX;
-			(*file)[getName()]["angleY"] = angleY;
+			(*file)[getName()]["accel"] = (float)accel;
+			(*file)[getName()]["angleX"] = (float)angle.x;
+			(*file)[getName()]["angleY"] = (float)angle.x;
 		}
 
 		void fromJson(const std::shared_ptr<json>& file) {
-			accel = (*file)[getName()]["accel"];
-			angleX = (*file)[getName()]["angleX"];
-			angleY = (*file)[getName()]["angleY"];
+			float accelRaw = (*file)[getName()]["accel"];
+			accel = (s2d::Meters)s2d::Pixels(accelRaw);
+			s2d::Meters angleX = s2d::Meters((float)(*file)[getName()]["angleX"]);
+			s2d::Meters angleY = s2d::Meters((float)(*file)[getName()]["angleY"]);
+			angle = s2d::NormVec2m(angleX, angleY);
 		}
 
 		//_Component_Trivial(CircularMovable, accel, angleX, angleY);
@@ -341,56 +393,61 @@ inline static bool added = false;
 	};
 
 	struct StateAccelerationValues {
-		float groundAccel;
-		float airAccel;
-		float stillAccel;
-		float turnAccel;
+		//float groundAccel;
+		//float airAccel;
+		//float stillAccel;
+		//float turnAccel;
+
+		s2d::Meters groundAccel;
+		s2d::Meters airAccel;
+		s2d::Meters stillAccel;
+		s2d::Meters turnAccel;
 
 		_Component_Trivial(StateAccelerationValues, groundAccel, airAccel, stillAccel, turnAccel)
 	};
 
 	struct StateFrictionValues {
-		float groundFrc;
-		float airFrc;
-		float stillFrc;
-		float turnFrc;
+		s2d::Percent groundFrc;
+		s2d::Percent airFrc;
+		s2d::Percent stillFrc;
+		s2d::Percent turnFrc;
 
 		_Component_Trivial(StateFrictionValues, groundFrc, airFrc, stillFrc, turnFrc)
 	};
 
 	struct ConstrainedMovement {
-		float maxDisplacementLeft = -1.0f;
-		float maxDisplacementRight = -1.0f;
-		float maxDisplacementUp = -1.0f;
-		float maxDisplacementDown = -1.0f;
+		s2d::Meters maxDisplacementLeft = -1.0f;
+		s2d::Meters maxDisplacementRight = -1.0f;
+		s2d::Meters maxDisplacementUp = -1.0f;
+		s2d::Meters maxDisplacementDown = -1.0f;
 
-		float originX;
-		float originY;
+		s2d::Meters originX;
+		s2d::Meters originY;
 
 		std::shared_ptr<std::queue<ConstrainedMovementEvent>> events
 			= std::make_shared<std::queue<ConstrainedMovementEvent>>();
 
 		void toJson(std::shared_ptr<json> file) const {
 
-			(*file)[getName()]["maxDisplacementLeft"] = maxDisplacementLeft;
-			(*file)[getName()]["maxDisplacementRight"] = maxDisplacementRight;
-			(*file)[getName()]["maxDisplacementUp"] = maxDisplacementUp;
-			(*file)[getName()]["maxDisplacementDown"] = maxDisplacementDown;
+			(*file)[getName()]["maxDisplacementLeft"] = (float)maxDisplacementLeft;
+			(*file)[getName()]["maxDisplacementRight"] = (float)maxDisplacementRight;
+			(*file)[getName()]["maxDisplacementUp"] = (float)maxDisplacementUp;
+			(*file)[getName()]["maxDisplacementDown"] = (float)maxDisplacementDown;
 
-			(*file)[getName()]["originX"] = originX;
-			(*file)[getName()]["originY"] = originY;
+			(*file)[getName()]["originX"] = (float)originX;
+			(*file)[getName()]["originY"] = (float)originY;
 
 			(*file)[getName()]["events"] = nullptr;
 		}
 
 		void fromJson(const std::shared_ptr<json>& file) {
-			maxDisplacementLeft = (*file)[getName()]["maxDisplacementLeft"];
-			maxDisplacementRight = (*file)[getName()]["maxDisplacementRight"];
-			maxDisplacementUp = (*file)[getName()]["maxDisplacementUp"];
-			maxDisplacementDown = (*file)[getName()]["maxDisplacementDown"];
+			maxDisplacementLeft = s2d::Meters((float)(*file)[getName()]["maxDisplacementLeft"]);
+			maxDisplacementRight = s2d::Meters((float)(*file)[getName()]["maxDisplacementRight"]);
+			maxDisplacementUp = s2d::Meters((float)(*file)[getName()]["maxDisplacementUp"]);
+			maxDisplacementDown = s2d::Meters((float)(*file)[getName()]["maxDisplacementDown"]);
 
-			originX = (*file)[getName()]["originX"];
-			originY = (*file)[getName()]["originY"];
+			originX = s2d::Meters((float)(*file)[getName()]["originX"]);
+			originY = s2d::Meters((float)(*file)[getName()]["originY"]);
 		}
 
 
@@ -414,17 +471,17 @@ inline static bool added = false;
 	};
 
 	struct CircularConstrainedMovement {
-		float radius;
-		float originX;
-		float originY;
+		s2d::Meters radius;
+		s2d::Meters originX;
+		s2d::Meters originY;
 
 		_Component_Trivial(CircularConstrainedMovement, radius, originX, originY);
 	};
 
 	struct JumpOn {
-		float jumpTolerencePercent;
-		float jumpVelMod;
-		float jumpMin;
+		s2d::Meters jumpTolerencePercent;
+		s2d::Percent jumpVelMod;
+		s2d::Meters jumpMin;
 
 		_Component_Trivial(JumpOn, jumpTolerencePercent, jumpVelMod, jumpMin)
 	};
@@ -454,42 +511,44 @@ inline static bool added = false;
 	};
 
 	struct Hitbox {
-		sf::FloatRect rect;
+		s2d::Rect2m rect;
 
 		void toJson(std::shared_ptr<json> file) const {
-			(*file)[getName()]["rect"]["left"] = rect.left;
-			(*file)[getName()]["rect"]["top"] = rect.top;
-			(*file)[getName()]["rect"]["width"] = rect.width;
-			(*file)[getName()]["rect"]["height"] = rect.height;
+			(*file)[getName()]["rect"]["left"] = (float)s2d::Pixels(rect.min.x);
+			(*file)[getName()]["rect"]["top"] = (float)s2d::Pixels(rect.min.y);
+			(*file)[getName()]["rect"]["width"] = (float)s2d::Pixels(rect.width());
+			(*file)[getName()]["rect"]["height"] = (float)s2d::Pixels(rect.height());
 		}
 
 		void fromJson(const std::shared_ptr<json>& file) {
-			rect.left = (*file)[getName()]["rect"]["left"];
-			rect.top = (*file)[getName()]["rect"]["top"];
-			rect.width = (*file)[getName()]["rect"]["width"];
-			rect.height = (*file)[getName()]["rect"]["height"];
+
+			auto x = s2d::Meters((float)(*file)[getName()]["rect"]["left"]);
+			auto y = s2d::Meters((float)(*file)[getName()]["rect"]["top"]);
+			auto width = s2d::Meters((float)(*file)[getName()]["rect"]["width"]);
+			auto height = s2d::Meters((float)(*file)[getName()]["rect"]["height"]);
 		}
 
 		_Component(Hitbox)
 
-			//_Component_Trivial(Hitbox, rect)
+		//_Component_Trivial(Hitbox, rect)
 	};
 
 	struct HitboxExtension {
-		sf::FloatRect rect;
+		s2d::Rect2m rect;
 
 		void toJson(std::shared_ptr<json> file) const {
-			(*file)[getName()]["rect"]["left"] = rect.left;
-			(*file)[getName()]["rect"]["top"] = rect.top;
-			(*file)[getName()]["rect"]["width"] = rect.width;
-			(*file)[getName()]["rect"]["height"] = rect.height;
+			(*file)[getName()]["rect"]["left"] = (float)s2d::Pixels(rect.min.x);
+			(*file)[getName()]["rect"]["top"] = (float)s2d::Pixels(rect.min.y);
+			(*file)[getName()]["rect"]["width"] = (float)s2d::Pixels(rect.width());
+			(*file)[getName()]["rect"]["height"] = (float)s2d::Pixels(rect.height());
 		}
 
 		void fromJson(const std::shared_ptr<json>& file) {
-			rect.left = (*file)[getName()]["rect"]["left"];
-			rect.top = (*file)[getName()]["rect"]["top"];
-			rect.width = (*file)[getName()]["rect"]["width"];
-			rect.height = (*file)[getName()]["rect"]["height"];
+
+			auto x = s2d::Meters((float)(*file)[getName()]["rect"]["left"]);
+			auto y = s2d::Meters((float)(*file)[getName()]["rect"]["top"]);
+			auto width = s2d::Meters((float)(*file)[getName()]["rect"]["width"]);
+			auto height = s2d::Meters((float)(*file)[getName()]["rect"]["height"]);
 		}
 
 		_Component(HitboxExtension)
@@ -502,8 +561,8 @@ inline static bool added = false;
 	};
 
 	struct PlatformTolerence {
-		float up;
-		float down;
+		s2d::Meters up;
+		s2d::Meters down;
 
 		_Component_Trivial(PlatformTolerence, up, down);
 	};
@@ -567,7 +626,10 @@ inline static bool added = false;
 
 	struct FallingPlatform {
 		bool falling = false;
-		float grv = s2d::toMeters(0.5f);
+
+		//s2d::Meters grv = s2d::Meters(0.5f);
+		s2d::Meters grv = 0.5_mtr;
+		//float grv = s2d::toMeters(0.5f);
 		_Component_Trivial(FallingPlatform, falling, grv);
 	};
 }

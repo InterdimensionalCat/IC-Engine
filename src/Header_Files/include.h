@@ -74,6 +74,11 @@ using json = nlohmann::json;
 
 #include <SFML\Graphics.hpp>
 #include <SFML\Audio.hpp>
+
+#ifndef _SFML_ENABLED
+#define _SFML_ENABLED
+#endif
+
 #include <Space2D.h>
 
 #include "Logger.h"

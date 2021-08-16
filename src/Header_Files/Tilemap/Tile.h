@@ -37,7 +37,7 @@ namespace ic {
 
 		Tile();
 
-		Tile(std::shared_ptr<TileBase> base, const float posX, const float posY);
+		Tile(std::shared_ptr<TileBase> base, const s2d::Meters posX, const s2d::Meters posY);
 
 		bool isLeftActive() const;
 
@@ -55,16 +55,17 @@ namespace ic {
 
 		uint32_t getTilesetY() const;
 
-		float getPosX() const;
+		s2d::Meters getPosX() const;
 
-		float getPosY() const;
+		s2d::Meters getPosY() const;
 
+		s2d::Point2m getPos() const;
 	private:
 
 		friend class Tilemap;
 
 		std::shared_ptr<TileBase> base;
-		sf::Vector2f pos;
+		s2d::Point2m pos;
 		std::array<bool, 4> activeSides;
 	};
 }

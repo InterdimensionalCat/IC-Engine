@@ -7,20 +7,25 @@
 #include "ComponentManager.h"
 
 using namespace ic;
+using namespace s2d;
 
 Camera::Camera(const float width, const float height, std::shared_ptr<ActorEntry> followTarget, Scene* scene) : Camera(width, height, CameraMode::Follow) {
 	Camera::scene = scene;
 	Camera::followTarget = followTarget;
 
 	auto trans = scene->compManager->getComponent<Transform>(followTarget);
-	auto hitbox = scene->compManager->getComponent<Hitbox>(followTarget);
+	auto hitbox = scene->compManager->getComponent<Hitbox>(followTarget)->rect;
 
-	auto targetHitbox = sf::FloatRect(hitbox->rect.left + trans->x, hitbox->rect.top + trans->y, hitbox->rect.width, hitbox->rect.height);
+	//auto targetHitbox = sf::FloatRect(hitbox->rect.min.x + trans->x, hitbox->rect.min.y + trans->y, hitbox->rect.width, hitbox->rect.height);
+	Rect2p targetHitbox = (Rect2p)(hitbox + Vec2m(trans->x, trans->y));
 
-	auto targetScrollPos = sf::Vector2f(s2d::toPixels(targetHitbox.left + targetHitbox.width / 2.0f) - Settings::getWidth() / 2.0f,
-		s2d::toPixels(targetHitbox.top + targetHitbox.height / 2.0f) - (float)Settings::getWidth() / 2.0f);
+	Vec2p targetScrollPos = Vec2p(targetHitbox.center() - Vec2p(Settings::getWidth() / 2.0f, Settings::getHeight() / 2.0f));
 
-	scrollpos = targetScrollPos;
+	//sf::Vector2f targetScrollPos()
+	//auto targetScrollPos = sf::Vector2f(s2d::toPixels(targetHitbox.left + targetHitbox.width / 2.0f) - Settings::getWidth() / 2.0f,
+	//	s2d::toPixels(targetHitbox.top + targetHitbox.height / 2.0f) - (float)Settings::getHeight() / 2.0f);
+
+	scrollpos = (sf::Vector2f)targetScrollPos;
 
 	checkBounds();
 }
@@ -107,15 +112,14 @@ void Camera::follow(Window& window) {
 	auto newview = window.window->getView();
 
 	auto trans = scene->compManager->getComponent<Transform>(followTarget);
-	auto hitbox = scene->compManager->getComponent<Hitbox>(followTarget);
+	auto hitbox = scene->compManager->getComponent<Hitbox>(followTarget)->rect;
 
-	auto targetHitbox = sf::FloatRect(hitbox->rect.left + trans->x, hitbox->rect.top + trans->y, hitbox->rect.width, hitbox->rect.height);
+	Rect2p targetHitbox = (Rect2p)(hitbox + Vec2m(trans->x, trans->y));
 
-	auto targetScrollPos = sf::Vector2f(s2d::toPixels(targetHitbox.left + targetHitbox.width / 2.0f) - Settings::getWidth() / 2.0f,
-		s2d::toPixels(targetHitbox.top + targetHitbox.height / 2.0f) - Settings::getHeight() / 2.0f);
+	Vec2p targetScrollPos = Vec2p(targetHitbox.center() - Vec2p(Settings::getWidth() / 2.0f, Settings::getHeight() / 2.0f));
 
 
-	auto dist = targetScrollPos -
+	auto dist = (sf::Vector2f)targetScrollPos -
 		scrollpos;
 
 
@@ -143,11 +147,11 @@ void Camera::follow(Window& window) {
 
 	//scrollpos += sf::Vector2f(dist.x / scrollDivisorX, dist.y / scrollDivisorY);
 
-	dist = targetScrollPos -
+	dist = (sf::Vector2f)targetScrollPos -
 		scrollpos;
 
 	if (sqrt(dist.x * dist.x + dist.y * dist.y) <= 2.0f) {
-		scrollpos = targetScrollPos;
+		scrollpos = (sf::Vector2f)targetScrollPos;
 	}
 
 

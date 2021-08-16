@@ -46,8 +46,8 @@ void objToJson(const tmx::Object& obj, std::shared_ptr<json> mapData) {
 	auto& x = obj.getPosition().x;
 	auto& y = obj.getPosition().y;
 
-	(*mapData)["Transform"]["x"] = s2d::toMeters(x);
-	(*mapData)["Transform"]["y"] = s2d::toMeters(y) - 1.0f;
+	(*mapData)["Transform"]["x"] = x;
+	(*mapData)["Transform"]["y"] = y - s2d::toPixels(1.0f);
 
 	for (auto& property : properties) {
 		std::string propname = property.getName();
