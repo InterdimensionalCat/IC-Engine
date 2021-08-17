@@ -4,10 +4,10 @@
   },
   "Hitbox": {
     "rect": {
-      "height": 1.0,
+      "height": 64.0,
       "left": 0.0,
       "top": 0.0,
-      "width": 1.0
+      "width": 64.0
     }
   },
     "SpriteDrawable": {
@@ -15,7 +15,7 @@
     "tex": "EntityGoal"
   },
   "Transform": {
-    "x": 1.5625,
-    "y": 1.5625
+    "x": 100.0,
+    "y": 100.0
   }
 }

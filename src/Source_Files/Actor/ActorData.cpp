@@ -104,6 +104,8 @@ ActorData::ActorData(const std::string& actorname, const std::string& variantnam
 }
 
 ActorData::ActorData(const std::string& actorname, const std::string& variantname, const tmx::Object& mapdata) {
+	Logger::debug("Loading actor data for actor of type {}-{}, with map data id {}", 
+		actorname, variantname, mapdata.getUID());
 	std::shared_ptr<json> actorjson;
 	std::shared_ptr<json> variantjson;
 	std::shared_ptr<json> mapjson;
@@ -118,12 +120,23 @@ ActorData::ActorData(const std::string& actorname, const std::string& variantnam
 	std::ifstream actorfile(filepath);
 
 	if (!actorfile.is_open()) {
-#ifdef _DEBUG
+		Logger::error("Error loading actor data json for actor of type {}-{}, with map data id {}!",
+			actorname, variantname, mapdata.getUID());
+		Logger::error("Actor data json at path {} not found!",
+		    filepath.string());
 		throw std::exception();
-#endif
 	}
 
-	actorfile >> (*actorjson);
+	try {
+		actorfile >> (*actorjson);
+	}
+	catch (json::exception e) {
+		Logger::error("Error loading actor data json for actor of type {}-{}, with map data id {}!",
+			actorname, variantname, mapdata.getUID());
+		Logger::error("Error parsing actor data json: {}",
+			e.what());
+		throw e;
+	}
 
 	if (variantname != "") {
 		filepath = fs::current_path();
@@ -136,12 +149,24 @@ ActorData::ActorData(const std::string& actorname, const std::string& variantnam
 		std::ifstream variantfile(filepath);
 
 		if (!variantfile.is_open()) {
-#ifdef _DEBUG
+			Logger::error("Error loading actor data json for actor of type {}-{}, with map data id {}!",
+				actorname, variantname, mapdata.getUID());
+			Logger::error("Variant data json at path {} not found!",
+				filepath.string());
 			throw std::exception();
-#endif
 		}
 
-		variantfile >> (*variantjson);
+		try {
+			variantfile >> (*variantjson);
+		}
+		catch (json::exception e) {
+			Logger::error("Error loading actor data json for actor of type {}-{}, with map data id {}!",
+				actorname, variantname, mapdata.getUID());
+			Logger::error("Error parsing variant data json: {}",
+				e.what());
+			throw e;
+		}
+
 	}
 
 	mapjson = std::make_shared<json>();

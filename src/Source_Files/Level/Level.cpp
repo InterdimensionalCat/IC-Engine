@@ -85,18 +85,8 @@ void Level::loadLevel(const std::string& levelname) {
 						variantname = variantNameItr->getStringValue();
 					}
 
-					if (actorname != "Player") continue;
-
-					//spawnActor(actorname, variantname);
 
 					scene->actorPool->spawnActor(actorname, variantname, obj);
-
-					//if (actorname == "Player") {
-					//	spawnActor(actorname, variantname, obj);
-					//}
-					//else {
-					//	spawnActor(actorname, variantname);
-					//}
 
 				}
 			}

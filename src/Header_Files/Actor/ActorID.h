@@ -18,6 +18,9 @@ namespace ic {
 
 		bool isIdValid() const;
 
+		std::string getActorName() const { return typeName; }
+		std::string getVariantName() const { return variantName; }
+
 		bool operator==(const ActorID& rhs) const;
 		bool operator!=(const ActorID& rhs) const;
 		bool operator<(const ActorID& rhs) const;

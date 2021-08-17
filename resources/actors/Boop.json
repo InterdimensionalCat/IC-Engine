@@ -102,37 +102,35 @@
     "boundUp": true
   },
   "BoundedVelocity": {
-    "maxVelX": 0.078125,
-    "maxVelY": 0.546875
+    "maxVelX": 5.0,
+    "maxVelY": 35.0
   },
   "ConstrainedMovement": {
     "events": null,
-    "maxDisplacementDown": -0.015625,
-    "maxDisplacementLeft": 1.0,
-    "maxDisplacementRight": 1.0,
-    "maxDisplacementUp": -0.015625,
-    "originX": 1.5625,
-    "originY": 1.5625
+    "maxDisplacementDown": 100,
+    "maxDisplacementLeft": 100,
+    "maxDisplacementRight": 100,
+    "maxDisplacementUp": 100
   },
   "EnemyFlag": {
     "enemyname": "Boop"
   },
   "Hitbox": {
     "rect": {
-      "height": 1.0,
+      "height": 64.0,
       "left": 0.0,
       "top": 0.0,
-      "width": 1.0
+      "width": 64.0
     }
   },
   "HorzMovable": {
-    "accelX": 0.00937500037252903
+    "accelX": 0.6
   },
   "InputController": {
     "input": "BoopAI"
   },
   "JumpOn": {
-    "jumpMin": 0.15625,
+    "jumpMin": 10.0,
     "jumpTolerencePercent": 0.699999988079071,
     "jumpVelMod": 1.5
   },
@@ -141,13 +139,13 @@
   },
   "PhysicsProperties": {
     "friction": 0.9523810148239136,
-    "gravity": 0.0078125
+    "gravity": 0.5
   },
   "StateAccelerationValues": {
-    "airAccel": 0.078125,
-    "groundAccel": 0.078125,
-    "stillAccel": 0.078125,
-    "turnAccel": 0.078125
+    "airAccel": 0.5,
+    "groundAccel": 0.5,
+    "stillAccel": 0.5,
+    "turnAccel": 0.5
   },
   "StateController": {
     "state": "Airborne"
@@ -165,11 +163,11 @@
     "events": null
   },
   "Transform": {
-    "x": 1.5625,
-    "y": 1.5625
+    "x": 100.0,
+    "y": 100.0
   },
   "Turnable": {
-    "turnThreshold": 0.0015625000232830644
+    "turnThreshold": 0.1
   },
   "Velocity": {
     "x": 0.0,

@@ -4,6 +4,8 @@
 #include "PhysicsSystems.h"
 #include "GraphicsSystems.h"
 #include "InputSystems.h"
+#include "ActorCollision.h"
+#include "DebugGraphics.h"
 
 using namespace ic;
 

@@ -18,8 +18,11 @@ void Logger::start() {
 
     auto file_sink = std::make_shared<spdlog::sinks::basic_file_sink_mt>(filepath.string(), true);
     file_sink->set_pattern("[%Y-%m-%d : %H:%M:%S][thread %t][%^%l%$] %v");
+    file_sink->set_level(spdlog::level::debug);
 
     auto loggerbackend = spdlog::logger("cout_file", { console_sink, file_sink });
+    
+    //trace -> debug -> info
     loggerbackend.set_level(spdlog::level::trace);
 
     Logger::logger = std::make_unique<StandardLogger>(loggerbackend);
