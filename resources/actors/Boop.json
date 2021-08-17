@@ -1,0 +1,176 @@
+{
+  "ActorCollidable": {
+    "collisiontype": "enemy"
+  },
+  "AirborneState": {
+    "airborneTimer": 0,
+    "maxAirborneTimer": 5
+  },
+  "AnimStateMap": {
+    "animations": [
+      {
+        "key": "GroundStill",
+        "value": {
+          "filename": "BoopAnim",
+          "firstFrame": 0,
+          "fps": 12,
+          "frameDim": {
+            "x": 64,
+            "y": 64
+          },
+          "numFrames": 3,
+          "targetDim": {
+            "x": 64.0,
+            "y": 64.0
+          }
+        }
+      },
+      {
+        "key": "GroundMove",
+        "value": {
+          "filename": "BoopAnim",
+          "firstFrame": 0,
+          "fps": 12,
+          "frameDim": {
+            "x": 64,
+            "y": 64
+          },
+          "numFrames": 3,
+          "targetDim": {
+            "x": 64.0,
+            "y": 64.0
+          }
+        }
+      },
+      {
+        "key": "GroundTurn",
+        "value": {
+          "filename": "BoopAnim",
+          "firstFrame": 0,
+          "fps": 12,
+          "frameDim": {
+            "x": 64,
+            "y": 64
+          },
+          "numFrames": 3,
+          "targetDim": {
+            "x": 64.0,
+            "y": 64.0
+          }
+        }
+      },
+      {
+        "key": "Airborne",
+        "value": {
+          "filename": "BoopAnim",
+          "firstFrame": 0,
+          "fps": 12,
+          "frameDim": {
+            "x": 64,
+            "y": 64
+          },
+          "numFrames": 3,
+          "targetDim": {
+            "x": 64.0,
+            "y": 64.0
+          }
+        }
+      }
+    ],
+    "prevstate": "Airborne"
+  },
+  "Animatable": {
+    "animation": {
+      "filename": "BoopAnim",
+      "firstFrame": 0,
+      "fps": 12,
+      "frameDim": {
+        "x": 64,
+        "y": 64
+      },
+      "numFrames": 3,
+      "targetDim": {
+        "x": 64.0,
+        "y": 64.0
+      }
+    }
+  },
+  "BoundByMapBounds": {
+    "boundDown": true,
+    "boundLeft": true,
+    "boundRight": true,
+    "boundUp": true
+  },
+  "BoundedVelocity": {
+    "maxVelX": 5.0,
+    "maxVelY": 35.0
+  },
+  "ConstrainedMovement": {
+    "events": null,
+    "maxDisplacementDown": 100,
+    "maxDisplacementLeft": 100,
+    "maxDisplacementRight": 100,
+    "maxDisplacementUp": 100
+  },
+  "EnemyFlag": {
+    "enemyname": "Boop"
+  },
+  "Hitbox": {
+    "rect": {
+      "height": 64.0,
+      "left": 0.0,
+      "top": 0.0,
+      "width": 64.0
+    }
+  },
+  "HorzMovable": {
+    "accelX": 0.6
+  },
+  "InputController": {
+    "input": "BoopAI"
+  },
+  "JumpOn": {
+    "jumpMin": 10.0,
+    "jumpTolerencePercent": 0.699999988079071,
+    "jumpVelMod": 1.5
+  },
+  "MapBoundCollisionListener": {
+    "events": null
+  },
+  "PhysicsProperties": {
+    "friction": 0.9523810148239136,
+    "gravity": 0.5
+  },
+  "StateAccelerationValues": {
+    "airAccel": 0.5,
+    "groundAccel": 0.5,
+    "stillAccel": 0.5,
+    "turnAccel": 0.5
+  },
+  "StateController": {
+    "state": "Airborne"
+  },
+  "StateFrictionValues": {
+    "airFrc": 0.9920634627342224,
+    "groundFrc": 0.9523810148239136,
+    "stillFrc": 0.9523810148239136,
+    "turnFrc": 0.9523810148239136
+  },
+  "TileCollidable": {
+    "tileCollidable": true
+  },
+  "TileCollisionEventListener": {
+    "events": null
+  },
+  "Transform": {
+    "x": 100.0,
+    "y": 100.0
+  },
+  "Turnable": {
+    "turnThreshold": 0.1
+  },
+  "Velocity": {
+    "x": 0.0,
+    "y": 0.0
+  }
+}

@@ -1,0 +1,7 @@
+{
+  "Jumpable": {
+    "jumpFloat": 0.0,
+    "jumpForce": 3.85,
+    "jumpReleaseMod": 1.0
+  }
+}

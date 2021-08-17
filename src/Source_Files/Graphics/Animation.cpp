@@ -1,95 +1,84 @@
 #include "include.h"
 #include "Animation.h"
-#include "GameTransform.h"
-#include "Animator.h"
+#include "Window.h"
 
-using namespace s2d;
+using namespace ic;
+
 
 //params: fdim = dimension of 1 frame on the texture, tdim = dimension 1 frame to output
-Animation::Animation(const sf::Vector2i& frameDim, const Dimension& targetDim, const std::string& filename, const int numFrames, const Vector2f& offset) :
-frameDim(frameDim), targetDim(targetDim.toSFMLVec<float>()), name(filename), numFrames(numFrames), offset(offset) {
+Animation::Animation(const std::string& filename, const sf::Vector2i& frameDim, const sf::Vector2f& targetDim, const int firstFrame, const int numFrames, const int fps, const bool flip) : name(filename), tex(Texture(filename)), 
+	frameDim(frameDim), targetDim(targetDim), firstFrame(firstFrame), numFrames(numFrames), framerate(fps) {
 
-	fs::path filepath(fs::current_path());
-	filepath /= "resources";
-	filepath /= "animations";
-	filepath /= filename;
-	filepath += ".png";	
+	tex.getTexture().setRepeated(true);
 
-	if (!tex.loadFromFile(filepath.string())) {
-#ifdef _DEBUG
-		//throw TextureLoadException(filename, filepath.string());
-#endif
-	}
+	frame.setTexture(tex.getTexture());
+	frame.setTextureRect(sf::IntRect(0, 0, frameDim.x, frameDim.y));
+	frame.setScale(sf::Vector2f(this->targetDim.x / (float)frameDim.x, this->targetDim.y / (float)frameDim.y));
 
-	frame.setTexture(tex);
-	frame.setTextureRect(IntRect(0, 0, frameDim.x, frameDim.y));
-	frame.setScale(Vector2f(this->targetDim.x / (float)frameDim.x, this->targetDim.y / (float)frameDim.y));
-
-	framerate = 30;
-	frameNum = 0;
+	frameNum = firstFrame;
 
 #ifdef _DEBUG
-	auto test = (int)tex.getSize().x / frameDim.x * (int)tex.getSize().y / frameDim.y;
+	auto test = (int)tex.getTexture().getSize().x / frameDim.x * (int)tex.getTexture().getSize().y / frameDim.y;
 	assert(numFrames <= test);
 #endif
-	framesPerRow = tex.getSize().x / frameDim.x;
-	activeFrames = (int)instance->targetFPS / framerate;
+	framesPerRow = tex.getTexture().getSize().x / frameDim.x;
+	activeFrames = (int)Settings::getTargetFPS() / framerate;
 	framesTillNext = activeFrames;
 
+	setFlipped(flip);
 }
 
+Animation::Animation(const AnimationEntry& entry, const bool flip) : Animation(entry.filename, entry.frameDim, entry.targetDim, entry.firstFrame, entry.numFrames, entry.fps, flip) {}
+
+void Animation::setPosition(const sf::Vector2f& posInPixels) {
+	frame.setPosition(round(posInPixels.x), round(posInPixels.y));
+}
 
 void Animation::setFlipped(bool flip) {
 
 	Animation::flip = flip;
 
 	if (flip) {
-		Vector2i frameTopLeft(((frameNum + 1) % framesPerRow) * frameDim.x, (frameNum / framesPerRow) * frameDim.y);
-		frame.setTextureRect(IntRect(frameTopLeft, Vector2i(-frameDim.x, frameDim.y)));
+		sf::Vector2i frameTopLeft(((frameNum + 1) % framesPerRow) * frameDim.x, (frameNum / framesPerRow) * frameDim.y);
+		frame.setTextureRect(sf::IntRect(frameTopLeft, sf::Vector2i(-frameDim.x, frameDim.y)));
 	}
 	else {
-		Vector2i frameTopLeft((frameNum % framesPerRow) * frameDim.x, (frameNum / framesPerRow) * frameDim.y);
-		frame.setTextureRect(IntRect(frameTopLeft, Vector2i(frameDim.x, frameDim.y)));
+		sf::Vector2i frameTopLeft((frameNum % framesPerRow) * frameDim.x, (frameNum / framesPerRow) * frameDim.y);
+		frame.setTextureRect(sf::IntRect(frameTopLeft, sf::Vector2i(frameDim.x, frameDim.y)));
 	}
 }
 
 void Animation::reset() {
-	frameNum = 0;
+	frameNum = firstFrame;
 	framesTillNext = 0;
 	setFlipped(false);
 }
 
 
-void Animation::draw(Renderer* renderer) {
-
-	auto states = renderer->states;
-	auto target = renderer->window.get();
-
+void Animation::update() {
 	if (--framesTillNext <= 0) {
 		advanceFrame();
 		framesTillNext = activeFrames;
 	}
+}
 
-	//interpolate frame
-	//frame.setOrigin(lerp(parent->transform->getPrevPos().toSFMLVec<float>() - targetDim / 2.0f, 
-	//	parent->transform->getPos().toSFMLVec<float>() - targetDim / 2.0f, renderer->interpol));
-
-	frame.setPosition(glerp(parent->transform->getPrevPos().toSFMLVec<float>() - targetDim / 2.0f + offset,
-		parent->transform->getPos().toSFMLVec<float>() - targetDim / 2.0f + offset, renderer->interpol));
-
-	target->draw(frame, states);
-
+void Animation::draw(Window& window) {
+	auto states = window.states;
+	window.window->draw(frame, states);
 }
 
 void Animation::advanceFrame() {
-	frameNum = (frameNum + 1) % numFrames;
+	frameNum = (frameNum + 1);
+	if (frameNum == (numFrames + firstFrame)) {
+		frameNum = firstFrame;
+	}
 
 	if (flip) {
-		Vector2i frameTopLeft(((frameNum + 1) % framesPerRow) * frameDim.x, (frameNum / framesPerRow) * frameDim.y);
-		frame.setTextureRect(IntRect(frameTopLeft, Vector2i(-frameDim.x, frameDim.y)));
+		sf::Vector2i frameTopLeft(((frameNum + 1) % framesPerRow) * frameDim.x, (frameNum / framesPerRow) * frameDim.y);
+		frame.setTextureRect(sf::IntRect(frameTopLeft, sf::Vector2i(-frameDim.x, frameDim.y)));
 	}
 	else {
-		Vector2i frameTopLeft((frameNum % framesPerRow) * frameDim.x, (frameNum / framesPerRow) * frameDim.y);
-		frame.setTextureRect(IntRect(frameTopLeft, Vector2i(frameDim.x, frameDim.y)));
+		sf::Vector2i frameTopLeft((frameNum % framesPerRow) * frameDim.x, (frameNum / framesPerRow) * frameDim.y);
+		frame.setTextureRect(sf::IntRect(frameTopLeft, sf::Vector2i(frameDim.x, frameDim.y)));
 	}
 }

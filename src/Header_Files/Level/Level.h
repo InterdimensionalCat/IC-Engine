@@ -1,32 +1,69 @@
-//Level.h
-/*
-  levels are the building blocks of the game, kind of like scene from unity, 
-  contains a physics engine, camera, and the Actors needed to make the game function(eventually)
-*/
 #pragma once
-#include "PhysicsEngine.h"
-#include "Actor.h"
 
-class Player;
-class PhysicsBody;
-class Camera;
+namespace ic {
 
-class Level
-{
-public:
-	Level();
+	class Scene;
+	class Tilemap;
+	class Camera;
+	class Parallax;
 
-	void tick(InputHandle* input);
-	void draw(Renderer* renderer);
+	class Level {
+	public:
+		Level(Scene* scene);
 
-	void loadFrom(const std::string &mapname);
-	void addActor(Actor* a);
-	void removeActor(Actor* a);
-	void start();
+		void update();
+		void draw(const float interpol);
 
-	Camera* camera = nullptr;
-	Player* player = nullptr;
-	std::unique_ptr<PhysicsEngine> engine = std::make_unique<PhysicsEngine>();
-	std::vector<std::unique_ptr<Actor>> actors;
-};
+		float getUpperBound() {
+			return -1.0f;
+		}
 
+		float getLowerBound() {
+			return mapheight + 1.0f;
+		}
+
+		float getLeftBound() {
+			return 0.0f;
+		}
+
+		float getRightBound() {
+			return mapwidth;
+		}
+
+		std::string getCurrentLevelName() const {
+			return currentlevelname;
+		}
+
+		void loadLevel(const std::string& levelname);
+
+		void reloadLevel() {
+			Logger::info("Reloading level.");
+			loadLevel(currentlevelname);
+		}
+
+		void changeLevel(const std::string newlevel = "") {
+			if (newlevel == "") {
+				Logger::info("Loading level newLevel_1.tmx.");
+				loadLevel("newLevel_1-px");
+			}
+			else {
+				Logger::info("Loading level {}.tmx.", newlevel);
+				loadLevel(newlevel);
+			}
+		}
+
+	private:
+
+		friend class TilemapCollision;
+
+		std::shared_ptr<Tilemap> tilemap;
+		std::shared_ptr<Camera> camera;
+		std::shared_ptr<Parallax> parallaxEngine;
+
+		Scene* scene;
+		std::string currentlevelname;
+
+		float mapwidth;
+		float mapheight;
+	};
+}

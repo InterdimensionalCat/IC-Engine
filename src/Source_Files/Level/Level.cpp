@@ -1,81 +1,153 @@
-#include "include.h"
 #include "Level.h"
-#include "PhysicsEngine.h"
-#include "Player.h"
-#include "testActor.h"
+#include "Scene.h"
+#include "ActorPool.h"
+#include "tilemap.h"
+#include "SceneView.h"
+#include "ComponentManager.h"
+#include "Components.h"
 #include "Camera.h"
+#include "Parallax.h"
+#include "StdoutRedirect.h"
 
+using namespace ic;
 
-Level::Level() {
-
+Level::Level(Scene* scene) : scene(scene) {
+	tilemap = std::make_shared<Tilemap>();
+	loadLevel("newLevel_1-px");
 }
 
-
-void Level::loadFrom(const std::string &mapname) {
-	player = new Player();
-	addActor(player);
-	camera = new Camera();
-	addActor(camera);
-	addActor(new TestActor());
-	start();
+void Level::update() {
+	camera->updateWindow(*scene->window);
+	parallaxEngine->move(*camera);
 }
 
-void Level::addActor(Actor* a) {
-	actors.push_back(std::unique_ptr<Actor>(a));
-	a->owner = this;
+void Level::draw(const float interpol) {
+	parallaxEngine->draw(*scene->window);
+	tilemap->draw(*scene->window);
 }
 
-void Level::removeActor(Actor* a) {
-	actors.erase(std::remove_if(actors.begin(), actors.end(), [a](std::unique_ptr<Actor>& other) {return a == other.get(); }), actors.end());
-}
+void Level::loadLevel(const std::string& levelname) {
 
-void Level::start() {
-	for (auto &a : actors) {
-		a->start();
+	scene->actorPool->actors.clear();
+	scene->actorPool->freeActors.clear();
+	scene->compManager->componentPools.clear();
+
+	currentlevelname = levelname;
+	std::filesystem::path mappath(std::filesystem::current_path());
+	mappath /= "resources";
+	mappath /= "maps";
+	mappath /= levelname;
+	mappath += ".tmx";
+
+	float widthPixels = 0;
+	float heightPixels = 0;
+	tmx::Map map;
+
+
+	StdoutRedirect::redirectCout();
+	bool loaded = false;
+
+	try {
+		loaded = map.load(mappath.string());
+		if (!loaded) {
+			throw std::exception();
+		}
 	}
-}
-
-void Level::tick(InputHandle* input) {
-
-	//player->tick(input);
-	engine->updatePhysics(instance->dt);
-
-	for (auto &a : actors) {
-		a->tick(input);
-	}
-
-	//camera test:
-	if (instance->debug) {
-
-	}
-	else {
-		//camera->setPos(player->transform->getPos());
-	}
-}
-
-void Level::draw(Renderer* renderer) {
-
-
-	//temporary debug drawing code
-	for (int i = 0; i < 45; i++) {
-		sf::Vertex line[2];
-		line[0].position = Vector2f(i * 60.0f, 0.0f);
-		line[1].position = Vector2f(i * 60.0f, 45 * 60.0f);
-		line[0].color = sf::Color(255, 0, 0, 255);
-		line[1].color = sf::Color(0, 0, 255, 255);
-		renderer->window->draw(line, 2, Lines);
+	catch (std::exception e) {
+		Logger::error("TMX map with name {}.tmx  at path {} failed to load!",
+			levelname, mappath.string());
 	}
 
-	for (int i = 0; i < 45; i++) {
-		sf::Vertex line[2];
-		line[0].position = Vector2f(0.0f, i * 60.0f);
-		line[1].position = Vector2f(45 * 60.0f, i * 60.0f);
-		line[0].color = sf::Color(255, 0, 0, 255);
-		line[1].color = sf::Color(0, 0, 255, 255);
-		renderer->window->draw(line, 2, Lines);
+	StdoutRedirect::restoreCout();
+
+	if (loaded) {
+
+
+		widthPixels = (float)(s2d::toPixels((float)map.getLayers().at(0)->getSize().x));
+		heightPixels = (float)(s2d::toPixels((float)map.getLayers().at(0)->getSize().y));
+
+		Level::mapwidth = s2d::toMeters(widthPixels);
+		Level::mapheight = s2d::toMeters(heightPixels);
+
+		for (auto& layer : map.getLayers())
+		{
+			if (layer->getType() == tmx::Layer::Type::Object) {
+
+				auto& objlayer = layer->getLayerAs<tmx::ObjectGroup>();
+				for (auto& obj : objlayer.getObjects()) {
+					auto actorname = obj.getName();
+
+					auto variantNameItr = std::find_if(obj.getProperties().begin(), obj.getProperties().end(), [](const tmx::Property val) {
+						return val.getName() == "VariantName";
+						});
+					std::string variantname = "";
+					if (variantNameItr != obj.getProperties().end()) {
+						variantname = variantNameItr->getStringValue();
+					}
+
+
+					scene->actorPool->spawnActor(actorname, variantname, obj);
+
+				}
+			}
+
+			if (layer->getType() == tmx::Layer::Type::Tile) {
+				auto& tileLayer = layer->getLayerAs<tmx::TileLayer>();
+				auto tiles = tileLayer.getTiles();
+				auto firstTileNum = tiles.at(0).ID;
+
+				std::string tilesetname;
+				for (auto& property : tileLayer.getProperties()) {
+					if (property.getName() == "tilesetname") {
+						tilesetname = property.getStringValue();
+						break;
+					}
+				}
+
+				for (size_t i = 0; i < map.getTilesets().size(); i++) {
+					auto set = map.getTilesets().at(i);
+
+					if (set.getName() == tilesetname) {
+						tilemap->loadMap(s2d::toMeters(widthPixels), s2d::toMeters(heightPixels), tiles, set);
+						continue;
+					}
+				}
+			}
+		}
 	}
 
-	for (auto &a : actors) {
-		a->draw(renderer);
+	for (auto entry : SceneView<PlayerFlag>(scene)) {
+		camera = std::make_shared<Camera>(widthPixels, heightPixels, entry, scene);
 	}
+
+	std::string parallaxname;
+	float baseX;
+	float baseY;
+	float growthX;
+	float growthY;
+
+	for (auto& property : map.getProperties()) {
+		if (property.getName() == "BackgroundName") {
+			parallaxname = property.getStringValue();
+		}
+
+		if (property.getName() == "baseParallaxX") {
+			baseX = property.getFloatValue();
+		}
+
+		if (property.getName() == "baseParallaxY") {
+			baseY = property.getFloatValue();
+		}
+
+		if (property.getName() == "growthParallaxX") {
+			growthX = property.getFloatValue();
+		}
+
+		if (property.getName() == "growthParallaxY") {
+			growthY = property.getFloatValue();
+		}
+	}
+
+
+	parallaxEngine = std::make_shared<Parallax>(parallaxname, baseX, baseY, growthX, growthY);
 }

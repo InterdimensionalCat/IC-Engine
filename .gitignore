@@ -402,3 +402,9 @@ __pycache__/
 
 # OpenCover UI analysis results
 OpenCover/
+
+#additional:
+
+/CmakeBuild
+/html
+CMakeSettings.json

@@ -1,146 +1,136 @@
 #include "include.h"
+#include "Scene.h"
 
+#include "BenchmarkLogger.h"
 
+using namespace ic;
 
-Game::Game() {
-	//initialize settings?
+/**
+ * @brief update function for the game engine
+ * @details update function for the game engine,
+ * all game logic gets updated during this function call
+ * @param scene the scene for the engine
+*/
+void update(Scene& scene) {
+	scene.update();
 }
 
-
-Game* instance = new Game();
-
-//updates the game logic (and handles basically everything that is not drawing)
-void Game::tick(const float dt) {
-	Game::dt = dt;
-	manager->tick(input.get());
+/**
+ * @brief draw function for the game engine
+ * @details draw function for the game engine,
+ * everything gets drawn to the screen during this function call
+ * @param interpol the calculated interpolation value for the frame,
+ * since draw calls are not expected to land on a perfect frame boundry,
+ * this allows for measures to be taken such that gameplay remains smooth
+ * @param scene the scene for the engine
+*/
+void draw(const float interpol, Scene& scene) {
+	scene.draw(interpol);
 }
 
-//renders the game to the screen
-void Game::draw(const float interpol) {
-	renderer->interpol = interpol;
-	renderer->states = RenderStates::Default;
-	manager->draw(renderer.get());
-}
+/**
+ * @brief main game loop function, 
+ * @details main game loop function,
+ * initalizes various timing variables to time step properly
+ * and creates the Scene object, the central object that manages
+ * the game
+*/
+void game() {
 
-void Game::game() {
-	//create window, set height, width name, framerate set vsync if enabled
-	renderer = make_unique<Renderer>(instance);
-
-	//initialize clock and gameloop time accumulator
-	timer = make_unique<Clock>();
+	std::unique_ptr<sf::Clock> timer = std::make_unique<sf::Clock>();
+	float dt = 0.0f;
 	double accumulator = 0;
 
-	renderer->window = std::make_unique<RenderWindow>(sf::VideoMode(WIDTH, HEIGHT), TITLE);
+	auto scene = std::make_unique<Scene>();
 
-	if (instance->vsync) {
-		//V-sync doesnt really play nice with animations and I find that SFML can be
-		//somewhat stuttery and I cant tell if V-sync makes it better or worse
-		renderer->window->setVerticalSyncEnabled(true);
-#ifdef debug_mode
-		cout << "V-Sync Enabled\n";
-#endif
-	}
-	else {
-		renderer->window->setFramerateLimit((unsigned int)instance->targetFPS);
-#ifdef debug_mode
-		cout << "V-Sync disabled; fps is " << instance->targetFPS << "\n";
-#endif
-	}
-
-	renderer->window->setKeyRepeatEnabled(false);
-
-	input = make_unique<InputHandle>(instance);
-	manager = std::make_unique<StateManager>(instance);
-
-	//main game loop
-	while (running)
+	while (Settings::getRunning())
 	{
-		//update accumulator with time passed
+
 		double deltaTime = timer->getElapsedTime().asSeconds();
 		accumulator += deltaTime;
 		timer->restart();
 
-		//clear window of previous frame
-		renderer->window->clear(Color(140, 140, 140, 255));
+		const float targetDT = Settings::getTargetDT();
 
 
-		if (timeType == TimeStepType::Variable) {
+		if (Settings::getStepType() == TimeStepType::Variable) {
 			//variable timestep
-
-			//recieve input
-			input->updateInput((float)accumulator);
-
-			tick((float)accumulator);
+			update(*scene);
 			accumulator = 0;
 		}
 		else {
 			//fixed time step
 			while (accumulator >= targetDT) {
-
-				//recieve input
-				input->updateInput(targetDT);
-
-				tick(targetDT);
+				update(*scene);
 				accumulator -= targetDT;
 			}
 		}
 
 
 		//draw
-		draw((float)accumulator / targetDT);
-		currentfps++;
-
-		if (fpstimer.getElapsedTime().asSeconds() >= 1) {
-			if (debug) {
-				cout << "fps: " << currentfps << "\n";
-			}
-
-			currentfps = 0;
-			fpstimer.restart();
-		}
-
-
-
-		//display
-		renderer->window->display();
+		draw((float)accumulator / targetDT, *scene);
 	}
+
+	Logger::info("Game Closing.");
 }
 
-void Game::stop() {
-#ifdef debug_mode
-	cout << "Game Closing\n";
-#endif
-	running = false;
-	renderer->window->close();
-}
-
-int main(int argc, char *argv[])
+/**
+ * @brief Primary entry point to the game engine,
+ * @details Primary entry point to the game engine, 
+ * starts up the logger and intializes settings
+ * @param argc number of args passed in from the command line
+ * @param argv the args passed in by the command line
+ * @return exit code, almost always 0
+*/
+int main(int argc, char* argv[])
 {
 
 	std::cout.flush();
 
-#ifdef debug_mode
-	cout << "Running in debug mode.\n";
-	cout << "Current working directory: " << fs::current_path().generic_u8string() << "\n";
-#endif
+	Logger::start();
+	Settings::start();
 
+#ifdef debug_mode
+
+	Logger::info("Running in debug mode.");
+	Logger::debug("Current working directory: {}", fs::current_path().string());
+#endif
 #ifdef _WIN32
-	cout << "Current OS is: Windows\n";
-	cout << "Windows debug version will check for memory leaks\n";
+	Logger::info("Current OS is: Windows.");
+	Logger::info("Windows debug version will check for memory leaks.");
+
 	//check for memory leaks
 	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
 	_CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_DEBUG);
 #endif
 
 #ifdef __linux__
-	cout << "Current OS is: Linux\n";
+	//Logger::get() << "Current OS is: Linux\n"
+	//	<< "Windows debug version will check for memory leaks\n";
 #endif
 
 #ifdef __APPLE__
-	cout << "Current OS is: Mac OSX\n";
+	//Logger::get() << "Current OS is: Mac OSX\n"
+	//	<< "Windows debug version will check for memory leaks\n";
 #endif
 
-	instance->game();
-	delete instance;
+
+	///***TODO***///
+	//MAKE EVERYTHING USE
+	//METERS, PIXELS, AND PERCENTS
+	//SO THAT VALUES IN THE LEVEL EDITOR
+	//CAN BE IN PIXELS
+
+	//OR CHECK OUT IMGUI
+
+	//CREATE AN ACTOR JSON FILE EDITOR
+
+	BenchmarkLogger::get()->beginBenchmark("Game");
+	game();
+	BenchmarkLogger::get()->endBenchmark("Game");
+
+	Settings::stop();
+	BenchmarkLogger::shutdown();
+	Logger::stop();
 	return 0;
 }

@@ -1,0 +1,19 @@
+{
+  "BoundedVelocity": {
+    "maxVelX": 3,
+    "maxVelY": 0.0
+  },
+  "CircularMovable": {
+    "accel":  3,
+    "angleX": 1.0,
+    "angleY": 0.0
+  },
+  "CircularConstrainedMovement": {
+    "originX": 100.0,
+    "originY": 100.0,
+    "radius":  256.0
+  },
+  "PlatformTypeable": {
+    "type": "Horizontal"
+  }
+}

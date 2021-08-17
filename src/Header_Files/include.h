@@ -6,21 +6,32 @@ and a few game related includes that almost every file uses
 */
 
 #pragma once
-#include <SFML/Graphics.hpp>
-#include <iostream>
 #include <fstream>
 #include <sstream>
 #include <algorithm>
-#include <cassert>
 #include <exception>
 #include <memory>
 #include <string>
 #include <filesystem>
+#include <variant>
+#include <map>
+#include <vector>
+#include <array>
+#include <functional>
+#include <queue>
+#include <optional>
+#include <bitset>
+#include <limits>
+#include <nlohmann\json.hpp>
+#include <initializer_list>
 
-using namespace std;
-using namespace sf;
+//#include <tmxlite/Map.hpp>
+//#include <tmxlite/Layer.hpp>
+//#include <tmxlite/TileLayer.hpp>
+//#include <tmxlite/ObjectGroup.hpp>
 
 namespace fs = std::filesystem;
+using json = nlohmann::json;
 
 //windows specifc macros/setup
 #ifdef _WIN32
@@ -36,11 +47,11 @@ namespace fs = std::filesystem;
  to better diagnose memory leaks. Since I mostly use smart pointers nowadays
  not super helpful anymore
 */
-#ifdef _DEBUG
-#define new new ( _NORMAL_BLOCK , __FILE__ , __LINE__ )
-#else
-#define new new
-#endif
+//#ifdef _DEBUG
+//#define DBG_NEW new ( _CLIENT_BLOCK , __FILE__ , __LINE__ )
+//#else
+//#define DBG_NEW new 
+//#endif
 
 ///////////////////////////////////////////////////////////
 
@@ -56,37 +67,20 @@ namespace fs = std::filesystem;
 
 #endif
 
+#include <tmxlite\Map.hpp>
+#include <tmxlite\Layer.hpp>
+#include <tmxlite\TileLayer.hpp>
+#include <tmxlite\ObjectGroup.hpp>
 
-#include "Space2D.h"
-#include "SFMLHelpers.h"
-#include "GameEngine2020.h"
-#include "InputHandle.h"
-#include "StateManager.h"
-#include "Renderer.h"
+#include <SFML\Graphics.hpp>
+#include <SFML\Audio.hpp>
 
-#ifdef debug_mode
-struct TextureLoadException : public exception {
-	TextureLoadException(const string &filename, const string &path) : filename(filename), path(path) {}
-	const char * what() const throw () {
-		return "Texture file not found!";
-	}
-
-	string filename;
-	string path;
-};
-
-struct MapIOException : public exception {
-	MapIOException() {}
-	const char * what() const throw () {
-		return "Error loading Map/Tileset file!";
-	}
-
-};
-
-struct BadInfinityException : public exception {
-	BadInfinityException() {}
-	const char * what() const throw () {
-		return "Value cannot be infinity!";
-	}
-};
+#ifndef _SFML_ENABLED
+#define _SFML_ENABLED
 #endif
+
+#include <Space2D.h>
+
+#include "Logger.h"
+#include "GameSettings.h"
+

@@ -1,0 +1,21 @@
+{
+ "ActorCollidable": {
+    "collisiontype": "goal"
+  },
+  "Hitbox": {
+    "rect": {
+      "height": 64.0,
+      "left": 0.0,
+      "top": 0.0,
+      "width": 64.0
+    }
+  },
+    "SpriteDrawable": {
+    "spr": null,
+    "tex": "EntityGoal"
+  },
+  "Transform": {
+    "x": 100.0,
+    "y": 100.0
+  }
+}

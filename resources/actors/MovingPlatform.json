@@ -1,0 +1,58 @@
+{
+  "ActorCollidable": {
+    "collisiontype": "platform"
+  },
+    "BoundedVelocity": {
+    "maxVelX": 0.0,
+    "maxVelY": 0.0
+  },
+  "CircularConstrainedMovement": {
+    "radius": 256.0
+  },
+  "CircularMovable": {
+    "accel": 0.0,
+    "angleX": 0.0,
+    "angleY": 0.0
+  },
+  "Hitbox": {
+    "rect": {
+      "height": 39.0,
+      "left": 0.0,
+      "top": 0.0,
+      "width": 128.0
+    }
+  },
+  "HitboxExtension": {
+    "rect": {
+      "height": 83.2,
+      "left": 0.0,
+      "top": 0.0,
+      "width": 128.0
+    }
+  },
+  "MapBoundCollisionListener": {
+    "events": null
+  },
+    "ConstrainedMovementEventListener": {
+    "events": null
+  },
+  "PlatformTolerence": {
+    "down": 65.0,
+    "up": 2.0
+  },
+  "PlatformTypeable": {
+    "type": "Still"
+  },
+  "SpriteDrawable": {
+    "spr": null,
+    "tex": "movingTileAstro"
+  },
+  "Transform": {
+    "x": 100.0,
+    "y": 100.0
+  },
+  "Velocity": {
+    "x": 0.0,
+    "y": 0.0
+  }
+}
