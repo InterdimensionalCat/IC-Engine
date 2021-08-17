@@ -352,6 +352,15 @@ namespace ic {
 	public:
 		CheckPlayerFallOffMap(Scene* scene) : SystemTrivial(scene) {}
 		void excecutionFunction(std::shared_ptr<ActorEntry> entry) override {
+
+			//auto trans = getComponent<Transform>(entry);
+			//Logger::trace("{}", (float)trans->y);
+			//Logger::trace("{}", scene->levels->getLowerBound());
+
+			//if (trans->y > scene->levels->getLowerBound()) {
+			//	playerDeath(entry);
+			//}
+
 			auto listener = scene->compManager->getComponent<MapBoundCollisionListener>(entry);
 			while (!listener->events->empty()) {
 				auto event = listener->events->front();
@@ -359,6 +368,7 @@ namespace ic {
 				if (event == MapBoundCollisionEvent::HitDown) {
 					playerDeath(entry);
 				}
+
 
 				listener->events->pop_front();
 			}

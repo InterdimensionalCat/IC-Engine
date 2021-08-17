@@ -252,41 +252,45 @@ namespace ic {
 
 			if (mapBounds->boundUp && hitbox.min.y < scene->levels->getUpperBound()) {
 				transform->y = s2d::Meters(scene->levels->getUpperBound());
-				if (transform->y == scene->levels->getUpperBound() && eventlistener != nullptr) {
+				if (eventlistener != nullptr) {
 					eventlistener->events->push_back(MapBoundCollisionEvent::HitUp);
-					if (vel != nullptr) {
-						vel->y = 0.0f;
-					}
+				}
+
+				if (vel != nullptr) {
+					vel->y = 0.0f;
 				}
 			}
 
 			if (mapBounds->boundDown && hitbox.max.y > scene->levels->getLowerBound()) {
 				transform->y = s2d::Meters(scene->levels->getLowerBound() - (float)hitbox.height());
-				if (transform->y == scene->levels->getLowerBound() && eventlistener != nullptr) {
+				if (eventlistener != nullptr) {
 					eventlistener->events->push_back(MapBoundCollisionEvent::HitDown);
-					if (vel != nullptr) {
-						vel->y = 0.0f;
-					}
+				}
+
+				if (vel != nullptr) {
+					vel->y = 0.0f;
 				}
 			}
 
 			if (mapBounds->boundLeft && hitbox.min.x < scene->levels->getLeftBound()) {
 				transform->x = s2d::Meters(scene->levels->getLeftBound());
-				if (transform->x == scene->levels->getLeftBound() && eventlistener != nullptr) {
+				if (eventlistener != nullptr) {
 					eventlistener->events->push_back(MapBoundCollisionEvent::HitLeft);
-					if (vel != nullptr) {
-						vel->x = 0.0f;
-					}
+				}
+
+				if (vel != nullptr) {
+					vel->x = 0.0f;
 				}
 			}
 
 			if (mapBounds->boundRight && hitbox.max.x > scene->levels->getRightBound()) {
 				transform->x = s2d::Meters(scene->levels->getRightBound() - (float)hitbox.width());
-				if (transform->x == scene->levels->getRightBound() && eventlistener != nullptr) {
+				if (eventlistener != nullptr) {
 					eventlistener->events->push_back(MapBoundCollisionEvent::HitRight);
-					if (vel != nullptr) {
-						vel->x = 0.0f;
-					}
+				}
+
+				if (vel != nullptr) {
+					vel->x = 0.0f;
 				}
 			}
 		}
