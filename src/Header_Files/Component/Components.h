@@ -375,7 +375,7 @@ inline static bool added = false;
 		s2d::NormVec2m angle;
 
 		void toJson(std::shared_ptr<json> file) const {
-			(*file)[getName()]["accel"] = (float)accel;
+			(*file)[getName()]["accel"] =  (float)s2d::Pixels(accel);
 			(*file)[getName()]["angleX"] = (float)angle.x;
 			(*file)[getName()]["angleY"] = (float)angle.x;
 		}
@@ -429,25 +429,40 @@ inline static bool added = false;
 
 		void toJson(std::shared_ptr<json> file) const {
 
-			(*file)[getName()]["maxDisplacementLeft"] = (float)maxDisplacementLeft;
-			(*file)[getName()]["maxDisplacementRight"] = (float)maxDisplacementRight;
-			(*file)[getName()]["maxDisplacementUp"] = (float)maxDisplacementUp;
-			(*file)[getName()]["maxDisplacementDown"] = (float)maxDisplacementDown;
+			(*file)[getName()]["maxDisplacementLeft"] = (float)s2d::Pixels(maxDisplacementLeft);
+			(*file)[getName()]["maxDisplacementRight"] = (float)s2d::Pixels(maxDisplacementRight);
+			(*file)[getName()]["maxDisplacementUp"] = (float)s2d::Pixels(maxDisplacementUp);
+			(*file)[getName()]["maxDisplacementDown"] = (float)s2d::Pixels(maxDisplacementDown);
 
-			(*file)[getName()]["originX"] = (float)originX;
-			(*file)[getName()]["originY"] = (float)originY;
+			(*file)[getName()]["originX"] = (float)s2d::Pixels(originX);
+			(*file)[getName()]["originY"] = (float)s2d::Pixels(originY);
 
 			(*file)[getName()]["events"] = nullptr;
 		}
 
 		void fromJson(const std::shared_ptr<json>& file) {
-			maxDisplacementLeft = s2d::Meters((float)(*file)[getName()]["maxDisplacementLeft"]);
-			maxDisplacementRight = s2d::Meters((float)(*file)[getName()]["maxDisplacementRight"]);
-			maxDisplacementUp = s2d::Meters((float)(*file)[getName()]["maxDisplacementUp"]);
-			maxDisplacementDown = s2d::Meters((float)(*file)[getName()]["maxDisplacementDown"]);
+			
+			maxDisplacementLeft = (s2d::Meters)s2d::Pixels((float)(*file)[getName()]["maxDisplacementLeft"]);
+			maxDisplacementRight = (s2d::Meters)s2d::Pixels((float)(*file)[getName()]["maxDisplacementRight"]);
+			maxDisplacementUp = (s2d::Meters)s2d::Pixels((float)(*file)[getName()]["maxDisplacementUp"]);
+			maxDisplacementDown = (s2d::Meters)s2d::Pixels((float)(*file)[getName()]["maxDisplacementDown"]);
 
-			originX = s2d::Meters((float)(*file)[getName()]["originX"]);
-			originY = s2d::Meters((float)(*file)[getName()]["originY"]);
+			
+			auto& jobj = (*file)[getName()];
+
+			if (jobj.contains("originX")) {
+				originX = (s2d::Meters)s2d::Pixels((float)(*file)[getName()]["originX"]);
+			}
+			else {
+				originX = (s2d::Meters)s2d::Pixels((float)(*file)["Transform"]["x"]);
+			}
+
+			if (jobj.contains("originY")) {
+				originY = (s2d::Meters)s2d::Pixels((float)(*file)[getName()]["originY"]);
+			}
+			else {
+				originY = (s2d::Meters)s2d::Pixels((float)(*file)["Transform"]["y"]);
+			}
 		}
 
 
@@ -475,11 +490,39 @@ inline static bool added = false;
 		s2d::Meters originX;
 		s2d::Meters originY;
 
-		_Component_Trivial(CircularConstrainedMovement, radius, originX, originY);
+		void toJson(std::shared_ptr<json> file) const {
+
+			(*file)[getName()]["radius"] = (float)s2d::Pixels(radius);
+
+			(*file)[getName()]["originX"] = (float)s2d::Pixels(originX);
+			(*file)[getName()]["originY"] = (float)s2d::Pixels(originY);
+		}
+
+		void fromJson(const std::shared_ptr<json>& file) {
+			radius = (s2d::Meters)s2d::Pixels((float)(*file)[getName()]["radius"]);
+
+			auto& jobj = (*file)[getName()];
+
+			if (jobj.contains("originX")) {
+				originX = (s2d::Meters)s2d::Pixels((float)(*file)[getName()]["originX"]);
+			}
+			else {
+				originX = (s2d::Meters)s2d::Pixels((float)(*file)["Transform"]["x"]);
+			}
+
+			if (jobj.contains("originY")) {
+				originY = (s2d::Meters)s2d::Pixels((float)(*file)[getName()]["originY"]);
+			}
+			else {
+				originY = (s2d::Meters)s2d::Pixels((float)(*file)["Transform"]["y"]);
+			}
+		}
+
+		_Component(CircularConstrainedMovement);
 	};
 
 	struct JumpOn {
-		s2d::Meters jumpTolerencePercent;
+		s2d::Percent jumpTolerencePercent;
 		s2d::Percent jumpVelMod;
 		s2d::Meters jumpMin;
 
@@ -522,10 +565,12 @@ inline static bool added = false;
 
 		void fromJson(const std::shared_ptr<json>& file) {
 
-			auto x = s2d::Meters((float)(*file)[getName()]["rect"]["left"]);
-			auto y = s2d::Meters((float)(*file)[getName()]["rect"]["top"]);
-			auto width = s2d::Meters((float)(*file)[getName()]["rect"]["width"]);
-			auto height = s2d::Meters((float)(*file)[getName()]["rect"]["height"]);
+			auto x = (s2d::Meters)s2d::Pixels((float)(*file)[getName()]["rect"]["left"]);
+			auto y = (s2d::Meters)s2d::Pixels((float)(*file)[getName()]["rect"]["top"]);
+			auto width = (s2d::Meters)s2d::Pixels((float)(*file)[getName()]["rect"]["width"]);
+			auto height = (s2d::Meters)s2d::Pixels((float)(*file)[getName()]["rect"]["height"]);
+
+			rect = s2d::Rect2m(s2d::Point2m(x, y), s2d::Dim2m(width, height));
 		}
 
 		_Component(Hitbox)
@@ -545,10 +590,12 @@ inline static bool added = false;
 
 		void fromJson(const std::shared_ptr<json>& file) {
 
-			auto x = s2d::Meters((float)(*file)[getName()]["rect"]["left"]);
-			auto y = s2d::Meters((float)(*file)[getName()]["rect"]["top"]);
-			auto width = s2d::Meters((float)(*file)[getName()]["rect"]["width"]);
-			auto height = s2d::Meters((float)(*file)[getName()]["rect"]["height"]);
+			auto x = (s2d::Meters)s2d::Pixels((float)(*file)[getName()]["rect"]["left"]);
+			auto y = (s2d::Meters)s2d::Pixels((float)(*file)[getName()]["rect"]["top"]);
+			auto width = (s2d::Meters)s2d::Pixels((float)(*file)[getName()]["rect"]["width"]);
+			auto height = (s2d::Meters)s2d::Pixels((float)(*file)[getName()]["rect"]["height"]);
+
+			rect = s2d::Rect2m(s2d::Point2m(x, y), s2d::Dim2m(width, height));
 		}
 
 		_Component(HitboxExtension)

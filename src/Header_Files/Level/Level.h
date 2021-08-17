@@ -44,7 +44,7 @@ namespace ic {
 		void changeLevel(const std::string newlevel = "") {
 			if (newlevel == "") {
 				Logger::info("Loading level newLevel_1.tmx.");
-				loadLevel("newLevel_1");
+				loadLevel("newLevel_1-px");
 			}
 			else {
 				Logger::info("Loading level {}.tmx.", newlevel);

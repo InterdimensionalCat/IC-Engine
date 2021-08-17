@@ -95,6 +95,30 @@ inline static StartupObj startup;
 		System() {}
 		virtual ~System() {}
 	protected:
+
+
+		template<typename T>
+		T* getComponent(const std::shared_ptr<ActorEntry> entry) {
+			return scene->compManager->getComponent<T>(entry);
+		}
+
+		template<typename T>
+		const T* getComponent(const std::shared_ptr<ActorEntry> entry) const {
+			return scene->compManager->getComponent<T>(entry);
+		}
+
+		template<typename T>
+		void getComponent(const std::shared_ptr<ActorEntry> entry, T*& comp) {
+			scene->compManager->getComponent(entry, comp);
+		}
+
+
+		template<typename... Comps>
+		void getComponents(const std::shared_ptr<ActorEntry> entry, Comps*&... comps) {
+			scene->compManager->getComponents(entry, comps...);
+		}
+
+
 		virtual std::string getSysTypeName() const = 0;
 		virtual std::shared_ptr<System> create(Scene* scene) const = 0;
 		System(Scene* scene) : scene(scene) {}

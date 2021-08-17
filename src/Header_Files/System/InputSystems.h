@@ -400,7 +400,7 @@ namespace ic {
 			auto center = s2d::Point2m(trans->x, trans->y);
 			auto hitbox = scene->compManager->getComponent<Hitbox>(entry);
 			if (hitbox != nullptr) {
-				center = hitbox->rect.center();
+				center += hitbox->rect.center();
 			}
 			auto constrainedmvmt = scene->compManager->getComponent<ConstrainedMovement>(entry);
 

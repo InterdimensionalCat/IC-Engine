@@ -52,8 +52,6 @@
     <property name="ConstrainedMovement/maxDisplacementLeft" type="float" value="0"/>
     <property name="ConstrainedMovement/maxDisplacementRight" type="float" value="0"/>
     <property name="ConstrainedMovement/maxDisplacementUp" type="float" value="0"/>
-    <property name="ConstrainedMovement/originX" type="float" value="29"/>
-    <property name="ConstrainedMovement/originY" type="float" value="20"/>
     <property name="HorzMovable/accelX" type="float" value="0"/>
     <property name="VariantName" value="Jumper"/>
    </properties>
@@ -61,19 +59,19 @@
   <object id="15" name="Boop" gid="22" x="1952" y="1344" width="64" height="64">
    <properties>
     <property name="ConstrainedMovement/maxDisplacementDown" type="float" value="0"/>
-    <property name="ConstrainedMovement/maxDisplacementLeft" type="float" value="1.2"/>
-    <property name="ConstrainedMovement/maxDisplacementRight" type="float" value="1.2"/>
+    <property name="ConstrainedMovement/maxDisplacementLeft" type="float" value="75"/>
+    <property name="ConstrainedMovement/maxDisplacementRight" type="float" value="75"/>
     <property name="ConstrainedMovement/maxDisplacementUp" type="float" value="0"/>
-    <property name="ConstrainedMovement/originX" type="float" value="32"/>
-    <property name="ConstrainedMovement/originY" type="float" value="21"/>
-    <property name="HorzMovable/accelX" type="float" value="0.02"/>
+    <property name="ConstrainedMovement/originX" type="float" value="2048"/>
+    <property name="ConstrainedMovement/originY" type="float" value="1344"/>
+    <property name="HorzMovable/accelX" type="float" value="1.25"/>
    </properties>
   </object>
   <object id="16" name="MovingPlatform" gid="18" x="2176" y="1408" width="64" height="64">
    <properties>
-    <property name="CircularConstrainedMovement/originX" type="float" value="35"/>
-    <property name="CircularConstrainedMovement/originY" type="float" value="27.5"/>
-    <property name="CircularConstrainedMovement/radius" type="float" value="6.5"/>
+    <property name="CircularConstrainedMovement/originX" type="float" value="2240"/>
+    <property name="CircularConstrainedMovement/originY" type="float" value="1760"/>
+    <property name="CircularConstrainedMovement/radius" type="float" value="416"/>
     <property name="PlatformTypeable/type" value="Vertical"/>
     <property name="VariantName" value="Vertical"/>
    </properties>
@@ -81,23 +79,21 @@
   <object id="17" name="Boop" gid="22" x="2368" y="2240" width="64" height="64">
    <properties>
     <property name="ConstrainedMovement/maxDisplacementDown" type="float" value="0"/>
-    <property name="ConstrainedMovement/maxDisplacementLeft" type="float" value="1.5625"/>
-    <property name="ConstrainedMovement/maxDisplacementRight" type="float" value="1.5625"/>
+    <property name="ConstrainedMovement/maxDisplacementLeft" type="float" value="100"/>
+    <property name="ConstrainedMovement/maxDisplacementRight" type="float" value="100"/>
     <property name="ConstrainedMovement/maxDisplacementUp" type="float" value="0"/>
-    <property name="ConstrainedMovement/originX" type="float" value="37"/>
-    <property name="ConstrainedMovement/originY" type="float" value="34"/>
-    <property name="HorzMovable/accelX" type="float" value="0.03125"/>
+    <property name="HorzMovable/accelX" type="float" value="2"/>
    </properties>
   </object>
   <object id="18" name="Boop" gid="22" x="736" y="2048" width="64" height="64">
    <properties>
     <property name="ConstrainedMovement/maxDisplacementDown" type="float" value="0"/>
-    <property name="ConstrainedMovement/maxDisplacementLeft" type="float" value="2"/>
-    <property name="ConstrainedMovement/maxDisplacementRight" type="float" value="2"/>
+    <property name="ConstrainedMovement/maxDisplacementLeft" type="float" value="128"/>
+    <property name="ConstrainedMovement/maxDisplacementRight" type="float" value="128"/>
     <property name="ConstrainedMovement/maxDisplacementUp" type="float" value="0"/>
-    <property name="ConstrainedMovement/originX" type="float" value="13.5"/>
-    <property name="ConstrainedMovement/originY" type="float" value="31"/>
-    <property name="HorzMovable/accelX" type="float" value="0.03125"/>
+    <property name="ConstrainedMovement/originX" type="float" value="864"/>
+    <property name="ConstrainedMovement/originY" type="float" value="1984"/>
+    <property name="HorzMovable/accelX" type="float" value="2"/>
     <property name="VariantName" value="Jumper"/>
    </properties>
   </object>
@@ -112,9 +108,9 @@
   </object>
   <object id="21" name="MovingPlatform" gid="18" x="0" y="320" width="64" height="64">
    <properties>
-    <property name="CircularConstrainedMovement/originX" type="float" value="1"/>
-    <property name="CircularConstrainedMovement/originY" type="float" value="12"/>
-    <property name="CircularConstrainedMovement/radius" type="float" value="7"/>
+    <property name="CircularConstrainedMovement/originX" type="float" value="64"/>
+    <property name="CircularConstrainedMovement/originY" type="float" value="768"/>
+    <property name="CircularConstrainedMovement/radius" type="float" value="448"/>
     <property name="PlatformTypeable/type" value="Vertical"/>
     <property name="VariantName" value="Vertical"/>
    </properties>
@@ -152,20 +148,20 @@
   <object id="27" name="Boop" gid="22" x="896" y="100" width="64" height="64">
    <properties>
     <property name="ConstrainedMovement/maxDisplacementDown" type="float" value="0"/>
-    <property name="ConstrainedMovement/maxDisplacementLeft" type="float" value="1"/>
-    <property name="ConstrainedMovement/maxDisplacementRight" type="float" value="1"/>
+    <property name="ConstrainedMovement/maxDisplacementLeft" type="float" value="64"/>
+    <property name="ConstrainedMovement/maxDisplacementRight" type="float" value="64"/>
     <property name="ConstrainedMovement/maxDisplacementUp" type="float" value="0"/>
-    <property name="ConstrainedMovement/originX" type="float" value="15"/>
-    <property name="ConstrainedMovement/originY" type="float" value="0.5625"/>
-    <property name="HorzMovable/accelX" type="float" value="0.0390625"/>
+    <property name="ConstrainedMovement/originX" type="float" value="960"/>
+    <property name="ConstrainedMovement/originY" type="float" value="100"/>
+    <property name="HorzMovable/accelX" type="float" value="2.5"/>
     <property name="VariantName" value="Floater"/>
    </properties>
   </object>
   <object id="28" name="MovingPlatform" gid="18" x="1408" y="320" width="64" height="64">
    <properties>
-    <property name="CircularConstrainedMovement/originX" type="float" value="25"/>
-    <property name="CircularConstrainedMovement/originY" type="float" value="5"/>
-    <property name="CircularConstrainedMovement/radius" type="float" value="3"/>
+    <property name="CircularConstrainedMovement/originX" type="float" value="1600"/>
+    <property name="CircularConstrainedMovement/originY" type="float" value="320"/>
+    <property name="CircularConstrainedMovement/radius" type="float" value="192"/>
     <property name="PlatformTypeable/type" value="Horizontal"/>
     <property name="VariantName" value="Horizontal"/>
    </properties>

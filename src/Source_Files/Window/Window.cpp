@@ -64,11 +64,14 @@ bool Window::updateInput() {
 				//Settings::setSetting<bool>("running", false);
 				return false;
 			}
+
+			if (event.key.code == sf::Keyboard::I) {
+				Settings::setDebug(!Settings::getDebug());
+				std::string debugswitch = Settings::getDebug() ? "enabled" : "disabled";
+				Logger::info("Debug Mode {}", debugswitch);
+			}
 		}
 
-		if (event.key.code == sf::Keyboard::I) {
-			Settings::setDebug(!Settings::getDebug());
-		}
 	}
 
 	return true;
