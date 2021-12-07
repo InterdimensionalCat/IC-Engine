@@ -293,8 +293,7 @@ namespace ic {
 		}
 
 		static void drawHitbox(Scene* scene, const s2d::Rect2m& rect) {
-			sf::RectangleShape shape = rect.makeDrawableSFMLRect(3.0f, sf::Color(0, 0, 0, 0), sf::Color::Red);
-
+			//sf::RectangleShape shape = rect.makeDrawableSFMLRect(3.0f, sf::Color(0, 0, 0, 0), sf::Color::Red);
 			//scene->debugShapes.push_back(shape);
 		}
 
