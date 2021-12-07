@@ -2,6 +2,12 @@
 #include "Window.h"
 #include "WindowEventListener.h"
 #include "Input.h"
+#include "imgui-SFML.h"
+#include "ImGui/imgui.h"
+
+//Scene -> Layers (hard coded tilemap layer, hardcoded GUI layer)
+
+
 
 using namespace ic;
 
@@ -27,11 +33,15 @@ Window::Window() {
 
 	registerWindowEventListener(KeyboardGlobal::listener);
 
+	ImGui::SFML::Init(*window);
+	guiClock.restart();
+
 }
 
 Window::~Window() {
 	listeners.clear();
 	window->close();
+	ImGui::SFML::Shutdown();
 }
 
 bool Window::updateInput() {
@@ -43,10 +53,11 @@ bool Window::updateInput() {
 	for (auto& listener : listeners) {
 		listener->update(*this);
 	}
-
 	sf::Event event;
 	while (window->pollEvent(event))
 	{
+
+		ImGui::SFML::ProcessEvent(*window, event);
 
 		for (auto& listener : listeners) {
 			if (listener->handleWindowEvent(event)) {

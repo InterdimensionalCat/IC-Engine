@@ -74,6 +74,7 @@ void game() {
 	Logger::info("Game Closing.");
 }
 
+
 /**
  * @brief Primary entry point to the game engine,
  * @details Primary entry point to the game engine, 
@@ -84,7 +85,6 @@ void game() {
 */
 int main(int argc, char* argv[])
 {
-
 	std::cout.flush();
 
 	Logger::start();

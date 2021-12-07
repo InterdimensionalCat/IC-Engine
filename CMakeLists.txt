@@ -63,10 +63,14 @@ set(Wind_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Window")
 set(Sys_H "${PROJECT_SOURCE_DIR}/src/Header_Files/System")
 set(Sys_C "${PROJECT_SOURCE_DIR}/src/Source_Files/System")
 
+set(ImGui_H "${PROJECT_SOURCE_DIR}/src/Header_Files/ImGui")
+set(ImGui_C "${PROJECT_SOURCE_DIR}/src/Source_Files/ImGui")
+
 include_directories(
 ${SRC_DIR} ${SOURCE_H} ${Graphics_H} ${Util_H} 
 ${Comp_H} ${Scene_H} ${Wind_H} ${Audio_H} 
 ${Ai_H} ${Tmap_H} ${Sys_H} ${Actor_H} ${Level_H}
+${ImGui_H}
 )
 
 file(GLOB SRC
@@ -94,6 +98,8 @@ file(GLOB SRC
 "${Comp_C}/*.cpp"
 "${SOURCE_C}/*.cpp"
 "${SOURCE_H}/*.h"
+"${ImGui_C}/*.cpp"
+"${ImGui_H}/*.h"
 )
 
 
@@ -134,32 +140,42 @@ list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
 find_package(tmxlite REQUIRED)
 find_package(Space2D REQUIRED)
 find_package(spdlog REQUIRED)
+find_package(OpenGL REQUIRED)
+#find_package(ImGui-SFML REQUIRED)
 
 
 cmake_path(SET TMXLITE_INCLUDE NORMALIZE "${TMXLITE_INCLUDE_DIR}/../")
 cmake_path(SET SPDLOG_INCLUDE_DIR NORMALIZE "${spdlog_DIR}/include/")
+#cmake_path(SET ImGui_SFML_INCLUDE_DIR "${ImGui_SFML_DIR}/include/")
 
 include_directories(${TMXLITE_INCLUDE})
 include_directories(${SFML_INCLUDE_DIR})
 include_directories(${Space2D_INCLUDE_DIR})
 include_directories(${SPDLOG_INCLUDE_DIR})
+include_directories(${OPENGL_INCLUDE_DIRS})
+#include_directories(${ImGui_SFML_INCLUDE_DIR})
 
 add_executable(${PROJECT_NAME} ${SRC})
 
 target_link_libraries(${PROJECT_NAME} PRIVATE sfml-system sfml-network sfml-graphics sfml-window sfml-audio)
 target_link_libraries(${PROJECT_NAME} PRIVATE ${TMXLITE_LIBRARIES})
 target_link_libraries(${PROJECT_NAME} PRIVATE ${spdlog_LIBRARIES})
+target_link_libraries(${PROJECT_NAME} PRIVATE ${OPENGL_LIBRARIES})
+#target_link_libraries(${PROJECT_NAME} PRIVATE ${ImGui_SFML_LIBRARIES})
 #target_link_libraries(${PROJECT_NAME} PRIVATE Space2D)
 
 if(CMAKE_BUILD_TYPE MATCHES Debug)
 file(GLOB SFML_DLL ${SFML_DIR}/lib/Debug/*.dll)
 cmake_path(SET TMXLITE_DLL NORMALIZE "${TMXLITE_LIBRARIES}/../tmxlite-d.dll")
+#cmake_path(SET IMGUI_SFML_DLL NORMALIZE "${ImGui_SFML_LIBRARIES}/../../bin/ImGui-SFML_d.dll")
 MESSAGE(${TMXLITE_DLL})
 FILE(COPY ${SFML_DLL} DESTINATION "${CMAKE_BINARY_DIR}")
 FILE(COPY ${TMXLITE_DLL} DESTINATION "${CMAKE_BINARY_DIR}")
+FILE(COPY ${IMGUI_SFML_DLL} DESTINATION "${CMAKE_BINARY_DIR}")
 else()
 file(GLOB SFML_DLL ${SFML_DIR}/lib/Release/*.dll)
 cmake_path(SET TMXLITE_DLL NORMALIZE "${TMXLITE_LIBRARIES}/../tmxlite.dll")
+#cmake_path(SET IMGUI_SFML_DLL NORMALIZE "${ImGui_SFML_LIBRARIES}/../../bin/ImGui-SFML.dll")
 MESSAGE(${TMXLITE_DLL})
 FILE(COPY ${SFML_DLL} DESTINATION "${CMAKE_BINARY_DIR}")
 FILE(COPY ${TMXLITE_DLL} DESTINATION "${CMAKE_BINARY_DIR}")

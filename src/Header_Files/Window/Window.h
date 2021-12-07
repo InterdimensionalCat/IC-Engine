@@ -28,7 +28,8 @@ namespace ic {
 		std::unique_ptr<sf::RenderWindow> window;
 
 	private:
-		std::vector< std::shared_ptr<WindowEventListener>> listeners;
+		std::vector<std::shared_ptr<WindowEventListener>> listeners;
+		sf::Clock guiClock;
 	};
 }
 
