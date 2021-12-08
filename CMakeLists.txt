@@ -2,6 +2,17 @@
 # project specific logic here.
 #
 
+#macro that recursively finds header files
+MACRO(HEADER_DIRECTORIES return_list)
+    FILE(GLOB_RECURSE new_list *.h)
+    SET(dir_list "")
+    FOREACH(file_path ${new_list})
+        GET_FILENAME_COMPONENT(dir_path ${file_path} PATH)
+        SET(dir_list ${dir_list} ${dir_path})
+    ENDFOREACH()
+    LIST(REMOVE_DUPLICATES dir_list)
+    SET(${return_list} ${dir_list})
+ENDMACRO()
 
 #ccmake[-Wno-dev]
 # set minimum version required for CMake
@@ -26,81 +37,16 @@ FILE(COPY ${RESOURCE_DIR} DESTINATION "${CMAKE_BINARY_DIR}")
 
 
 set(SRC_DIR "${PROJECT_SOURCE_DIR}/src")
+FILE(GLOB_RECURSE CPP_FILES ${SRC_DIR}/*.cpp)
 
-set(SOURCE_H "${PROJECT_SOURCE_DIR}/src/Header_Files")
-set(SOURCE_C "${PROJECT_SOURCE_DIR}/src/Source_Files")
+Message("Cpp dir: ${CPP_FILES}")
+HEADER_DIRECTORIES(header_dir_list)
 
-set(Actor_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Actor")
-set(Actor_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Actor")
+list(LENGTH header_dir_list header_dir_list_count)
+message(STATUS "[INFO] Found ${header_dir_list_count} header directories.")
 
-set(Audio_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Audio")
-set(Audio_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Audio")
+include_directories(PUBLIC ${header_dir_list})
 
-set(Ai_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Ai")
-set(Ai_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Ai")
-
-set(Level_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Level")
-set(Level_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Level")
-
-set(Graphics_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Graphics")
-set(Graphics_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Graphics")
-
-set(Tmap_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Tilemap")
-set(Tmap_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Tilemap")
-
-set(Comp_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Component")
-set(Comp_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Component")
-
-set(Util_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Util")
-set(Util_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Util")
-
-set(Scene_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Scene")
-set(Scene_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Scene")
-
-set(Wind_H "${PROJECT_SOURCE_DIR}/src/Header_Files/Window")
-set(Wind_C "${PROJECT_SOURCE_DIR}/src/Source_Files/Window")
-
-set(Sys_H "${PROJECT_SOURCE_DIR}/src/Header_Files/System")
-set(Sys_C "${PROJECT_SOURCE_DIR}/src/Source_Files/System")
-
-set(ImGui_H "${PROJECT_SOURCE_DIR}/src/Header_Files/ImGui")
-set(ImGui_C "${PROJECT_SOURCE_DIR}/src/Source_Files/ImGui")
-
-include_directories(
-${SRC_DIR} ${SOURCE_H} ${Graphics_H} ${Util_H} 
-${Comp_H} ${Scene_H} ${Wind_H} ${Audio_H} 
-${Ai_H} ${Tmap_H} ${Sys_H} ${Actor_H} ${Level_H}
-${ImGui_H}
-)
-
-file(GLOB SRC
-"${Actor_C}/*.cpp"
-"${Actor_H}/*.h"
-"${Audio_C}/*.cpp"
-"${Audio_H}/*.h"
-"${Ai_C}/*.cpp"
-"${Ai_H}/*.h"
-"${Level_C}/*.cpp"
-"${Level_H}/*.h"
-"${Tmap_H}/*.h"
-"${Tmap_C}/*.cpp"
-"${Graphics_C}/*.cpp"
-"${Graphics_H}/*.h"
-"${Util_C}/*.cpp"
-"${Util_H}/*.h"
-"${Scene_C}/*.cpp"
-"${Scene_H}/*.h"
-"${Sys_H}/*.h"
-"${Sys_C}/*.cpp"
-"${Wind_H}/*.h"
-"${Wind_C}/*.cpp"
-"${Comp_H}/*.h"
-"${Comp_C}/*.cpp"
-"${SOURCE_C}/*.cpp"
-"${SOURCE_H}/*.h"
-"${ImGui_C}/*.cpp"
-"${ImGui_H}/*.h"
-)
 
 
 if(WIN32)
@@ -134,65 +80,30 @@ endif()
 
 set(SFML_STATIC_LIBRARIES FALSE)
 
-find_package(SFML COMPONENTS system window graphics audio CONFIG REQUIRED)
-#set(${CMAKE_MODULE_PATH} APPEND Findtmxlite.cmake)
-list(APPEND CMAKE_MODULE_PATH "${CMAKE_CURRENT_LIST_DIR}/cmake")
-find_package(tmxlite REQUIRED)
-find_package(Space2D REQUIRED)
-find_package(spdlog REQUIRED)
-find_package(OpenGL REQUIRED)
-#find_package(ImGui-SFML REQUIRED)
-
-
-cmake_path(SET TMXLITE_INCLUDE NORMALIZE "${TMXLITE_INCLUDE_DIR}/../")
-cmake_path(SET SPDLOG_INCLUDE_DIR NORMALIZE "${spdlog_DIR}/include/")
-#cmake_path(SET ImGui_SFML_INCLUDE_DIR "${ImGui_SFML_DIR}/include/")
-
-include_directories(${TMXLITE_INCLUDE})
-include_directories(${SFML_INCLUDE_DIR})
-include_directories(${Space2D_INCLUDE_DIR})
-include_directories(${SPDLOG_INCLUDE_DIR})
-include_directories(${OPENGL_INCLUDE_DIRS})
-#include_directories(${ImGui_SFML_INCLUDE_DIR})
-
-add_executable(${PROJECT_NAME} ${SRC})
-
-target_link_libraries(${PROJECT_NAME} PRIVATE sfml-system sfml-network sfml-graphics sfml-window sfml-audio)
-target_link_libraries(${PROJECT_NAME} PRIVATE ${TMXLITE_LIBRARIES})
-target_link_libraries(${PROJECT_NAME} PRIVATE ${spdlog_LIBRARIES})
-target_link_libraries(${PROJECT_NAME} PRIVATE ${OPENGL_LIBRARIES})
-#target_link_libraries(${PROJECT_NAME} PRIVATE ${ImGui_SFML_LIBRARIES})
-#target_link_libraries(${PROJECT_NAME} PRIVATE Space2D)
-
 if(CMAKE_BUILD_TYPE MATCHES Debug)
-file(GLOB SFML_DLL ${SFML_DIR}/lib/Debug/*.dll)
-cmake_path(SET TMXLITE_DLL NORMALIZE "${TMXLITE_LIBRARIES}/../tmxlite-d.dll")
-#cmake_path(SET IMGUI_SFML_DLL NORMALIZE "${ImGui_SFML_LIBRARIES}/../../bin/ImGui-SFML_d.dll")
-MESSAGE(${TMXLITE_DLL})
-FILE(COPY ${SFML_DLL} DESTINATION "${CMAKE_BINARY_DIR}")
-FILE(COPY ${TMXLITE_DLL} DESTINATION "${CMAKE_BINARY_DIR}")
-FILE(COPY ${IMGUI_SFML_DLL} DESTINATION "${CMAKE_BINARY_DIR}")
+    FILE(GLOB EXT_LIBS ${PROJECT_SOURCE_DIR}/Dependancies/lib/Debug/*.lib)
+    FILE(GLOB EXT_DLL  ${PROJECT_SOURCE_DIR}/Dependancies/bin/Debug/*.dll)
+    FILE(COPY ${EXT_DLL} DESTINATION "${CMAKE_BINARY_DIR}")
 else()
-file(GLOB SFML_DLL ${SFML_DIR}/lib/Release/*.dll)
-cmake_path(SET TMXLITE_DLL NORMALIZE "${TMXLITE_LIBRARIES}/../tmxlite.dll")
-#cmake_path(SET IMGUI_SFML_DLL NORMALIZE "${ImGui_SFML_LIBRARIES}/../../bin/ImGui-SFML.dll")
-MESSAGE(${TMXLITE_DLL})
-FILE(COPY ${SFML_DLL} DESTINATION "${CMAKE_BINARY_DIR}")
-FILE(COPY ${TMXLITE_DLL} DESTINATION "${CMAKE_BINARY_DIR}")
+    FILE(GLOB EXT_LIBS ${PROJECT_SOURCE_DIR}/Dependancies/lib/Release/*.lib)
+    FILE(GLOB EXT_DLL  ${PROJECT_SOURCE_DIR}/Dependancies/bin/Release/*.dll)
+    FILE(COPY ${EXT_DLL} DESTINATION "${CMAKE_BINARY_DIR}")
 endif()
+
+find_package(OpenGL REQUIRED)
+
+include_directories("${PROJECT_SOURCE_DIR}/Dependancies/include")
+
+include_directories(${OPENGL_INCLUDE_DIRS})
+
+add_executable(${PROJECT_NAME} ${CPP_FILES})
+
+target_link_libraries(${PROJECT_NAME} PRIVATE ${EXT_LIBS})
+
+target_link_libraries(${PROJECT_NAME} PRIVATE ${OPENGL_LIBRARIES})
 
 
 target_precompile_headers(${PROJECT_NAME} PUBLIC [["include.h"]])
-
-if(MSVC) 
-foreach(source IN LISTS SRC)
-    get_filename_component(source_path "${source}" PATH)
-    string(REPLACE ${PROJECT_SOURCE_DIR}/src/ "" source_rel ${source_path})
-    message(${source_rel})
-    string(REPLACE "/" "\\" source_path_msvc "${source_rel}")
-    source_group("${source_path_msvc}" FILES "${source}")
-endforeach()
-endif()
 
 
 set(CMAKE_CXX_CLANG_TIDY clang-tidy -checks=-*,readability-*)

@@ -1,4 +1,5 @@
 #pragma once
+#include"IcLogger.h"
 
 #ifndef IC_SETTING
 #define IC_SETTING(settingname) \
