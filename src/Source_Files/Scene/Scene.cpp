@@ -17,6 +17,8 @@
 
 #include "BenchmarkLogger.h"
 
+#include "Renderer.h"
+
 using namespace ic;
 
 Scene::Scene() {
@@ -25,10 +27,6 @@ Scene::Scene() {
 
 	RegisterTiles();
 	RegisterAudio();
-
-	window = std::make_shared<Window>();
-
-	audio = std::make_shared<AudioEngine>();
 	
 	compManager = std::make_shared<ComponentManager>(this);
 	actorPool = std::make_shared<ActorPool>(this);
@@ -38,7 +36,7 @@ Scene::Scene() {
 
 	sysManager = std::make_shared<SystemManager>(this);
 
-	audio->playMusic("FlatZone", 10.0f);
+	AudioEngine::get()->playMusic("FlatZone", 10.0f);
 }
 
 Scene::~Scene() {
@@ -47,7 +45,7 @@ Scene::~Scene() {
 
 void Scene::update() {
 	BenchmarkLogger::get()->beginBenchmark("SceneUpdate");
-	if (!window->updateInput()) {
+	if (!Renderer::get()->window->updateInput()) {
 		Settings::setRunning(false);
 		return;
 	}
@@ -65,7 +63,7 @@ void Scene::update() {
 void Scene::draw(const float interpol) {
 	BenchmarkLogger::get()->beginBenchmark("SceneDraw");
 	sysManager->runSystemsInRange(SystemType::PreGraphics, SystemType::Graphics);
-	window->preRender(interpol);
+	Renderer::get()->window->preRender(interpol);
 	levels->draw(interpol);
 
 	//for (auto& shape : debugShapes) {
@@ -75,6 +73,6 @@ void Scene::draw(const float interpol) {
 	//debugShapes.clear();
 	sysManager->runSystemsInRange(SystemType::Graphics, SystemType::Count);
 	BenchmarkLogger::get()->endBenchmark("SceneDraw");
-	window->postRender();
+	Renderer::get()->window->postRender();
 }
 

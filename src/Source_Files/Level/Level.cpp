@@ -8,6 +8,8 @@
 #include "Camera.h"
 #include "Parallax.h"
 #include "StdoutRedirect.h"
+#include "Renderer.h"
+#include "Window.h"
 
 using namespace ic;
 
@@ -17,13 +19,13 @@ Level::Level(Scene* scene) : scene(scene) {
 }
 
 void Level::update() {
-	camera->updateWindow(*scene->window);
+	camera->updateWindow(*Renderer::get()->window);
 	parallaxEngine->move(*camera);
 }
 
 void Level::draw(const float interpol) {
-	parallaxEngine->draw(*scene->window);
-	tilemap->draw(*scene->window);
+	parallaxEngine->draw(*Renderer::get()->window);
+	tilemap->draw(*Renderer::get()->window);
 }
 
 void Level::loadLevel(const std::string& levelname) {

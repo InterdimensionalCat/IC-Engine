@@ -19,8 +19,17 @@ namespace ic {
 		sf::SoundSource::Status getStatusOfSound(const std::string& soundName);
 
 
+		static AudioEngine* get() {
+			if (instance.get() == nullptr) {
+				instance = std::make_unique<AudioEngine>();
+			}
+			return instance.get();
+		}
+
 		std::shared_ptr<sf::Music> currentSong = std::shared_ptr<sf::Music>(nullptr);
 		std::map<std::string, Sound> currentSounds = std::map<std::string, Sound>();
+	private:
+		inline static std::unique_ptr<AudioEngine> instance;
 	};
 
 }

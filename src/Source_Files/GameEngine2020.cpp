@@ -1,5 +1,6 @@
 #include "include.h"
 #include "Scene.h"
+#include "SceneManagement.h"
 
 #include "BenchmarkLogger.h"
 
@@ -11,8 +12,8 @@ using namespace ic;
  * all game logic gets updated during this function call
  * @param scene the scene for the engine
 */
-void update(Scene& scene) {
-	scene.update();
+void update() {
+	SceneManager::get()->update();
 }
 
 /**
@@ -24,8 +25,8 @@ void update(Scene& scene) {
  * this allows for measures to be taken such that gameplay remains smooth
  * @param scene the scene for the engine
 */
-void draw(const float interpol, Scene& scene) {
-	scene.draw(interpol);
+void draw(const float interpol) {
+	SceneManager::get()->draw(interpol);
 }
 
 /**
@@ -41,7 +42,8 @@ void game() {
 	float dt = 0.0f;
 	double accumulator = 0;
 
-	auto scene = std::make_unique<Scene>();
+	//auto scene = std::make_unique<Scene>();
+	SceneManager::create();
 
 	while (Settings::getRunning())
 	{
@@ -55,20 +57,20 @@ void game() {
 
 		if (Settings::getStepType() == TimeStepType::Variable) {
 			//variable timestep
-			update(*scene);
+			update();
 			accumulator = 0;
 		}
 		else {
 			//fixed time step
 			while (accumulator >= targetDT) {
-				update(*scene);
+				update();
 				accumulator -= targetDT;
 			}
 		}
 
 
 		//draw
-		draw((float)accumulator / targetDT, *scene);
+		draw((float)accumulator / targetDT);
 	}
 
 	Logger::info("Game Closing.");

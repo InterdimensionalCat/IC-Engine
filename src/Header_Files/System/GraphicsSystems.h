@@ -3,11 +3,12 @@
 #include "SFML/Graphics.hpp"
 #include "Animation.h"
 #include "Window.h"
+#include "Renderer.h"
 
 namespace ic {
 	class DrawSprites : public SystemTrivial<SpriteDrawable> {
 	public:
-		DrawSprites(Scene* scene) : SystemTrivial(scene), window(scene->window) {}
+		DrawSprites(Scene* scene) : SystemTrivial(scene), window(Renderer::get()->window) {}
 
 		void excecutionFunction(std::shared_ptr<ActorEntry> entry) override {
 			auto sprite = scene->compManager->getComponent<SpriteDrawable>(entry);
@@ -38,7 +39,7 @@ namespace ic {
 
 	class DrawAnimations : public SystemTrivial<Animatable> {
 	public:
-		DrawAnimations(Scene* scene) : SystemTrivial(scene), window(scene->window) {}
+		DrawAnimations(Scene* scene) : SystemTrivial(scene), window(Renderer::get()->window) {}
 
 		void excecutionFunction(std::shared_ptr<ActorEntry> entry) override {
 			auto anim = scene->compManager->getComponent<Animatable>(entry);

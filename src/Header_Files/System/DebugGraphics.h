@@ -8,7 +8,7 @@ namespace ic {
 	template<typename... ComponentTypes>
 	class DebugGraphicsSystem : public System {
 	public:
-		DebugGraphicsSystem(Scene* scene) : System(scene), window(scene->window),
+		DebugGraphicsSystem(Scene* scene) : System(scene), window(Renderer::get()->window),
 			view(std::make_shared<SceneView<ComponentTypes...>>(scene)) {}
 
 		virtual void excecute() {

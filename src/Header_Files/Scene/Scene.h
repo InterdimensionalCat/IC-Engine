@@ -67,16 +67,6 @@ namespace ic {
 		void draw(const float interpol);
 
 		/**
-		 * @brief the class that drives both music and sound audio
-		*/
-		std::shared_ptr<AudioEngine> audio;
-
-		/**
-		 * @brief the window for the program
-		*/
-		std::shared_ptr<Window> window;
-
-		/**
 		 * @brief stores and controls the component portion of ECS
 		 * @details contains functions for creating and assigning components
 		 * to actors
