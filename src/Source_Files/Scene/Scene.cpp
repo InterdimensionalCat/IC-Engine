@@ -26,7 +26,7 @@ Scene::Scene() {
 	registerComponentsFunction();
 
 	RegisterTiles();
-	RegisterAudio();
+	//RegisterAudio();
 	
 	compManager = std::make_shared<ComponentManager>(this);
 	actorPool = std::make_shared<ActorPool>(this);
