@@ -31,80 +31,26 @@ namespace ic {
 		sf::SoundSource::Status getStatusOfSound(const std::string& soundName);
 
 
-		static AudioEngine* get() {
+		static inline AudioEngine* get() {
 			if (instance.get() == nullptr) {
 				instance = std::make_unique<AudioEngine>();
 			}
 			return instance.get();
 		}
 
-		void loadSound(const std::string& soundname) {
+		void loadSound(const std::string& soundname);
 
-			fs::path filepath(fs::current_path());
-			filepath /= "resources";
-			filepath /= "sounds";
-			filepath /= soundname;
-			filepath += ".wav";
-
-			std::shared_ptr<sf::SoundBuffer> buffer = std::make_shared<sf::SoundBuffer>();
-			if (!buffer->loadFromFile(filepath.string())) {
-				Logger::error("Sound file at path {} could not be loaded!", filepath.string());
-				throw std::exception();
-			}
-
-			bufferMap.emplace(soundname, buffer);
-
-			Logger::info("Sound file {} loaded.", soundname);
-		}
-
-		void loadMusic(const std::string& musicname) {
-
-			fs::path filepath(fs::current_path());
-			filepath /= "resources";
-			filepath /= "music";
-			filepath /= musicname;
-			filepath += ".wav";
-
-			std::shared_ptr<sf::Music> music = std::make_shared<sf::Music>();
-			if (!music->openFromFile(filepath.string())) {
-				Logger::error("Music file at path {} could not be loaded!", filepath.string());
-				throw std::exception();
-			}
-
-			musicMap.emplace(musicname, music);
-			Logger::info("Music file {} loaded.", musicname);
-		}
+		void loadMusic(const std::string& musicname);
 
 		std::shared_ptr<sf::Music> currentSong;
 		std::map<std::string, Sound> currentSounds;
 	private:
 
-		std::shared_ptr<sf::SoundBuffer> getBufferFromName(const std::string& buffername) {
-			auto found = bufferMap.find(buffername);
-			if (found != bufferMap.end()) {
+		friend class ic::Sound;
 
-				std::shared_ptr<sf::SoundBuffer> ptr = std::make_shared<sf::SoundBuffer>();
-				*ptr = *found->second;
-				return std::shared_ptr<sf::SoundBuffer>(ptr);
-			}
-			else {
-				Logger::critical("Sound file {} has no buffer! Was it not loaded?", buffername);
-				throw std::exception();
-				return found->second;
-			}
-		}
+		std::shared_ptr<sf::SoundBuffer> getBufferFromName(const std::string& buffername);
 
-		std::shared_ptr<sf::Music> getMusicFromName(const std::string& musicname) {
-			auto found = musicMap.find(musicname);
-			if (found != musicMap.end()) {
-				return found->second;
-			}
-			else {
-				Logger::critical("Music file {} not found! Was it not loaded?", musicname);
-				throw std::exception();
-				return found->second;
-			}
-		}
+		std::shared_ptr<sf::Music> getMusicFromName(const std::string& musicname);
 
 		inline static std::unique_ptr<AudioEngine> instance;
 

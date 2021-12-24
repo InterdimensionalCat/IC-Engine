@@ -1,11 +1,10 @@
 #include "include.h"
-#include "Sound.h"
-#include "AudioRegistry.h"
+#include "Music.h"
 #include "AudioEngine.h"
 
 using namespace ic;
 
-Sound::Sound(const std::string& buffername) {
+Music::Music(const std::string& buffername) {
 	auto engine = AudioEngine::get();
 	buffer = std::shared_ptr<sf::SoundBuffer>(engine->getBufferFromName(buffername));
 	sound.setBuffer(*buffer);
