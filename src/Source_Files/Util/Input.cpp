@@ -11,7 +11,11 @@ KeyboardInput::KeyboardInput() {
 	inputMap.emplace(InputButton::DOWN,  sf::Keyboard::S    );
 	inputMap.emplace(InputButton::LEFT,  sf::Keyboard::A    );
 	inputMap.emplace(InputButton::RIGHT, sf::Keyboard::D    );
-	inputMap.emplace(InputButton::JUMP,  sf::Keyboard::Space);
+	inputMap.emplace(InputButton::JUMP, sf::Keyboard::Space );
+
+	inputMap.emplace(InputButton::AUDIO_1, sf::Keyboard::L  );
+	inputMap.emplace(InputButton::AUDIO_2, sf::Keyboard::O  );
+	inputMap.emplace(InputButton::AUDIO_3, sf::Keyboard::P  );
 }
 
 bool KeyboardInput::isDown(const InputButton key) const {

@@ -14,7 +14,10 @@ namespace ic {
 		DOWN,
 		LEFT,
 		RIGHT,
-		JUMP
+		JUMP,
+		AUDIO_1,
+		AUDIO_2,
+		AUDIO_3
 	};
 
 	class Input

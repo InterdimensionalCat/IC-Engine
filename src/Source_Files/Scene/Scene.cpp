@@ -11,7 +11,6 @@
 #include "SceneEvent.h"
 #include "Components.h"
 #include "TileRegistry.h"
-#include "AudioRegistry.h"
 #include "AudioEngine.h"
 #include "System.h"
 
@@ -26,7 +25,6 @@ Scene::Scene() {
 	registerComponentsFunction();
 
 	RegisterTiles();
-	//RegisterAudio();
 	
 	compManager = std::make_shared<ComponentManager>(this);
 	actorPool = std::make_shared<ActorPool>(this);
@@ -36,15 +34,18 @@ Scene::Scene() {
 
 	sysManager = std::make_shared<SystemManager>(this);
 
-	AudioEngine::get()->playMusic("FlatZone", 10.0f);
+	AudioEngine::get()->playMusic(AudioEngine::MusicRequest("FlatZone", 10.0f));
 }
 
 Scene::~Scene() {
-	clearAudioRegistry();
+	AudioEngine::get()->flush();
 }
 
 void Scene::update() {
 	BenchmarkLogger::get()->beginBenchmark("SceneUpdate");
+
+	AudioEngine::get()->update();
+
 	if (!Renderer::get()->window->updateInput()) {
 		Settings::setRunning(false);
 		return;

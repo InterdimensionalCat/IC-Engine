@@ -1,6 +1,7 @@
 #pragma once
 #include "System.h"
 #include "input.h"
+#include "AudioEngine.h"
 
 namespace ic {
 	class HorzMove : public SystemTrivial<Velocity, HorzMovable, InputController> {
@@ -341,6 +342,9 @@ namespace ic {
 				if (input->isPressed(InputButton::JUMP)) {
 					vel->y -= jump->jumpForce;
 					jump->jumpedflag = true;
+					if (scene->compManager->getComponent<PlayerFlag>(entry)) {
+						AudioEngine::get()->playSound(AudioEngine::SoundRequest("PlayerJump1", 15.0f));
+					}
 				}
 			}
 		}
@@ -375,6 +379,7 @@ namespace ic {
 		}
 
 		void playerDeath(std::shared_ptr<ActorEntry> entry) {
+			AudioEngine::get()->playSound(AudioEngine::SoundRequest("PlayerDead", 15.0f));
 			scene->sceneEvents->pushEvent<ResetLevelEvent>();
 		}
 

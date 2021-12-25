@@ -92,6 +92,7 @@ namespace ic {
 		static inline PopulateCallback popcallback;
 
 		static void playertogoal(Scene* scene, std::shared_ptr<ActorEntry> player, std::shared_ptr<ActorEntry> goal) {
+			AudioEngine::get()->playSound(AudioEngine::SoundRequest("PlayerWin", 15.0f));
 			scene->sceneEvents->pushEvent<ChangeLevelEvent>();
 		}
 
@@ -123,6 +124,8 @@ namespace ic {
 				pvel->y = jumpforce;
 
 				scene->sceneEvents->pushEvent<DespawnActorEvent>(enemy);
+
+				AudioEngine::get()->playSound(AudioEngine::SoundRequest("BoopDeath", 20.0f));
 			}
 			else {
 				//killplayer
@@ -241,6 +244,7 @@ namespace ic {
 		}
 
 		static void playerDeath(Scene* scene, std::shared_ptr<ActorEntry> player) {
+			AudioEngine::get()->playSound(AudioEngine::SoundRequest("PlayerDead", 15.0f));
 			scene->sceneEvents->pushEvent<ResetLevelEvent>();
 		}
 
