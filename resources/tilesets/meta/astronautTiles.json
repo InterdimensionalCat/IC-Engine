@@ -1,0 +1,72 @@
+{
+  "metadata": [
+    {
+      "id": 0,
+      "type": "Air"
+    },
+    {
+      "id": 1,
+      "type": "Solid"
+    },
+    {
+      "id": 2,
+      "type": "Solid"
+    },
+    {
+      "id": 3,
+      "type": "Solid"
+    },
+    {
+      "id": 4,
+      "type": "Solid"
+    },
+    {
+      "id": 5,
+      "type": "Solid"
+    },
+    {
+      "id": 6,
+      "type": "Solid"
+    },
+    {
+      "id": 7,
+      "type": "Solid"
+    },
+    {
+      "id": 8,
+      "type": "Solid"
+    },
+    {
+      "id": 9,
+      "type": "Solid"
+    },
+    {
+      "id": 10,
+      "type": "Solid"
+    },
+    {
+      "id": 11,
+      "type": "Solid"
+    },
+    {
+      "id": 12,
+      "type": "Solid"
+    },
+    {
+      "id": 13,
+      "type": "Solid"
+    },
+    {
+      "id": 14,
+      "type": "Solid"
+    },
+    {
+      "id": 15,
+      "type": "Solid"
+    }
+  ],
+  "numTilesX": 4,
+  "numTilesY": 4,
+  "tileSizePx": 64,
+  "tilesetName": "astronautTiles"
+}

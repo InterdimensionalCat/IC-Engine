@@ -1,12 +1,12 @@
 #pragma once
 
 namespace ic {
-	class TileBase;
+	struct TileMetadata;
 
 	void RegisterTiles();
-	std::shared_ptr<TileBase> getTileFromID(const sf::Color id);
-	std::shared_ptr<TileBase> getTileFromID(const uint32_t id);
-	std::shared_ptr<TileBase> getTileFromID(const uint8_t red,
+	const TileMetadata getTileFromID(const sf::Color id);
+	const TileMetadata getTileFromID(const uint32_t id);
+	const TileMetadata getTileFromID(const uint8_t red,
 		const uint8_t green,
 		const uint8_t blue,
 		const uint8_t alpha);

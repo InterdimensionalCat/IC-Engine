@@ -59,12 +59,12 @@ namespace ic {
 
 			for (auto& tile : tiles) {
 
-				if (hitbox.min.y + hitbox.height() * 0.2f < tile.getPosY() && tile.isTopActive()) continue;
-				if (hitbox.min.y + hitbox.height() * 0.8f > tile.getPosY() + 1.0f && tile.isBotActive()) continue;
+				if (hitbox.min.y + hitbox.height() * 0.2f < tile.getPosY() && tile.isSideActive(Direction::Up)) continue;
+				if (hitbox.min.y + hitbox.height() * 0.8f > tile.getPosY() + 1.0f && tile.isSideActive(Direction::Down)) continue;
 
 				if (hitbox.intersects(s2d::Rect2m(tile.getPos(), s2d::Dim2m(1, 1)))) {
 					if (vel->x > 0) {
-						if (!tile.isLeftActive()) {
+						if (!tile.isSideActive(Direction::Left)) {
 							continue;
 						}
 
@@ -77,7 +77,7 @@ namespace ic {
 						trans->x = tile.getPosX() - originalhitbox->rect.width();
 					}
 					else {
-						if (!tile.isRightActive()) {
+						if (!tile.isSideActive(Direction::Right)) {
 							continue;
 						}
 
@@ -108,7 +108,7 @@ namespace ic {
 				if (hitbox.top + hitbox.height > tile.getPosY() + 0.8f) continue;
 
 				if (hitbox.intersects(s2d::Rect2m(tile.getPos(), s2d::Dim2m(1, 1)))) {
-					if (!tile.isTopActive()) {
+					if (!tile.isSideActive(Direction::Up)) {
 						continue;
 					}
 
@@ -138,7 +138,7 @@ namespace ic {
 
 				if (hitbox.intersects(s2d::Rect2m(tile.getPos(), s2d::Dim2m(1, 1)))) {
 
-					if (!tile.isBotActive()) {
+					if (!tile.isSideActive(Direction::Down)) {
 						continue;
 					}
 

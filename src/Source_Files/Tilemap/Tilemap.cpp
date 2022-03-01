@@ -4,6 +4,7 @@
 #include "Image.h"
 #include "TileRegistry.h"
 #include "Window.h"
+#include "Tileset.h"
 
 using namespace ic;
 
@@ -49,8 +50,11 @@ void Tilemap::loadMap(const float widthTiles, const float heightTiles, const std
             auto tileAt = tiles.at(i).at(j);
 
             // find its position in the tileset texture
-            int tu = tileAt.getTilesetX() - 1;
-            int tv = tileAt.getTilesetY() - 1;
+            //int tu = tileAt.getTilesetX() - 1;
+            //int tv = tileAt.getTilesetY() - 1;
+
+            int tu = 0;
+            int tv = 0;
 
             // get a pointer to the current tile's quad
             sf::Vertex* quad = &vertices[(i + j * width) * 4];
@@ -76,7 +80,7 @@ void Tilemap::loadMap(const float widthTiles, const float heightTiles, const std
 
 }
 
-void Tilemap::setTile(uint32_t x, uint32_t y, const std::shared_ptr<TileBase> tile) {
+void Tilemap::setTile(uint32_t x, uint32_t y, const TileMetadata tile) {
 	tiles.at(x).at(y) = Tile(tile, (float)x, (float)y);
 }
 

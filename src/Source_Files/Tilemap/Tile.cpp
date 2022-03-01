@@ -51,3 +51,10 @@ s2d::Meters Tile::getPosY() const {
 s2d::Point2m Tile::getPos() const {
 	return pos;
 }
+
+uint32_t Tile::getTileID() const {
+	return data.id;
+}
+TileType Tile::getType() const {
+	return data.type;
+}

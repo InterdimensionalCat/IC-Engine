@@ -9,7 +9,7 @@ namespace ic {
 		uint32_t id;
 		TileType type;
 
-		void readFromJson(const std::shared_ptr<json>& fileIn);
+		void readFromJson(const json& fileIn);
 		void writeToJson(std::shared_ptr<json>& fileOut) const;
 	};
 
@@ -17,6 +17,12 @@ namespace ic {
 	public:
 		Tileset();
 		Tileset(std::string tilesetName);
+		Tileset(std::string tilesetName,
+			std::unique_ptr<Texture> tilesetTexture,
+			std::vector<TileMetadata> metadata,
+			size_t tileSizePx,
+			size_t numTilesX,
+			size_t numTilesY);
 
 		void readFromJson(const std::shared_ptr<json>& fileIn);
 		void writeToJson(std::shared_ptr<json>& fileOut) const;
@@ -30,7 +36,7 @@ namespace ic {
 		std::vector<TileMetadata> metadata;
 
 		size_t tileSizePx;
+		size_t numTilesX;
 		size_t numTilesY;
-		size_t numTilesY
 	};
 }

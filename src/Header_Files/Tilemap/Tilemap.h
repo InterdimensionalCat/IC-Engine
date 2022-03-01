@@ -21,7 +21,7 @@ namespace ic {
 		std::vector<Tile> getTilesWithinArea(const sf::FloatRect& hitbox);
 
 	private:
-		void setTile(uint32_t x, uint32_t y, const std::shared_ptr<TileBase> tile);
+		void setTile(uint32_t x, uint32_t y, const TileMetadata tile);
 
 		void disableInactiveSides();
 
