@@ -1,69 +1,43 @@
 #include "include.h"
 #include "Tile.h"
+#include "Tileset.h"
 
 using namespace ic;
 
-TileBase::TileBase() : TileBase(0, TileType::Air, 1, 1) {}
 
-TileBase::TileBase(const uint32_t id,
-	const TileType type,
-	const uint32_t tilesetX,
-	const uint32_t tilesetY) : id(id), type(type), tilesetX(tilesetX), tilesetY(tilesetY) {
-}
+Tile::Tile() : 
+	data(), 
+	pos(s2d::Point2m(0, 0)), 
+	activeSides({ true, true, true, true }) {}
 
-const uint32_t TileBase::getID() const {
-	return id;
-}
-
-const TileType& TileBase::getType() const {
-	return type;
-}
-
-const uint32_t TileBase::getTilesetX() const {
-	return tilesetX;
-}
-
-const uint32_t TileBase::getTilesetY() const {
-	return tilesetY;
-}
-
-Tile::Tile() : base(std::make_shared<TileBase>()), pos(s2d::Point2m(0, 0)), activeSides({ true, true, true, true }) {}
-
-Tile::Tile(std::shared_ptr<TileBase> base, const s2d::Meters posX, const s2d::Meters posY) :
-	base(base),
+Tile::Tile(TileMetadata data, 
+	const s2d::Meters posX, 
+	const s2d::Meters posY) :
+	data(data),
 	pos(s2d::Point2m(posX, posY)),
 	activeSides({ true, true, true, true }) {}
 
-bool Tile::isLeftActive() const {
-	return activeSides.at(3);
+
+bool Tile::isSideActive(const Direction dir) const {
+	using enum Direction;
+	switch (dir) {
+	case Up:
+		return activeSides.at(0);
+		break;
+	case Down:
+		return activeSides.at(2);
+		break;
+	case Left:
+		return activeSides.at(3);
+		break;
+	case Right:
+	default:
+		return activeSides.at(1);
+	}
 }
 
-bool Tile::isRightActive() const {
-	return activeSides.at(1);
-}
-
-bool Tile::isTopActive() const {
-	return activeSides.at(0);
-}
-
-bool Tile::isBotActive() const {
-	return activeSides.at(2);
-}
-
-const uint32_t Tile::getID() const {
-	return base->id;
-}
-
-const TileType& Tile::getType() const {
-	return base->type;
-}
-
-uint32_t Tile::getTilesetX() const {
-	return base->tilesetX;
-}
-
-uint32_t Tile::getTilesetY() const {
-	return base->tilesetY;
+TileMetadata Tile::getMetadata() const {
+	return data;
 }
 
 s2d::Meters Tile::getPosX() const {

@@ -76,6 +76,8 @@ bool AudioEngine::loadSound(const std::string& soundname,
 	bufferOut = buffer;
 
 	Logger::info("Sound file {} loaded sucessfully!", soundname);
+
+	return true;
 }
 
 bool AudioEngine::loadMusic(const std::string& musicname,
@@ -101,7 +103,9 @@ bool AudioEngine::loadMusic(const std::string& musicname,
 	musicMap.emplace(musicname, song);
 	musicOut = song;
 
-	Logger::info("Mound file {} opened sucessfully!", musicname);
+	Logger::info("Music file {} opened sucessfully!", musicname);
+
+	return true;
 }
 
 void AudioEngine::processSoundRequests() {
