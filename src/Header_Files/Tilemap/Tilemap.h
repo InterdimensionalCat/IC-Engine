@@ -12,7 +12,7 @@ namespace ic {
 		Tilemap();
 		void loadMap(const float widthTiles, const float heightTiles, 
 			const std::vector<tmx::TileLayer::Tile>& tiledata, 
-			const tmx::Tileset& tileset);
+			const tmx::Tileset& tileset, const std::string& tilesetName);
 		float getWidth() const;
 		float getHeight() const;
 

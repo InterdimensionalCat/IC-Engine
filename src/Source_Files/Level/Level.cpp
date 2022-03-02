@@ -110,7 +110,7 @@ void Level::loadLevel(const std::string& levelname) {
 					auto set = map.getTilesets().at(i);
 
 					if (set.getName() == tilesetname) {
-						tilemap->loadMap(s2d::toMeters(widthPixels), s2d::toMeters(heightPixels), tiles, set);
+						tilemap->loadMap(s2d::toMeters(widthPixels), s2d::toMeters(heightPixels), tiles, set, tilesetname);
 						continue;
 					}
 				}

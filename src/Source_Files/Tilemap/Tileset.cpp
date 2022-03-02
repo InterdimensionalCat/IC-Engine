@@ -19,7 +19,6 @@ namespace ic {
     {
 
     }
-
     Tileset::Tileset(std::string tilesetName,
         std::unique_ptr<Texture> tilesetTexture,
         std::vector<TileMetadata> metadata,
@@ -45,7 +44,6 @@ namespace ic {
         (*fileOut)["id"] = id;
         (*fileOut)["type"] = TileTypeToString(type);
     }
-
     void Tileset::readFromJson(const std::shared_ptr<json>& fileIn) {
         //name:
         //size px
@@ -65,8 +63,8 @@ namespace ic {
         }
 
         tilesetTexture = std::make_unique<ic::Texture>(tilesetName);
+        loaded = true;
     }
-
     void Tileset::writeToJson(std::shared_ptr<json>& fileOut) const {
         (*fileOut)["tilesetName"] = tilesetName;
         (*fileOut)["tileSizePx"] = tileSizePx;
@@ -80,7 +78,6 @@ namespace ic {
         }
         (*fileOut)["metadata"] = arr;
     }
-
     TileMetadata Tileset::getMetadata(const uint32_t id) {
         if (!loaded) {
             Logger::error("Tileset {} not loaded!", tilesetName);

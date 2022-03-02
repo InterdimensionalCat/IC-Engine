@@ -128,11 +128,11 @@ int main(int argc, char* argv[])
 
 	//CREATE AN ACTOR JSON FILE EDITOR
 
-	//BenchmarkLogger::get()->beginBenchmark("Game");
-	//game();
-	//BenchmarkLogger::get()->endBenchmark("Game");
+	BenchmarkLogger::get()->beginBenchmark("Game");
+	game();
+	BenchmarkLogger::get()->endBenchmark("Game");
 
-	ic::test::ProceduralMode();
+	//ic::test::ProceduralMode();
 
 	Settings::stop();
 	BenchmarkLogger::shutdown();

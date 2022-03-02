@@ -29,6 +29,10 @@ namespace ic {
 
 		TileMetadata getMetadata(const uint32_t id);
 		Texture& getAtlasTexture();
+
+		size_t getNumTilesX() const {
+			return numTilesX;
+		}
 	private:
 		bool loaded;
 		std::string tilesetName;

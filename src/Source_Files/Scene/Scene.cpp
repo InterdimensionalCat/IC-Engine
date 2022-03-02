@@ -10,7 +10,6 @@
 #include "ActorPool.h"
 #include "SceneEvent.h"
 #include "Components.h"
-#include "TileRegistry.h"
 #include "AudioEngine.h"
 #include "System.h"
 
@@ -23,8 +22,6 @@ using namespace ic;
 Scene::Scene() {
 
 	registerComponentsFunction();
-
-	RegisterTiles();
 	
 	compManager = std::make_shared<ComponentManager>(this);
 	actorPool = std::make_shared<ActorPool>(this);

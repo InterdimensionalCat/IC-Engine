@@ -2,7 +2,6 @@
 #include "Tilemap.h"
 #include "Texture.h"
 #include "Image.h"
-#include "TileRegistry.h"
 #include "Window.h"
 #include "Tileset.h"
 
@@ -10,7 +9,9 @@ using namespace ic;
 
 Tilemap::Tilemap() : rendertex(std::make_unique<sf::RenderTexture>()) {}
 
-void Tilemap::loadMap(const float widthTiles, const float heightTiles, const std::vector<tmx::TileLayer::Tile>& tiledata, const tmx::Tileset& tilesetdata) {
+void Tilemap::loadMap(const float widthTiles, const float heightTiles,
+    const std::vector<tmx::TileLayer::Tile>& tiledata,
+    const tmx::Tileset& tilesetdata, const std::string& tilesetName) {
     width =  widthTiles;
     height = heightTiles;
 
@@ -22,12 +23,42 @@ void Tilemap::loadMap(const float widthTiles, const float heightTiles, const std
     }
 
     std::string tilesetname = tilesetdata.getName();
+    Tileset set;
+
+    fs::path filepath(fs::current_path());
+    filepath /= "resources";
+    filepath /= "tilesets";
+    filepath /= "meta";
+    filepath /= tilesetName;
+    filepath += ".json";
+
+    auto tilesetjson = std::make_shared<json>();
+    std::ifstream tilesetfile(filepath);
+
+    if (!tilesetfile.is_open()) {
+        Logger::error("Error loading tileset data at {}", filepath.string());
+        Logger::error("Tileset at {} not found", filepath.string());
+        throw std::exception();
+    }
+
+    try {
+        tilesetfile >> (*tilesetjson);
+    }
+    catch (json::exception e) {
+        Logger::error("Error loading tileset data at {}", filepath.string());
+        Logger::error("Error parsing actor data json: {}",
+            e.what());
+        throw e;
+    }
+
+    set.readFromJson(tilesetjson);
 
     for (size_t i = 0; i < tiledata.size(); i++) {
         auto& tile = tiledata.at(i);
         uint32_t x = (uint32_t)i % (uint32_t)width;
         uint32_t y = (uint32_t)i / (uint32_t)width;
-        setTile(x, y, getTileFromID(tile.ID));
+        //Logger::debug("Tile at ({}, {}) is tileId: {}", x, y, tile.ID);
+        setTile(x, y, set.getMetadata(tile.ID));
     }
 
     	tileset = std::make_unique<Texture>(tilesetname);
@@ -50,11 +81,19 @@ void Tilemap::loadMap(const float widthTiles, const float heightTiles, const std
             auto tileAt = tiles.at(i).at(j);
 
             // find its position in the tileset texture
-            //int tu = tileAt.getTilesetX() - 1;
-            //int tv = tileAt.getTilesetY() - 1;
 
-            int tu = 0;
-            int tv = 0;
+            auto tilesetX = (tileAt.getTileID() - 1) % set.getNumTilesX();
+            auto tilesetY = (tileAt.getTileID() - 1) / set.getNumTilesX();
+
+            //Logger::debug("Tile at ({}, {}) has texcoords: "
+            //     "({}, {}) and ID: {}", 
+            //    i, j, tilesetX, tilesetY, tileAt.getTileID());
+
+            int tu = tilesetX;
+            int tv = tilesetY;
+
+            //int tu = 0;
+            //int tv = 0;
 
             // get a pointer to the current tile's quad
             sf::Vertex* quad = &vertices[(i + j * width) * 4];
