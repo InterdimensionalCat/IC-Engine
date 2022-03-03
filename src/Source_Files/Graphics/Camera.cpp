@@ -9,7 +9,7 @@
 using namespace ic;
 using namespace s2d;
 
-Camera::Camera(const float width, const float height, std::shared_ptr<ActorEntry> followTarget, Scene* scene) : Camera(width, height, CameraMode::Follow) {
+Camera::Camera(const float width, const float height, std::shared_ptr<ActorEntry> followTarget, GameScene* scene) : Camera(width, height, CameraMode::Follow) {
 	Camera::scene = scene;
 	Camera::followTarget = followTarget;
 

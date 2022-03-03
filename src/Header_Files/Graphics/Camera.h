@@ -1,7 +1,7 @@
 #pragma once
 
 namespace ic {
-	class Scene;
+	class GameScene;
 	class ActorEntry;
 	class Window;
 
@@ -17,7 +17,7 @@ namespace ic {
 
 		Camera() {}
 
-		Camera(const float width, const float height, std::shared_ptr<ActorEntry> followtarget, Scene* scene);
+		Camera(const float width, const float height, std::shared_ptr<ActorEntry> followtarget, GameScene* scene);
 
 		Camera(const float width, const float height, const CameraMode& mode = CameraMode::Controlled);
 		void updateWindow(Window& window);
@@ -39,7 +39,7 @@ namespace ic {
 		CameraMode mode;
 		sf::Vector2f scrollpos;
 		sf::Vector2f boundsInPixels;
-		Scene* scene;
+		GameScene* scene;
 	};
 }
 

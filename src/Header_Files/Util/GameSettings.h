@@ -103,6 +103,13 @@ namespace ic {
 
 					fs::path filepath(fs::current_path());
 					filepath /= "settings";
+
+					if (!fs::exists(filepath)) {
+						Logger::warn("Directory {} does not exist, "
+							"creating...", filepath.string());
+						fs::create_directories(filepath);
+					}
+
 					filepath /= "settings";
 					filepath += ".json";
 
@@ -114,7 +121,7 @@ namespace ic {
 					writefile << newdata->dump(2);
 
 					writefile.close();
-					Logger::info("Settings save successful.");
+					Logger::info("Settings save successful at path {}", filepath.string());
 				}
 				catch (std::exception e) {
 					//log this

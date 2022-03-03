@@ -29,7 +29,7 @@ static std::string getNameStatic() {\
 }\
 	classname() {}\
 protected:\
-	std::shared_ptr<System> create(Scene* scene) const override {\
+	std::shared_ptr<System> create(GameScene* scene) const override {\
     return std::static_pointer_cast<System>(std::make_shared<classname>(scene));\
 }\
     std::string getSysTypeName() const override {\
@@ -74,7 +74,7 @@ inline static StartupObj startup;
 
 	class System {
 	public:
-		static std::shared_ptr<System> createSystem(Scene* scene, std::string name) {
+		static std::shared_ptr<System> createSystem(GameScene* scene, std::string name) {
 			return systemPrototypes.at(nameidmap.at(name))->create(scene);
 		}
 		virtual void excecute() = 0;
@@ -120,9 +120,9 @@ inline static StartupObj startup;
 
 
 		virtual std::string getSysTypeName() const = 0;
-		virtual std::shared_ptr<System> create(Scene* scene) const = 0;
-		System(Scene* scene) : scene(scene) {}
-		Scene* scene;
+		virtual std::shared_ptr<System> create(GameScene* scene) const = 0;
+		System(GameScene* scene) : scene(scene) {}
+		GameScene* scene;
 	private:
 		static inline uint32_t staticidcounter = 0;
 	};
@@ -130,7 +130,7 @@ inline static StartupObj startup;
 	template<typename... ComponentTypes>
 	class SystemTrivial : public System {
 	public:
-		SystemTrivial(Scene* scene) : System(scene),
+		SystemTrivial(GameScene* scene) : System(scene),
 			view(std::make_shared<SceneView<ComponentTypes...>>(scene)) {}
 
 		virtual void excecute() {

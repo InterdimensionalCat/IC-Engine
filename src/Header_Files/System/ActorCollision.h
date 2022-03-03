@@ -11,7 +11,7 @@
 namespace ic {
 	class ActorCollision : public System {
 	public:
-		ActorCollision(Scene* scene) : System(scene) {}
+		ActorCollision(GameScene* scene) : System(scene) {}
 
 		virtual void excecute() {
 
@@ -87,16 +87,16 @@ namespace ic {
 
 #undef addCollisionFn
 
-		static inline std::map<std::pair<std::string, std::string>, std::function<void(Scene* scene, std::shared_ptr<ActorEntry>, std::shared_ptr<ActorEntry>)>> collisioncallbackmap;
+		static inline std::map<std::pair<std::string, std::string>, std::function<void(GameScene* scene, std::shared_ptr<ActorEntry>, std::shared_ptr<ActorEntry>)>> collisioncallbackmap;
 
 		static inline PopulateCallback popcallback;
 
-		static void playertogoal(Scene* scene, std::shared_ptr<ActorEntry> player, std::shared_ptr<ActorEntry> goal) {
+		static void playertogoal(GameScene* scene, std::shared_ptr<ActorEntry> player, std::shared_ptr<ActorEntry> goal) {
 			AudioEngine::get()->playSound(AudioEngine::SoundRequest("PlayerWin", 15.0f));
 			scene->sceneEvents->pushEvent<ChangeLevelEvent>();
 		}
 
-		static void playertoenemy(Scene* scene, std::shared_ptr<ActorEntry> player, std::shared_ptr<ActorEntry> enemy) {
+		static void playertoenemy(GameScene* scene, std::shared_ptr<ActorEntry> player, std::shared_ptr<ActorEntry> enemy) {
 
 
 			auto ptrans = scene->compManager->getComponent<Transform>(player);
@@ -134,15 +134,15 @@ namespace ic {
 
 		}
 
-		static void playertoplatform(Scene* scene, std::shared_ptr<ActorEntry> player, std::shared_ptr<ActorEntry> platform) {
+		static void playertoplatform(GameScene* scene, std::shared_ptr<ActorEntry> player, std::shared_ptr<ActorEntry> platform) {
 			creatureToPlatform(scene, player, platform);
 		}
 
-		static void enemytoplatform(Scene* scene, std::shared_ptr<ActorEntry> enemy, std::shared_ptr<ActorEntry> platform) {
+		static void enemytoplatform(GameScene* scene, std::shared_ptr<ActorEntry> enemy, std::shared_ptr<ActorEntry> platform) {
 			creatureToPlatform(scene, enemy, platform);
 		}
 
-		static void creatureToPlatform(Scene* scene, std::shared_ptr<ActorEntry> creature, std::shared_ptr<ActorEntry> platform) {
+		static void creatureToPlatform(GameScene* scene, std::shared_ptr<ActorEntry> creature, std::shared_ptr<ActorEntry> platform) {
 
 			auto cstate = scene->compManager->getComponent<StateController>(creature)->state;
 			auto cvel = scene->compManager->getComponent<Velocity>(creature);
@@ -243,12 +243,12 @@ namespace ic {
 			return crect;
 		}
 
-		static void playerDeath(Scene* scene, std::shared_ptr<ActorEntry> player) {
+		static void playerDeath(GameScene* scene, std::shared_ptr<ActorEntry> player) {
 			AudioEngine::get()->playSound(AudioEngine::SoundRequest("PlayerDead", 15.0f));
 			scene->sceneEvents->pushEvent<ResetLevelEvent>();
 		}
 
-		static s2d::Rect2m getPosSpeedAdjustedHitboxNoExtension(Scene* scene, std::shared_ptr<ActorEntry> entry) {
+		static s2d::Rect2m getPosSpeedAdjustedHitboxNoExtension(GameScene* scene, std::shared_ptr<ActorEntry> entry) {
 			auto aabbcomp = scene->compManager->getComponent<Hitbox>(entry);
 			auto trans = scene->compManager->getComponent<Transform>(entry);
 			auto vel = scene->compManager->getComponent<Velocity>(entry);
@@ -269,7 +269,7 @@ namespace ic {
 			return aabb;
 		}
 
-		static s2d::Rect2m getPosSpeedAdjustedHitbox(Scene* scene, std::shared_ptr<ActorEntry> entry) {
+		static s2d::Rect2m getPosSpeedAdjustedHitbox(GameScene* scene, std::shared_ptr<ActorEntry> entry) {
 			auto aabbcomp = scene->compManager->getComponent<Hitbox>(entry);
 			auto trans = scene->compManager->getComponent<Transform>(entry);
 			auto vel = scene->compManager->getComponent<Velocity>(entry);
@@ -296,7 +296,7 @@ namespace ic {
 			return aabb;
 		}
 
-		static void drawHitbox(Scene* scene, const s2d::Rect2m& rect) {
+		static void drawHitbox(GameScene* scene, const s2d::Rect2m& rect) {
 			//sf::RectangleShape shape = rect.makeDrawableSFMLRect(3.0f, sf::Color(0, 0, 0, 0), sf::Color::Red);
 			//scene->debugShapes.push_back(shape);
 		}

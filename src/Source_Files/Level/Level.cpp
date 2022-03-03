@@ -13,7 +13,7 @@
 
 using namespace ic;
 
-Level::Level(Scene* scene) : scene(scene) {
+Level::Level(GameScene* scene) : scene(scene) {
 	tilemap = std::make_shared<Tilemap>();
 	loadLevel("newLevel_1-px");
 }

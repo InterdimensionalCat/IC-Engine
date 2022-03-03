@@ -9,7 +9,7 @@
 
 using namespace ic;
 
-SystemManager::SystemManager(Scene* scene) : scene(scene) {
+SystemManager::SystemManager(GameScene* scene) : scene(scene) {
 	for (auto& [name, id] : System::nameidmap) {
 		systems.push_back(std::move(System::createSystem(scene, name)));
 	}

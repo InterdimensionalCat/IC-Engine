@@ -4,15 +4,15 @@ namespace ic {
 
 	enum class SystemType;
 	class System;
-	class Scene;
+	class GameScene;
 
 	class SystemManager {
 	public:
-		SystemManager(Scene* scene);
+		SystemManager(GameScene* scene);
 		void runSystemsInRange(const SystemType begin, const SystemType end);
 	private:
 
-		Scene* scene;
+		GameScene* scene;
 
 		std::vector<std::shared_ptr<System>> systems;
 	};

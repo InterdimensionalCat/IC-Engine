@@ -19,7 +19,7 @@
 
 using namespace ic;
 
-Scene::Scene() {
+GameScene::GameScene() {
 
 	registerComponentsFunction();
 	
@@ -34,11 +34,11 @@ Scene::Scene() {
 	AudioEngine::get()->playMusic(AudioEngine::MusicRequest("FlatZone", 10.0f));
 }
 
-Scene::~Scene() {
+GameScene::~GameScene() {
 	AudioEngine::get()->flush();
 }
 
-void Scene::update() {
+void GameScene::update() {
 	BenchmarkLogger::get()->beginBenchmark("SceneUpdate");
 
 	AudioEngine::get()->update();
@@ -58,7 +58,7 @@ void Scene::update() {
 	BenchmarkLogger::get()->endBenchmark("SceneUpdate");
 }
 
-void Scene::draw(const float interpol) {
+void GameScene::draw(const float interpol) {
 	BenchmarkLogger::get()->beginBenchmark("SceneDraw");
 	sysManager->runSystemsInRange(SystemType::PreGraphics, SystemType::Graphics);
 	Renderer::get()->window->preRender(interpol);

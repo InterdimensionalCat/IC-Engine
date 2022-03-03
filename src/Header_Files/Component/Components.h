@@ -17,7 +17,7 @@ namespace ic {
 	class Input;
 	class Animation;
 
-	typedef std::function<void(ic::Scene*, std::shared_ptr<ic::ActorEntry>, std::shared_ptr<json>)> Func;
+	typedef std::function<void(ic::GameScene*, std::shared_ptr<ic::ActorEntry>, std::shared_ptr<json>)> Func;
 
 #ifndef IC_COMP_OVERHEAD
 #define IC_COMP_OVERHEAD
@@ -32,7 +32,7 @@ namespace ic {
 	};
 
 	template<typename T>
-	void inline createJsonOf(Scene* scene, std::shared_ptr<ActorEntry> entry, std::shared_ptr<json> file) {
+	void inline createJsonOf(GameScene* scene, std::shared_ptr<ActorEntry> entry, std::shared_ptr<json> file) {
 		auto comp = scene->compManager->getComponent<T>(entry);
 		if (comp != nullptr) {
 			comp->toJson(file);
@@ -40,7 +40,7 @@ namespace ic {
 	}
 
 	template<typename T>
-	void inline createComponentFromJson(Scene* scene, std::shared_ptr<ActorEntry> entry, std::shared_ptr<json> file) {
+	void inline createComponentFromJson(GameScene* scene, std::shared_ptr<ActorEntry> entry, std::shared_ptr<json> file) {
 		if (file->find(T::getNameStatic()) != file->end()) {
 			auto comp = scene->compManager->assignComponent<T>(entry);
 			comp->fromJson(file);

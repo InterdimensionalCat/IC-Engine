@@ -8,7 +8,7 @@ namespace ic {
 	template<typename... ComponentTypes>
 	class DebugGraphicsSystem : public System {
 	public:
-		DebugGraphicsSystem(Scene* scene) : System(scene), window(Renderer::get()->window),
+		DebugGraphicsSystem(GameScene* scene) : System(scene), window(Renderer::get()->window),
 			view(std::make_shared<SceneView<ComponentTypes...>>(scene)) {}
 
 		virtual void excecute() {
@@ -49,7 +49,7 @@ namespace ic {
 
 	class DisplayHitboxes : public DebugGraphicsSystem<Transform, Hitbox> {
 	public:
-		DisplayHitboxes(Scene* scene) : DebugGraphicsSystem(scene) {}
+		DisplayHitboxes(GameScene* scene) : DebugGraphicsSystem(scene) {}
 		void excecutionFunction(std::shared_ptr<ActorEntry> entry) override {
 			auto trans = getComponent<Transform>(entry);
 			auto hitbox = getComponent<Hitbox>(entry);

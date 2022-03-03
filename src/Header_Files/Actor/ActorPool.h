@@ -3,7 +3,7 @@
 namespace ic {
 	
 	class ActorEntry;
-	class Scene;
+	class GameScene;
 
 	/**
 	 * @brief manager class for scene actors
@@ -21,7 +21,7 @@ namespace ic {
 		 * @brief constructs an actor pool for the given scene
 		 * @param scene the scene to construct with
 		*/
-		ActorPool(Scene* scene);
+		ActorPool(GameScene* scene);
 
 		/*
 		* @brief the actor vectors are cleared on destruction
@@ -96,9 +96,9 @@ namespace ic {
 
 		friend class Level;
 		friend class ComponentManager;
-		friend class Scene;
+		friend class GameScene;
 
-		Scene* scene;
+		GameScene* scene;
 
 		size_t maxActors = 1;
 		std::vector<std::shared_ptr<ActorEntry>> freeActors;

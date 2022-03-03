@@ -8,7 +8,7 @@
 namespace ic {
 	class DrawSprites : public SystemTrivial<SpriteDrawable> {
 	public:
-		DrawSprites(Scene* scene) : SystemTrivial(scene), window(Renderer::get()->window) {}
+		DrawSprites(GameScene* scene) : SystemTrivial(scene), window(Renderer::get()->window) {}
 
 		void excecutionFunction(std::shared_ptr<ActorEntry> entry) override {
 			auto sprite = scene->compManager->getComponent<SpriteDrawable>(entry);
@@ -24,7 +24,7 @@ namespace ic {
 
 	class UpdateSpritePos : public SystemTrivial<SpriteDrawable, Transform> {
 	public:
-		UpdateSpritePos(Scene* scene) : SystemTrivial(scene) {}
+		UpdateSpritePos(GameScene* scene) : SystemTrivial(scene) {}
 
 		void excecutionFunction(std::shared_ptr<ActorEntry> entry) override {
 			auto sprite = scene->compManager->getComponent<SpriteDrawable>(entry);
@@ -39,7 +39,7 @@ namespace ic {
 
 	class DrawAnimations : public SystemTrivial<Animatable> {
 	public:
-		DrawAnimations(Scene* scene) : SystemTrivial(scene), window(Renderer::get()->window) {}
+		DrawAnimations(GameScene* scene) : SystemTrivial(scene), window(Renderer::get()->window) {}
 
 		void excecutionFunction(std::shared_ptr<ActorEntry> entry) override {
 			auto anim = scene->compManager->getComponent<Animatable>(entry);
@@ -53,7 +53,7 @@ namespace ic {
 
 	class StateAnimationDriver : public SystemTrivial<Animatable, Transform, StateController, Velocity, AnimStateMap, Hitbox, InputController> {
 	public:
-		StateAnimationDriver(Scene* scene) : SystemTrivial(scene) {}
+		StateAnimationDriver(GameScene* scene) : SystemTrivial(scene) {}
 
 		void excecutionFunction(std::shared_ptr<ActorEntry> entry) override {
 			auto anim = scene->compManager->getComponent<Animatable>(entry);

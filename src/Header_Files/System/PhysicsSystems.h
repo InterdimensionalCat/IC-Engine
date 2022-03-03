@@ -11,7 +11,7 @@
 namespace ic {
 	class UpdatePositions : public SystemTrivial<Transform, Velocity> {
 	public:
-		UpdatePositions(Scene* scene) : SystemTrivial(scene) {}
+		UpdatePositions(GameScene* scene) : SystemTrivial(scene) {}
 		void excecutionFunction(std::shared_ptr<ActorEntry> entry) override {
 			Transform* trans = nullptr;
 			Velocity* vel = nullptr;
@@ -26,7 +26,7 @@ namespace ic {
 
 	class TilemapCollision : public SystemTrivial<Transform, Velocity, Hitbox, TileCollidable> {
 	public:
-		TilemapCollision(Scene* scene) : SystemTrivial<Transform, Velocity, Hitbox, TileCollidable>(scene), tilemap(scene->levels->tilemap) {}
+		TilemapCollision(GameScene* scene) : SystemTrivial<Transform, Velocity, Hitbox, TileCollidable>(scene), tilemap(scene->levels->tilemap) {}
 		void excecutionFunction(std::shared_ptr<ActorEntry> entry) override {
 
 			if (!scene->compManager->getComponent<TileCollidable>(entry)->tileCollidable) {
@@ -173,7 +173,7 @@ namespace ic {
 
 	class ApplyGravity : public SystemTrivial<PhysicsProperties, Velocity> {
 	public:
-		ApplyGravity(Scene* scene) : SystemTrivial(scene) {}
+		ApplyGravity(GameScene* scene) : SystemTrivial(scene) {}
 		void excecutionFunction(std::shared_ptr<ActorEntry> entry) override {
 			auto grv = scene->compManager->getComponent<PhysicsProperties>(entry)->gravity;
 			auto vel = scene->compManager->getComponent<Velocity>(entry);
@@ -185,7 +185,7 @@ namespace ic {
 
 	class ApplyFriction : public SystemTrivial<PhysicsProperties, Velocity> {
 	public:
-		ApplyFriction(Scene* scene) : SystemTrivial(scene) {}
+		ApplyFriction(GameScene* scene) : SystemTrivial(scene) {}
 		void excecutionFunction(std::shared_ptr<ActorEntry> entry) override {
 
 			auto input = scene->compManager->getComponent<InputController>(entry);
@@ -213,7 +213,7 @@ namespace ic {
 
 	class BindMovement : public SystemTrivial<BoundedVelocity, Velocity> {
 	public:
-		BindMovement(Scene* scene) : SystemTrivial(scene) {}
+		BindMovement(GameScene* scene) : SystemTrivial(scene) {}
 		void excecutionFunction(std::shared_ptr<ActorEntry> entry) override {
 			auto mvmt = scene->compManager->getComponent<BoundedVelocity>(entry);
 			auto vel = scene->compManager->getComponent<Velocity>(entry);
@@ -241,7 +241,7 @@ namespace ic {
 
 	class BindPositionByMapBounds : public SystemTrivial<Transform, BoundByMapBounds, Hitbox> {
 	public:
-		BindPositionByMapBounds(Scene* scene) : SystemTrivial(scene) {}
+		BindPositionByMapBounds(GameScene* scene) : SystemTrivial(scene) {}
 		void excecutionFunction(std::shared_ptr<ActorEntry> entry) override {
 			auto transform = scene->compManager->getComponent<Transform>(entry);
 			auto mapBounds = scene->compManager->getComponent<BoundByMapBounds>(entry);

@@ -17,7 +17,7 @@ namespace ic {
 		 * @brief constructs a ComponentManager for the given scene
 		 * @param scene the scene to construct a ComponentManager for
 		*/
-		ComponentManager(Scene* scene) : scene(scene) {}
+		ComponentManager(GameScene* scene) : scene(scene) {}
 		~ComponentManager() {
 			componentPools.clear();
 		}
@@ -149,7 +149,7 @@ namespace ic {
 		/**
 		 * @brief pointer to the scene
 		*/
-		Scene* scene;
+		GameScene* scene;
 
 		/**
 		 * @brief the component pools that contain all the components for the actors of this scene

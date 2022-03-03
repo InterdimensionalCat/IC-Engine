@@ -33,15 +33,21 @@ Window::Window() {
 
 	registerWindowEventListener(KeyboardGlobal::listener);
 
-	ImGui::SFML::Init(*window);
+	//ImGui::SFML::Init(*window);
 	guiClock.restart();
 
 }
 
 Window::~Window() {
-	listeners.clear();
+	for (auto& listener : listeners) {
+		listener.reset();
+	}
+	while (!listeners.empty()) {
+		listeners.pop_back();
+	}
+	//listeners.clear();
 	window->close();
-	ImGui::SFML::Shutdown();
+	//ImGui::SFML::Shutdown();
 }
 
 bool Window::updateInput() {
@@ -57,7 +63,7 @@ bool Window::updateInput() {
 	while (window->pollEvent(event))
 	{
 
-		ImGui::SFML::ProcessEvent(*window, event);
+		//ImGui::SFML::ProcessEvent(*window, event);
 
 		for (auto& listener : listeners) {
 			if (listener->handleWindowEvent(event)) {
@@ -78,7 +84,8 @@ bool Window::updateInput() {
 
 			if (event.key.code == sf::Keyboard::I) {
 				Settings::setDebug(!Settings::getDebug());
-				std::string debugswitch = Settings::getDebug() ? "enabled" : "disabled";
+				std::string debugswitch = Settings::getDebug() ? 
+					"enabled" : "disabled";
 				Logger::info("Debug Mode {}", debugswitch);
 			}
 		}
@@ -91,6 +98,11 @@ bool Window::updateInput() {
 void Window::preRender(const float interpol) {
 	this->interpol = interpol;
 	window->clear(sf::Color(255, 255, 255, 255));
+	//ImGui::SFML::Update(*window, guiClock.restart());
+}
+
+void Window::renderGui() {
+	//ImGui::SFML::Render(*window);
 }
 
 
@@ -98,6 +110,8 @@ void Window::postRender() {
 	window->display();
 }
 
-void Window::registerWindowEventListener(std::shared_ptr<WindowEventListener> listener) {
+void Window::registerWindowEventListener(
+	std::shared_ptr<WindowEventListener> listener) {
+	Logger::debug("Window event listener {} registered", listener->getName());
 	listeners.push_back(listener);
 }

@@ -122,6 +122,10 @@ inline static StartupObj startup;
 				keylistener.releaseKey(key);
 			}
 
+			std::string getName() const override {
+				return "KeyboardGlobalEventListener";
+			}
+
 			KeyListener<sf::Keyboard::Key> keylistener;
 		};
 

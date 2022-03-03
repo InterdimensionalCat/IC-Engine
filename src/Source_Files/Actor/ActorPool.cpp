@@ -7,7 +7,7 @@
 
 using namespace ic;
 
-ActorPool::ActorPool(Scene* scene) : scene(scene) {}
+ActorPool::ActorPool(GameScene* scene) : scene(scene) {}
 
 ActorPool::~ActorPool() {
 	actors.clear();

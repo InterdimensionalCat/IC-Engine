@@ -3,20 +3,20 @@
 namespace ic {
 
 	class ActorEntry;
-	class Scene;
+	class GameScene;
 
 
 	template<typename... ComponentTypes>
 	class SceneView {
 	public:
-		SceneView(Scene* scene) : scene(scene), all(sizeof...(ComponentTypes) == 0) {
+		SceneView(GameScene* scene) : scene(scene), all(sizeof...(ComponentTypes) == 0) {
 			if (!all) {
 				viewComponents = { getComponentId<ComponentTypes>() ... };
 			}
 		}
 
 		struct Iterator {
-			Iterator(Scene* scene, size_t index, const std::vector<int>& viewComponents, bool all)
+			Iterator(GameScene* scene, size_t index, const std::vector<int>& viewComponents, bool all)
 				: scene(scene), index(index), viewComponents(viewComponents), all(all) {}
 
 			std::shared_ptr<ActorEntry> operator*() const {
@@ -56,7 +56,7 @@ namespace ic {
 			}
 
 
-			Scene* scene;
+			GameScene* scene;
 			size_t index;
 			std::vector<int> viewComponents;
 			bool all;
@@ -96,7 +96,7 @@ namespace ic {
 		}
 
 		std::vector<int> viewComponents;
-		Scene* scene;
+		GameScene* scene;
 		bool all;
 	};
 }

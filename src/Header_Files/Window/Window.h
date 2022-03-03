@@ -18,6 +18,7 @@ namespace ic {
 
 		void preRender(const float interpol);
 
+		void renderGui();
 
 		void postRender();
 

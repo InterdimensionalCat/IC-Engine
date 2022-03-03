@@ -1,20 +1,16 @@
 #pragma once
 
-//#include "Window.h"
-//#include "MapParser.h"
-//#include "ComponentPool.h"
-//#include "Parallax.h"
-//#include "Camera.h"
-//#include "Tilemap.h"
-//#include "Input.h"
-//#include "PhysicsEngine.h"
-//#include "AudioEngine.h"
-//#include "ActorEntry.h"
-//#include "SceneEvent.h"
-
-
 
 namespace ic {
+
+	class Scene {
+	public:
+		Scene() {}
+		~Scene() {}
+		virtual void update() = 0;
+		virtual void draw(const float interpol) = 0;
+		virtual std::string getName() const = 0;
+	};
 
 	class ComponentManager;
 	class Level;
@@ -40,18 +36,18 @@ namespace ic {
 	 * which has methods that only function when debug mode is enabled, such as drawing
 	 * debug hitboxes
 	*/
-	class Scene {
+	class GameScene : public Scene {
 	public:
 
 		/**
 		 * @brief constructs all the managers and objects of the scene and loads the first level
 		*/
-		Scene();
+		GameScene();
 
 		/*
 		* @brief clears active registries on destruction
 		*/
-		~Scene();
+		~GameScene();
 
 		/**
 		 * @brief updates input and all actors based on the currently registered systems
@@ -65,6 +61,10 @@ namespace ic {
 		 * @param interpol the calculated per frame interpolation value
 		*/
 		void draw(const float interpol);
+
+		std::string getName() const override {
+			return "GameScene";
+		}
 
 		/**
 		 * @brief stores and controls the component portion of ECS

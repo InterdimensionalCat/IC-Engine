@@ -16,17 +16,17 @@ SceneEventManager::~SceneEventManager() {
 	}
 }
 
-SceneEventManager::SceneEventManager(Scene* scene) : scene(scene) {}
+SceneEventManager::SceneEventManager(GameScene* scene) : scene(scene) {}
 
-void ResetLevelEvent::excecute(Scene* scene) {
+void ResetLevelEvent::excecute(GameScene* scene) {
 	scene->levels->loadLevel(scene->levels->getCurrentLevelName());
 }
 
-void DespawnActorEvent::excecute(Scene* scene) {
+void DespawnActorEvent::excecute(GameScene* scene) {
 	scene->actorPool->despawnActor(actortodespawn);
 }
 
-void ChangeLevelEvent::excecute(Scene* scene) {
+void ChangeLevelEvent::excecute(GameScene* scene) {
 	scene->levels->changeLevel();
 }
 

@@ -3,7 +3,7 @@
 #include "ActorEntry.h"
 
 namespace ic {
-    class Scene;
+    class GameScene;
     //class ActorEntry;
 
     enum class SceneEventType {
@@ -15,14 +15,14 @@ namespace ic {
     {
     public:
         virtual ~SceneEvent() {}
-        virtual void excecute(Scene* scene) = 0;
+        virtual void excecute(GameScene* scene) = 0;
         virtual std::string getName() const = 0;
     };
 
 #ifndef _Scene_Event
 #define _Scene_Event(x, type) class x : public SceneEvent {\
 public:\
-	void excecute(Scene* scene) override;\
+	void excecute(GameScene* scene) override;\
     std::string getName() const override {\
         return #x;\
     }\
@@ -34,7 +34,7 @@ public:\
 #define _Scene_Event_NonTrivial(x, entryname, type) class x : public SceneEvent {\
 public:\
     x(std::shared_ptr<ActorEntry> entryname) : entryname(entryname) {}\
-	void excecute(Scene* scene) override;\
+	void excecute(GameScene* scene) override;\
     std::string getName() const override {\
         std::string name(#x);\
         return name + ":" + std::to_string(x::entryname->getIndex());\
@@ -53,7 +53,7 @@ private:\
     class SceneEventManager {
     public:
 
-        SceneEventManager(Scene* scene);
+        SceneEventManager(GameScene* scene);
 
         ~SceneEventManager();
 
@@ -73,7 +73,7 @@ private:\
 
         }
     private:
-        Scene* scene;
+        GameScene* scene;
 
         std::queue<std::unique_ptr<SceneEvent>> preevents;
         std::queue<std::unique_ptr<SceneEvent>> postevents;

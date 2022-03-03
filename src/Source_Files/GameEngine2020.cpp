@@ -103,8 +103,8 @@ int main(int argc, char* argv[])
 	Logger::info("Windows debug version will check for memory leaks.");
 
 	//check for memory leaks
-	_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
-	_CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_DEBUG);
+	//_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+	//_CrtSetReportMode(_CRT_ERROR, _CRTDBG_MODE_DEBUG);
 #endif
 
 #ifdef __linux__

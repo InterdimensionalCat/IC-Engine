@@ -2,14 +2,14 @@
 
 namespace ic {
 
-	class Scene;
+	class GameScene;
 	class Tilemap;
 	class Camera;
 	class Parallax;
 
 	class Level {
 	public:
-		Level(Scene* scene);
+		Level(GameScene* scene);
 
 		void update();
 		void draw(const float interpol);
@@ -60,7 +60,7 @@ namespace ic {
 		std::shared_ptr<Camera> camera;
 		std::shared_ptr<Parallax> parallaxEngine;
 
-		Scene* scene;
+		GameScene* scene;
 		std::string currentlevelname;
 
 		float mapwidth;

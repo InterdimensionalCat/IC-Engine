@@ -6,7 +6,7 @@
 namespace ic {
 	class HorzMove : public SystemTrivial<Velocity, HorzMovable, InputController> {
 	public:
-		HorzMove(Scene* scene) : SystemTrivial(scene) {}
+		HorzMove(GameScene* scene) : SystemTrivial(scene) {}
 		void excecutionFunction(std::shared_ptr<ActorEntry> entry) override {
 			auto vel = scene->compManager->getComponent<Velocity>(entry);
 			auto accelX = scene->compManager->getComponent<HorzMovable>(entry)->accelX;
@@ -31,7 +31,7 @@ namespace ic {
 
 	class UpdateFrcByState : public SystemTrivial<PhysicsProperties, StateController, StateFrictionValues> {
 	public:
-		UpdateFrcByState(Scene* scene) : SystemTrivial(scene) {}
+		UpdateFrcByState(GameScene* scene) : SystemTrivial(scene) {}
 
 		void excecutionFunction(std::shared_ptr<ActorEntry> entry) override {
 			auto frc = scene->compManager->getComponent<PhysicsProperties>(entry);
@@ -59,7 +59,7 @@ namespace ic {
 
 	class UpdateAccelByState : public SystemTrivial<HorzMovable, StateController, StateAccelerationValues> {
 	public:
-		UpdateAccelByState(Scene* scene) : SystemTrivial(scene) {}
+		UpdateAccelByState(GameScene* scene) : SystemTrivial(scene) {}
 
 		void excecutionFunction(std::shared_ptr<ActorEntry> entry) override {
 			auto accelX = scene->compManager->getComponent<HorzMovable>(entry);
@@ -87,7 +87,7 @@ namespace ic {
 
 	class GenericStateDriver : public SystemTrivial<StateController, InputController, AirborneState, TileCollisionEventListener, Velocity> {
 	public:
-		GenericStateDriver(Scene* scene) : SystemTrivial(scene) {}
+		GenericStateDriver(GameScene* scene) : SystemTrivial(scene) {}
 
 		void excecutionFunction(std::shared_ptr<ActorEntry> entry) override {
 			auto statecontroller = scene->compManager->getComponent<StateController>(entry);
@@ -303,7 +303,7 @@ namespace ic {
 
 	class JumpInput : public SystemTrivial<InputController, StateController, Velocity, Jumpable, PhysicsProperties> {
 	public:
-		JumpInput(Scene* scene) : SystemTrivial(scene) {}
+		JumpInput(GameScene* scene) : SystemTrivial(scene) {}
 		void excecutionFunction(std::shared_ptr<ActorEntry> entry) override {
 			auto input = scene->compManager->getComponent<InputController>(entry)->input;
 			auto vel = scene->compManager->getComponent<Velocity>(entry);
@@ -354,7 +354,7 @@ namespace ic {
 
 	class CheckPlayerFallOffMap : public SystemTrivial<MapBoundCollisionListener, PlayerFlag> {
 	public:
-		CheckPlayerFallOffMap(Scene* scene) : SystemTrivial(scene) {}
+		CheckPlayerFallOffMap(GameScene* scene) : SystemTrivial(scene) {}
 		void excecutionFunction(std::shared_ptr<ActorEntry> entry) override {
 
 			//auto trans = getComponent<Transform>(entry);
@@ -389,7 +389,7 @@ namespace ic {
 
 	class PlatformDespawn : public SystemTrivial<MapBoundCollisionListener, PlatformTypeable> {
 	public:
-		PlatformDespawn(Scene* scene) : SystemTrivial(scene) {}
+		PlatformDespawn(GameScene* scene) : SystemTrivial(scene) {}
 		void excecutionFunction(std::shared_ptr<ActorEntry> entry) override {
 			auto listener = scene->compManager->getComponent<MapBoundCollisionListener>(entry);
 			while (!listener->events->empty()) {
@@ -409,7 +409,7 @@ namespace ic {
 
 	class ConstrainMovement : public SystemTrivial<Transform, ConstrainedMovement> {
 	public:
-		ConstrainMovement(Scene* scene) : SystemTrivial(scene) {}
+		ConstrainMovement(GameScene* scene) : SystemTrivial(scene) {}
 		void excecutionFunction(std::shared_ptr<ActorEntry> entry) override {
 			auto trans = scene->compManager->getComponent<Transform>(entry);
 			auto center = s2d::Point2m(trans->x, trans->y);
@@ -455,7 +455,7 @@ namespace ic {
 
 	class BoopAiUpdate : public SystemTrivial<EnemyFlag, InputController, ConstrainedMovement, StateController> {
 	public:
-		BoopAiUpdate(Scene* scene) : SystemTrivial(scene) {}
+		BoopAiUpdate(GameScene* scene) : SystemTrivial(scene) {}
 		void excecutionFunction(std::shared_ptr<ActorEntry> entry) override {
 			if (scene->compManager->getComponent<EnemyFlag>(entry)->enemyname != "Boop") return;
 			auto constrainedmvmt = scene->compManager->getComponent<ConstrainedMovement>(entry);
@@ -509,7 +509,7 @@ namespace ic {
 
 	class CircularMovableUpdate : public SystemTrivial<CircularConstrainedMovement, CircularMovable, Velocity, Transform, ConstrainedMovementEventListener> {
 	public:
-		CircularMovableUpdate(Scene* scene) : SystemTrivial(scene) {}
+		CircularMovableUpdate(GameScene* scene) : SystemTrivial(scene) {}
 
 		void excecutionFunction(std::shared_ptr<ActorEntry> entry) override {
 			auto vel = scene->compManager->getComponent<Velocity>(entry);
@@ -574,7 +574,7 @@ namespace ic {
 
 	class PlatformUpdate : public SystemTrivial<PlatformTypeable, CircularMovable, Velocity, Transform, ConstrainedMovementEventListener> {
 	public:
-		PlatformUpdate(Scene* scene) : SystemTrivial(scene) {}
+		PlatformUpdate(GameScene* scene) : SystemTrivial(scene) {}
 
 		void excecutionFunction(std::shared_ptr<ActorEntry> entry) override {
 			auto ptype = scene->compManager->getComponent<PlatformTypeable>(entry)->type;
