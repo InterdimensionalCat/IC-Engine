@@ -162,21 +162,6 @@ inline static StartupObj startup;
 
 		_Input_Device(KeyboardInput);
 
-		//public:
-		//	static std::shared_ptr<Input> create(const std::string& name) {
-		//		return std::make_shared<KeyboardInput>();
-		//	}
-		//	std::string getName() const override { return "KeyboardInput"; }
-		//private:
-		//	class StartupObj {
-		//	public:
-		//		StartupObj() {
-		//			Input::addPrototype("KeyboardInput", create);
-		//		}
-		//	};
-		//	friend class StartupObj;
-		//	inline static StartupObj startup;
-
 
 	private:
 		KeyboardHandle handle;

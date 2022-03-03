@@ -1,4 +1,5 @@
-
+#pragma once
+#include "Window.h"
 
 
 namespace ic {
@@ -23,12 +24,21 @@ namespace ic {
 
 		}
 
+		std::shared_ptr<Window> getWindow() {
+			return window;
+		}
+
+		std::shared_ptr<Window> getWindow() const {
+			return window;
+		}
+
 		/**
 		 * @brief the window for the program
 		*/
 		std::shared_ptr<Window> window;
 
 	private:
+
 		inline static std::unique_ptr<Renderer> instance;
 	};
 }
