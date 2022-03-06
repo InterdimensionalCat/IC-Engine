@@ -7,14 +7,13 @@
 #include <typeinfo>
 #include "StringableEnum.h"
 #include "ComponentManager.h"
-#include "Input.h"
+#include "GameInput.h"
 #include "ActorEntry.h"
 
 #include <type_traits>
 
 namespace ic {
 
-	class Input;
 	class Animation;
 
 	typedef std::function<void(ic::GameScene*, std::shared_ptr<ic::ActorEntry>, std::shared_ptr<json>)> Func;
@@ -252,7 +251,7 @@ inline static bool added = false;
 	};
 
 	struct InputController {
-		std::shared_ptr<Input> input;
+		std::shared_ptr<GameInputDevice> input;
 
 		//read/write a name that is a key into a map of input devices?
 
@@ -262,7 +261,7 @@ inline static bool added = false;
 		}
 
 		void fromJson(const std::shared_ptr<json>& file) {
-			input = Input::createInputDevice((*file)[getName()]["input"]);
+			input = GameInput::createInputDevice((*file)[getName()]["input"]);
 		}
 
 		_Component(InputController)
