@@ -41,14 +41,18 @@ namespace ic {
 		}
 
 		void update() {
+			currentScene->preUpdate();
 			currentScene->update();
+			currentScene->postUpdate();
 			if (dirty) {
 				changeSceneDelayed();
 			}
 		}
 
 		void draw(const float interpol) {
+			currentScene->preRender();
 			currentScene->draw(interpol);
+			currentScene->postRender();
 		}
 	private:
 

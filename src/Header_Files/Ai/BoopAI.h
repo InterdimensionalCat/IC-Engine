@@ -1,26 +1,27 @@
 #pragma once
 #include "Input.h"
+#include "GameInput.h"
 
 namespace ic {
 
+	class Port;
+
 	class BoopAI :
-		public Input
+		public GameInputDevice
 	{
 	public:
-		BoopAI();
 
 		void update() override;
-		bool isDown(const InputButton key) const override;
-		bool isPressed(const InputButton key) const override;
+		bool isDown(const GameInputButton key) const override;
+		bool isPressed(const GameInputButton key) const override;
 
-		void pressKey(const InputButton key);
-		void releaseKey(const InputButton key);
-
-		_Input_Device(BoopAI);
+		void pressKey(const GameInputButton key);
+		void releaseKey(const GameInputButton key);
 
 	private:
+		BoopAI(const std::shared_ptr<Port> port);
+		KeyListener<GameInputButton> keylistener;
 
-		KeyListener<InputButton> keylistener;
 	};
 }
 

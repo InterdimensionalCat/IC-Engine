@@ -1,42 +1,39 @@
 #pragma once
 #include <any>
+#include <queue>
+#include <string>
+#include <vector>
 
 namespace ic {
 
+    template<typename T>
+    class Subscription
+    {
+    public:
+        Subscription(std::function<void(T)> callback) : callback_fn(callback) {}
+
+        void operator()(T arg) override {
+            callback_fn(arg);
+        }
+
+    private:
+        std::function<void(T)> callback_fn;
+    };
 
     class EventBus
     {
     public:
 
         template<typename T>
-        class Subscription
-        {
-        public:
-            Subscription(void (*callback)(T)) : callback_fn(callback) {}
-
-            ~Subscription()
-            {
-                EventBus::Unsubscribe(this);
-            }
-
-            void operator()(T arg) override {
-                callback_fn(arg);
-            }
-
-        private:
-            void (*callback_fn)(T);
-        };
-
-        static std::map<std::type_info, std::vector<std::any>> topics;
-
-        template<typename T>
-        static void publish(T published_event)
+        void publish(T published_event)
         {
             auto t = typeid(T);
+            Logger::debug("Publishing event of type {}", t.name());
+            //eventQueue.push(std::pair(t, published_event));
 
-            auto it = topics.find(t);
+            auto it = getTopics().find(t);
 
-            if (it != topics.end()) {
+            if (it != getTopics().end()) {
                 auto subscribers = std::any_cast<std::vector<Subscription<T>>>(it->second);
 
                 for (auto& subscription : subscribers) {
@@ -45,19 +42,27 @@ namespace ic {
             }
         }
 
+        void handleEvents() {
+            //while (!eventQueue.empty()) {
+            //    auto& [t, published_event] = eventQueue.front();
+
+            //    Logger::debug("Handling event of type {}", t.name());
+
+            //}
+        }
+
         template<typename T>
-        static std::shared_ptr<Subscription<T>> subscribe(void (*callback)(T))
+        std::shared_ptr<Subscription<T>> subscribe(std::function<void(T)> callback)
         {
-            /* Determine event type so we can find the correct subscriber list */
             auto t = typeid(T);
             std::shared_ptr<Subscription<T>> newSub = std::make_shared<Subscription<T>>(callback);
-            
-            auto it = topics.find(t);
 
-            if (it == topics.end()) {
+            auto it = getTopics().find(t);
+
+            if (it == getTopics().end()) {
                 std::vector<std::any> newVec;
                 newVec.push_back(newSub);
-                topics.emplace(t, newVec);
+                getTopics().emplace(t, newVec);
             }
             else {
                 it->second.push_back(newSub);
@@ -67,20 +72,48 @@ namespace ic {
         }
 
         template<typename T>
-        static void Unsubscribe(Subscription<T> subscription)
+        void unsubscribe(Subscription<T> subscription)
         {
             auto t = typeid(T);
 
-            auto it = topics.find(t);
+            auto it = getTopics().find(t);
 
-            if (it != topics.end()) {
+            if (it != getTopics().end()) {
                 if (it->second.size > 0) {
                     std::erase(
-                        std::remove_if(it->second.begin(), it->second.end(), subscription), 
+                        std::remove_if(it->second.begin(), it->second.end(), subscription),
                         it->second.end()
                     );
                 }
             }
         }
+
+        virtual std::map<std::type_info, std::vector<std::any>>& getTopics() = 0;
+        virtual std::string getName() const = 0;
+
+    private:
+        //std::queue<std::pair<std::type_info, std::any>> eventQueue;
+    };
+
+    class GlobalEventBus : public EventBus
+    {
+    public:
+        std::map<std::type_info, std::vector<std::any>>& getTopics() override {
+            return topics;
+        }
+
+        std::string getName() const override {
+            return "GlobalEventBus";
+        }
+
+        static GlobalEventBus* get() {
+            if (instance.get() == nullptr) {
+                instance = std::make_unique<GlobalEventBus>();
+            }
+            return instance.get();
+        }
+    private:
+        std::map<std::type_info, std::vector<std::any>> topics;
+        inline static std::unique_ptr<GlobalEventBus> instance;
     };
 }

@@ -4,24 +4,25 @@
 using namespace ic;
 
 
-BoopAI::BoopAI() {}
+BoopAI::BoopAI(const std::shared_ptr<Port> port) 
+	: GameInputDevice(port) {}
 
 void BoopAI::update() {
 	keylistener.update();
 }
 
-bool BoopAI::isDown(const InputButton key) const {
+bool BoopAI::isDown(const GameInputButton key) const {
 	return keylistener.isDown(key);
 }
 
-bool BoopAI::isPressed(const InputButton key) const {
+bool BoopAI::isPressed(const GameInputButton key) const {
 	return keylistener.isPressed(key);
 }
 
-void BoopAI::pressKey(const InputButton key) {
+void BoopAI::pressKey(const GameInputButton key) {
 	keylistener.pressKey(key);
 }
 
-void BoopAI::releaseKey(const InputButton key) {
+void BoopAI::releaseKey(const GameInputButton key) {
 	keylistener.releaseKey(key);
 }

@@ -10,7 +10,28 @@ namespace ic {
 
 	public:
 		Renderer() {
-			window = std::make_shared<Window>();
+		}
+
+
+		void preRender() {
+			//this->interpol = interpol;
+			Window::get()->clear();
+			//window->clear(sf::Color(255, 255, 255, 255));
+			//ImGui::SFML::Update(*window, guiClock.restart());
+		}
+
+		void renderGui() {
+			//ImGui::SFML::Render(*window);
+		}
+
+
+		void postRender() {
+			Window::get()->display();
+			//window->display();
+		}
+
+		void draw() {
+
 		}
 
 		static Renderer* get() {
@@ -20,22 +41,7 @@ namespace ic {
 			return instance.get();
 		}
 
-		void draw() {
-
-		}
-
-		std::shared_ptr<Window> getWindow() {
-			return window;
-		}
-
-		std::shared_ptr<Window> getWindow() const {
-			return window;
-		}
-
-		/**
-		 * @brief the window for the program
-		*/
-		std::shared_ptr<Window> window;
+		sf::RenderStates states = sf::RenderStates::Default;
 
 	private:
 

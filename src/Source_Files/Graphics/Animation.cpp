@@ -1,6 +1,7 @@
 #include "include.h"
 #include "Animation.h"
 #include "Window.h"
+#include "Renderer.h"
 
 using namespace ic;
 
@@ -63,7 +64,7 @@ void Animation::update() {
 }
 
 void Animation::draw(Window& window) {
-	auto states = window.states;
+	auto states = Renderer::get()->states;
 	window.window->draw(frame, states);
 }
 

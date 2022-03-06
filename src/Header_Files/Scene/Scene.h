@@ -1,12 +1,18 @@
 #pragma once
 
-
 namespace ic {
 
 	class Scene {
 	public:
 		Scene() {}
 		~Scene() {}
+
+		void preUpdate();
+		void postUpdate();
+
+		void preRender();
+		void postRender();
+
 		virtual void update() = 0;
 		virtual void draw(const float interpol) = 0;
 		virtual std::string getName() const = 0;

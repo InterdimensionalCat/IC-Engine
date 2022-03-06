@@ -3,7 +3,6 @@
 #include "Scene.h"
 #include "Window.h"
 
-
 #include "ComponentManager.h"
 #include "Level.h"
 #include "SystemManager.h"
@@ -14,8 +13,9 @@
 #include "System.h"
 
 #include "BenchmarkLogger.h"
-
 #include "Renderer.h"
+#include "GameInput.h"
+#include "InputEventBus.h"
 
 using namespace ic;
 
@@ -74,3 +74,24 @@ void GameScene::draw(const float interpol) {
 	Renderer::get()->window->postRender();
 }
 
+
+
+
+void Scene::preUpdate() {
+	Window::get()->pollEvents();
+	Input::get()->update();
+	GameInput::get()->update();
+	InputEventBus::get()->handleEvents();
+}
+
+void Scene::postUpdate() {
+
+}
+
+void Scene::preRender() {
+	Renderer::get()->preRender();
+}
+
+void Scene::postRender() {
+	Renderer::get()->postRender();
+}
